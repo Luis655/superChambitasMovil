@@ -1,9 +1,8 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import CounterComponent from './counterComponent';
+import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import DetailScreen from './detailScreen';
+import DetailScreen from './src/ui/screens/detailScreen';
+import CounterComponent from './src/ui/components/counterComponent';
 export default function App() {
   const Stack = createStackNavigator();
   return (
@@ -20,7 +19,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
   },

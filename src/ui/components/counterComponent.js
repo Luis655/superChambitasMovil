@@ -3,7 +3,7 @@
 import React from 'react';
 import { View, Text, Button } from 'react-native';
 import { observer } from 'mobx-react-lite';
-import counterStore from './counterStore';
+import counterStore from '../viewModels/counterStore';
 
 const CounterComponent = observer(({navigation }) => {
   return (
