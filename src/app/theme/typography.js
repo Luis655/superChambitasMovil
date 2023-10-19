@@ -1,9 +1,13 @@
+
 export const typography = {
     heading: {
       fontSize: 24,
       fontWeight: 'bold',
+      fontFamily: 'Montserrat_400Regular'
     },
     body: {
-      fontSize: 16,
+      fontFamily: 'Montserrat_400Regular',
+      fontSize: 18,
     },
+    
   };
