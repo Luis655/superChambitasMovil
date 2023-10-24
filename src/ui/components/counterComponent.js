@@ -5,7 +5,7 @@ import { View, Text, Button } from 'react-native';
 import { observer } from 'mobx-react-lite';
 import counterStore from '../viewModels/counterStore';
 
-const CounterComponent = observer(({navigation }) => {
+const CounterComponent = observer(({ navigation }) => {
   return (
     <View>
       <Text>Count: {counterStore.count}</Text>
@@ -14,6 +14,15 @@ const CounterComponent = observer(({navigation }) => {
       <Button
         title="Go to Detail Screen"
         onPress={() => navigation.navigate('Detail')}
+      />
+      <Button
+        title="Go to worker screen"
+        onPress={() => navigation.navigate('WorkerLogin')}
+      />
+
+<Button
+        title="Go to worker screen"
+        onPress={() => navigation.navigate('WorkerRegister')}
       />
     </View>
   );
