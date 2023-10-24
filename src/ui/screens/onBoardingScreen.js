@@ -33,7 +33,7 @@ const OnBoardingScreen = ({navigation }) => {
       >
         "Tu chamba, tu elección, tu comodidad".
       </Text>
-      <TouchableOpacity style={{ alignSelf: "center", backgroundColor:"#f6ad19", width:"60%", height:30, borderRadius:30, marginTop:10}} onPress={() => navigation.navigate('login')} >
+      <TouchableOpacity style={{ alignSelf: "center", backgroundColor:"#f6ad19", width:"60%", height:30, borderRadius:30, marginTop:10}} onPress={() => navigation.navigate('WorkerLoginScreen')} >
         <Text style={{...typography.body, fontWeight:'bold', color:"#ffffff", alignSelf: "center", marginTop:5}} >CONTINUAR <FontAwesome name="long-arrow-right" size={18} color="white" /></Text>
       </TouchableOpacity>
     </View>
