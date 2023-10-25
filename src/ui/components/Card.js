@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import ModalChat from './ModalChat';
-const Card = ({ name, jobType, price, imageUri, address, description }) => {
+const Card = ({index, name, jobType, price, imageUri, address, description }) => {
 
 
   const aceptado = (trabajo) => {
@@ -18,7 +18,7 @@ const Card = ({ name, jobType, price, imageUri, address, description }) => {
 
   return (
     <View style={styles.card}>
-      <Image source={{ uri: imageUri }} style={styles.image} />
+      <Image source={{ uri: "https://i.pravatar.cc/150?img"+index }} style={styles.image} />
       <View style={styles.cardContent}>
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.jobType}>{jobType}</Text>
