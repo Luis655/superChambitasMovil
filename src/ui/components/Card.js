@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import ModalChat from './ModalChat';
-const Card = ({index, name, jobType, price, imageUri, address, description }) => {
+const Card = ({index, job, aceptarTrabajo }) => {
 
-
+//console.log(job.latlng.longitude)
   const aceptado = (trabajo) => {
     Alert.alert(`Aceptar el trabajo ${trabajo}`, '¿Aceptar?', [
-      { text: 'Aceptar', onPress: () => console.log('Activado') },
+      { text: 'Aceptar', onPress: () => {aceptarTrabajo(job.latlng.latitude, job.latlng.longitude)} },
       { text: 'Cancelar', onPress: () => console.log('Cancelado'), style: 'cancel' },
     ]);
   };
@@ -20,17 +20,17 @@ const Card = ({index, name, jobType, price, imageUri, address, description }) =>
     <View style={styles.card}>
       <Image source={{ uri: "https://i.pravatar.cc/150?img"+index }} style={styles.image} />
       <View style={styles.cardContent}>
-        <Text style={styles.name}>{name}</Text>
-        <Text style={styles.jobType}>{jobType}</Text>
-        <Text style={styles.price}>Precio: {price}</Text>
-        <Text style={styles.address}>Dirección: {address}</Text>
-        <Text style={styles.description}>{description}</Text>
+        <Text style={styles.name}>{job.name}</Text>
+        <Text style={styles.jobType}>{job.jobType}</Text>
+        <Text style={styles.price}>Precio: {job.price}</Text>
+        <Text style={styles.address}>Dirección: {job.address}</Text>
+        <Text style={styles.description}>{job.description}</Text>
         <View style={[styles.bottonsCard]}>
-          <ModalChat visible={isChatModalVisible} onClose={toggleChatModal} name={name} price={price} />
+          <ModalChat visible={isChatModalVisible} onClose={toggleChatModal} name={job.name} price={job.price} />
 
           <TouchableOpacity
             style={[styles.button]}
-            onPress={() => aceptado(jobType)}
+            onPress={() => aceptado(job.jobType)}
           >
             <Text style={styles.buttonText}>Aceptar</Text>
           </TouchableOpacity>

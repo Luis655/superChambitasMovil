@@ -3,16 +3,23 @@ import { StyleSheet, Text, View, Alert, Button } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
-
+import { useAuth } from '../../auth/contextAuth';
 const validationSchema = Yup.object().shape({
     username: Yup.string().required('El nombre de usuario es obligatorio'),
     password: Yup.string().required('La contraseña es obligatoria'),
 });
 export default function WorkerLoginScreen({navigation}) {
     const passwordRef = useRef(null);
-
+    const { state, dispatch } = useAuth();
     const handleLogin = (values) => {
-        navigation.navigate('HomeWorker')
+        navigation.navigate('HomeWorker');
+        dispatch({ type: 'SET_USER', payload: values.username });
+        dispatch({ type: 'SET_TOKEN', payload: 'SDJJJJ3LKMSAKMLKLASDKLKASDLA' });
+        if (values.username == 'Trabajador') {
+            dispatch({ type: 'SET_TYPE', payload: '1' });
+        }else{
+            dispatch({ type: 'SET_TYPE', payload: '2' });
+        }
         Alert.alert(
             'Inicio de secion',
             'Exito',

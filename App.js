@@ -7,6 +7,8 @@ import AuthScreen from "./src/ui/screens/AuthScreen";
 import WorkerRegisterScreen from "./src/ui/screens/WorkerRegisterScreen";
 import WorkerLoginScreen from "./src/ui/screens/WorkerLoginScreen";
 import HomeWorker from "./src/ui/screens/HomeWorker";
+import { Provider as PaperProvider } from 'react-native-paper';
+import { AuthProvider } from './src/auth/contextAuth';
 import {
   useFonts,
   Montserrat_400Regular,
@@ -14,6 +16,10 @@ import {
 } from "@expo-google-fonts/montserrat";
 import * as SplashScreen from "expo-splash-screen";
 SplashScreen.preventAutoHideAsync();
+const theme = {
+  // Configuración del tema, si es necesario
+};
+
 export default function App() {
   const Stack = createStackNavigator();
   let [fontsLoaded] = useFonts({
@@ -37,6 +43,8 @@ export default function App() {
   }
 
   return (
+    <AuthProvider>
+    <PaperProvider theme={theme}>
     <NavigationContainer onReady={onLayoutRootView}>
       <Stack.Navigator initialRouteName="onBoarding">
         <Stack.Screen
@@ -74,6 +82,8 @@ export default function App() {
         />
       </Stack.Navigator>
     </NavigationContainer>
+    </PaperProvider>
+    </AuthProvider>
   );
 }
 

@@ -2,17 +2,18 @@
 import React, { useState, useEffect } from 'react';
 import { View, Button, Alert, StyleSheet, FlatList, Text, Animated, TouchableOpacity } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import FloatingSection, { jobData } from '../components/sectionModalMap';
+import FloatingSection, { jobData2 } from '../components/sectionModalMap';
 import * as Location from 'expo-location';
 import { PermissionsAndroid } from 'react-native';
-
-
-
-const HomeWorker = () => {
-
-
+import MapViewDirections from 'react-native-maps-directions'
+import { Drawer } from 'react-native-paper';
+import { useAuth } from '../../auth/contextAuth';
+const HomeWorker = ({type}) => {
+  const { state, dispatch } = useAuth();
+  const [active, setActive] = useState('');
   const [location, setLocation] = useState(null);
   const [isActive, setIsActive] = useState(false);
+  const [markerPosition, setMarkerPosition] = useState(null);
   const markers = [
     {
       title: "Plaza Grande",
@@ -167,8 +168,25 @@ const HomeWorker = () => {
       }
     }
   ];
+  console.log(state.user)
+  console.log(state.token)
+  console.log(state.type)
 
 
+  const iniciarRuta = (lat, lng) => {
+   // console.log(lat, lng)
+
+    // Lógica para obtener la posición (latitud y longitud) del marcador
+    // Esto podría provenir de la geolocalización del dispositivo o cualquier otra fuente
+    const newMarkerPosition = {
+      latitude: lat,
+      longitude: lng,
+    };
+
+    setMarkerPosition(newMarkerPosition);
+  };
+
+  
   useEffect(() => {
     requestLocationPermission()
 
@@ -238,23 +256,37 @@ const HomeWorker = () => {
   }
 
   return (
+    
     <View style={styles.container}>
+ 
       {location ? (
         <MapView style={styles.map} initialRegion={{ ...location, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }} >
           <Marker key={location} coordinate={location} title='Tu ubicación' description='Aquí estas' />
-          {jobData.map((marker, index) => (
+          {state.type == '2' && jobData2.map((marker, index) => (
             <Marker
               key={index}
               coordinate={marker.latlng}
               title={marker.jobType}
               description={marker.address}
+              //image={require('./persona.png')}
+              style={{ width: 3, height: 3 }} // Ajusta el tamaño del marcador según tus necesidades
+              
             />
           ))}
+         {markerPosition && <MapViewDirections
+            origin={location}
+            destination={markerPosition}
+            apikey='sin api key ):'  
+          />
+         }
+        {markerPosition && <Marker coordinate={markerPosition} />
+
+        }
         </MapView>
       ) : (<MapView style={styles.map} />
       )}
       <TouchableOpacity style={styles.floatingButton} onPress={toggleFloatingSection}>
-        <Text style={styles.floatingButtonText}>Buscar chamba</Text>
+        <Text style={styles.floatingButtonText}>{ state.type == '1' ? 'Buscar chamba' : 'Ver más'}</Text>
       </TouchableOpacity>
       <FloatingSection
         visible={isFloatingSectionVisible}
@@ -262,6 +294,9 @@ const HomeWorker = () => {
         isActive={isActive}
         onSearchJobs={() => {
           activarTrabajo()
+        }}
+        aceptarTrabajo={(lat, lng) => {
+          iniciarRuta(lat, lng)
         }}
       />
 
@@ -289,8 +324,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   map: {
-    // flex: 1,
-    height: "90%"
+    flex: 1,
+    height: "100%"
   },
   overlay: {
     position: 'absolute',

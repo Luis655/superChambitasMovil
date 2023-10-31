@@ -1,26 +1,57 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Modal, ScrollView, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import Card from './Card'; // Asegúrate de importar el componente Card desde la ubicación correcta
+import { Searchbar } from 'react-native-paper';
+import { useAuth } from '../../auth/contextAuth';
 
-const FloatingSection = ({ visible, onClose, onSearchJobs, isActive }) => {
+const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrabajo }) => {
+  const { state, dispatch } = useAuth();
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [jobData, setJobData] = useState(jobData2);
+ // console.log(jobData)
+  const onChangeSearch = query => {
+    setSearchQuery(query);
+    console.log(query);
+    const filterjob = jobData2.filter((job) => {
+      const jobType = job.jobType.toLowerCase(); // Convierte a minúsculas para una búsqueda sin distinción entre mayúsculas y minúsculas
+      return jobType.includes(query.toLowerCase());
+    });
+    setJobData(filterjob);
+
+  }
   return (
-    <Modal animationType="slide" transparent={true} visible={visible}>
+    <Modal animationType="slide" transparent={true} visible={visible}
+    onSwipeComplete={onClose} // Esta función se ejecutará cuando el usuario complete el gesto de deslizamiento
+    //onRequestClose={onClose}
+    swipeDirection={['down']}>
       <View style={styles.modalContainer}>
-      <ActivityIndicator  animating={isActive}/>
+        <ActivityIndicator animating={isActive} />
         <View style={styles.modalContent}>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <Text style={styles.closeButtonText}>Cerrar</Text>
           </TouchableOpacity>
+          {state.type == '1' &&
           <TouchableOpacity style={styles.searchButton} onPress={onSearchJobs}>
-            <Text style={styles.searchButtonText}>{ isActive ? "Desactivar": "Activar"}</Text>
-          </TouchableOpacity>
-          <ScrollView style={styles.scrollView}>
-
+           <Text style={styles.searchButtonText}>{isActive ? "Desactivar" : "Activar"}</Text>
+          </TouchableOpacity>}
+          {state.type == '1' ?
             <Text style={styles.textStyle}>Trabajos disponibles en tu area</Text>
+          
+           :
+           <TouchableOpacity style={styles.search}>
+           <Searchbar
+              placeholder="Buscar trabajos"
+              onChangeText={onChangeSearch}
+              value={searchQuery}
+            />
+          </TouchableOpacity>
+          }
+          <ScrollView style={styles.scrollView}>
 
             {
               jobData.map((job, index) => (
-                <Card index={index} {...job} key={index} />
+                <Card index={index} job={job} aceptarTrabajo={(lat, lng) => { aceptarTrabajo(lat, lng) }} key={index} />
               ))
             }
           </ScrollView>
@@ -30,7 +61,7 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive }) => {
   );
 };
 
-export const jobData = [
+export const jobData2 = [
   {
     name: 'Juan Pérez',
     jobType: 'Plomero',
@@ -254,7 +285,8 @@ const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo semi-transparente
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    marginTop : 90,
   },
   modalContent: {
     backgroundColor: '#fff',
@@ -264,7 +296,10 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     alignSelf: 'flex-end',
-    marginBottom: 10,
+    marginBottom: 1,
+  },
+  search:{
+    margin:10
   },
   closeButtonText: {
     color: 'blue',
