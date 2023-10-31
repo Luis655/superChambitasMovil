@@ -3,7 +3,6 @@ import React, { useCallback } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import OnBoardingScreen from "./src/ui/screens/onBoardingScreen";
-import AuthScreen from "./src/ui/screens/AuthScreen";
 import WorkerRegisterScreen from "./src/ui/screens/WorkerRegisterScreen";
 import WorkerLoginScreen from "./src/ui/screens/WorkerLoginScreen";
 import HomeWorker from "./src/ui/screens/HomeWorker";
@@ -50,18 +49,13 @@ export default function App() {
           options={{
             headerShown: false,
           }}
-          name="login"
-          component={AuthScreen}
-        />
-        <Stack.Screen
-          options={{
-            headerShown: false,
-          }}
           name="WorkerLoginScreen"
           component={WorkerLoginScreen}
         />
         <Stack.Screen
-         
+         options={{
+          headerShown: false,
+        }}
           name="WorkerRegister"
           component={WorkerRegisterScreen}
         />

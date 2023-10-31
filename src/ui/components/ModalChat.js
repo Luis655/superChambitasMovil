@@ -72,8 +72,7 @@ const ChatModal = ({ visible, onClose, name, price }) => {
           </TouchableOpacity>
         </View>
 
-        {/* Encabezado del modal */}
-        {/* Agrega elementos según sea necesario */}
+     
         <GiftedChat
           messages={messages}
           onSend={onSend}
@@ -82,8 +81,7 @@ const ChatModal = ({ visible, onClose, name, price }) => {
           }}
           renderBubble={renderBubble}
         />
-        {/* Input y botón para enviar mensajes */}
-        {/* Lógica para enviar mensajes */}
+       
       </View>
     </Modal>
   );

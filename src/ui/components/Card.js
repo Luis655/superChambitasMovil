@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import ModalChat from './ModalChat';
-const Card = ({index, name, jobType, price, imageUri, address, description }) => {
+import WorkerOffer from './workerOffer';
+const Card = ({index, name, jobType, price, address, description }) => {
 
 
   const aceptado = (trabajo) => {
@@ -14,6 +14,11 @@ const Card = ({index, name, jobType, price, imageUri, address, description }) =>
 
   const toggleChatModal = () => {
     setIsChatModalVisible(!isChatModalVisible);
+    console.log({isChatModalVisible})
+  };
+  const handleSubmit = (amount) => {
+    console.log({amount})
+    toggleChatModal();
   };
 
   return (
@@ -26,7 +31,8 @@ const Card = ({index, name, jobType, price, imageUri, address, description }) =>
         <Text style={styles.address}>Dirección: {address}</Text>
         <Text style={styles.description}>{description}</Text>
         <View style={[styles.bottonsCard]}>
-          <ModalChat visible={isChatModalVisible} onClose={toggleChatModal} name={name} price={price} />
+          {/* <ModalChat visible={isChatModalVisible} onClose={toggleChatModal} name={name} price={price} /> */}
+          <WorkerOffer   modalVisible={isChatModalVisible} closeModal={toggleChatModal}  handleSubmit={handleSubmit}/>
 
           <TouchableOpacity
             style={[styles.button]}
@@ -37,7 +43,7 @@ const Card = ({index, name, jobType, price, imageUri, address, description }) =>
 
           <TouchableOpacity
             style={[styles.button]}
-            onPress={() => toggleChatModal()}
+            onPress={toggleChatModal}
           >
             <Text style={styles.buttonText}>Contra-oferta</Text>
           </TouchableOpacity>

@@ -60,43 +60,9 @@ export default function WorkerRegister() {
   };
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-    { label: 'Aguascalientes (449)', value: '449' },
-    { label: 'Baja California (686)', value: '686' },
-    { label: 'Baja California Sur (612)', value: '612' },
-    { label: 'Campeche (981)', value: '981' },
-    { label: 'Chiapas (961)', value: '961' },
-    { label: 'Chihuahua (614)', value: '614' },
-    { label: 'Ciudad de México (55)', value: '55' },
-    { label: 'Coahuila (844)', value: '844' },
-    { label: 'Colima (312)', value: '312' },
-    { label: 'Durango (618)', value: '618' },
-    { label: 'Guanajuato (473)', value: '473' },
-    { label: 'Guerrero (747)', value: '747' },
-    { label: 'Hidalgo (771)', value: '771' },
-    { label: 'Jalisco (33)', value: '33' },
-    { label: 'México (722)', value: '722' },
-    { label: 'Michoacán (443)', value: '443' },
-    { label: 'Morelos (777)', value: '777' },
-    { label: 'Nayarit (311)', value: '311' },
-    { label: 'Nuevo León (81)', value: '81' },
-    { label: 'Oaxaca (951)', value: '951' },
-    { label: 'Puebla (222)', value: '222' },
-    { label: 'Querétaro (442)', value: '442' },
-    { label: 'Quintana Roo (998)', value: '998' },
-    { label: 'San Luis Potosí (444)', value: '444' },
-    { label: 'Sinaloa (667)', value: '667' },
-    { label: 'Sonora (662)', value: '662' },
-    { label: 'Tabasco (993)', value: '993' },
-    { label: 'Tamaulipas (834)', value: '834' },
-    { label: 'Tlaxcala (246)', value: '246' },
-    { label: 'Veracruz (229)', value: '229' },
-    { label: 'Yucatán (999)', value: '999' },
-    { label: 'Zacatecas(492', value: '492' }
-  ]);
+  const [items, setItems] = useState(areaCodes);
   return (
-    <ScrollView>
-
+    <>
       <View style={styles.container}>
         <Formik
           initialValues={{
@@ -230,7 +196,7 @@ export default function WorkerRegister() {
 
         </Formik>
       </View>
-    </ScrollView>
+    </>
 
 
   );
@@ -239,7 +205,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 20,
+    padding: 15,
     alignItems: 'center',
     justifyContent: 'center',
   },
