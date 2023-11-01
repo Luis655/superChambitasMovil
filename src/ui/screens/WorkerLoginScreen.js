@@ -1,18 +1,32 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef,useEffect } from 'react';
 import { StyleSheet, Text, View, Alert, Button } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { useAuth } from '../../auth/contextAuth';
+import { Avatar } from 'react-native-paper';
+import useAxios from '../../customHooks/hookAxios';
+
 const validationSchema = Yup.object().shape({
     username: Yup.string().required('El nombre de usuario es obligatorio'),
     password: Yup.string().required('La contraseña es obligatoria'),
 });
+const consultadb = (()=>{let formdata = new FormData();
+
+console.log('ADSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS ' + data)
+});
+
 export default function WorkerLoginScreen({navigation}) {
+
+    const { data, error, loading } = useAxios('auth/login', 'POST' );
+
+
+
     const passwordRef = useRef(null);
     const { state, dispatch } = useAuth();
     const handleLogin = (values) => {
-        navigation.navigate('HomeWorker');
+        console.log(data, error, loading)
+        //navigation.navigate('HomeWorker');
         dispatch({ type: 'SET_USER', payload: values.username });
         dispatch({ type: 'SET_TOKEN', payload: 'SDJJJJ3LKMSAKMLKLASDKLKASDLA' });
         if (values.username == 'Trabajador') {
@@ -34,12 +48,13 @@ export default function WorkerLoginScreen({navigation}) {
               },
             ],
           );
-        console.log(values);
+        //console.log(values);
     };
 
     return (
         <View style={styles.container}>
             <View style={styles.logoContainer}>
+            <Avatar.Image size={190} source={require('../../../assets/splash.png')} />
                 <Text style={styles.logo}>SuperChambitas</Text>
             </View>
             <Formik
