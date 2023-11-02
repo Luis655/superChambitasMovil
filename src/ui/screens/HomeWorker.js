@@ -278,7 +278,7 @@ const HomeWorker = ({type}) => {
          {markerPosition && <MapViewDirections
             origin={location}
             destination={markerPosition}
-            apikey='AIzaSyCqPrRW_GUsZ2D00uTEXsGGPkULbXiIsTY'  
+            apikey=''  
             strokeWidth={3}
           />
          }
