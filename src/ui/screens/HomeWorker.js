@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { View, Button, Alert, StyleSheet, FlatList, Text, Animated, TouchableOpacity } from 'react-native';
+import { View, Button, Alert, StyleSheet, FlatList, Text, Animated, TouchableOpacity, Image } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import FloatingSection, { jobData2 } from '../components/sectionModalMap';
 import * as Location from 'expo-location';
@@ -8,6 +8,7 @@ import { PermissionsAndroid } from 'react-native';
 import MapViewDirections from 'react-native-maps-directions'
 import { Drawer } from 'react-native-paper';
 import { useAuth } from '../../auth/contextAuth';
+const workerLogo = require('../../../assets/logoconosuperchambitas-removebg-preview.png')
 const HomeWorker = ({type}) => {
   const { state, dispatch } = useAuth();
   const [active, setActive] = useState('');
@@ -188,60 +189,62 @@ const HomeWorker = ({type}) => {
 
   
   useEffect(() => {
-    requestLocationPermission();
+    requestLocationPermission()
+
   }, []);
+  const [isChatModalVisible, setIsChatModalVisible] = useState(false);
 
   const toggleChatModal = () => {
     setIsChatModalVisible(!isChatModalVisible);
   };
+  const [isFloatingSectionVisible, setIsFloatingSectionVisible] = useState(false);
 
   const toggleFloatingSection = () => {
     setIsFloatingSectionVisible(!isFloatingSectionVisible);
   };
+  const [trabajos, setTrabajos] = useState(['Trabajo 1', 'Trabajo 2', 'Trabajo 3']);
+  const [scrollY] = useState(new Animated.Value(0));
 
   const buscarTrabajo = () => {
-    Alert.alert("Buscando trabajo....");
+
+    Alert.alert('Buscando trabajo....');
   };
 
   const seleccionarTrabajo = (trabajo) => {
-    Alert.alert(`Has seleccionado ${trabajo}`, "¿Aceptar?", [
-      { text: "Aceptar", onPress: () => console.log("Trabajo aceptado") },
-      {
-        text: "Cancelar",
-        onPress: () => console.log("Trabajo rechazado"),
-        style: "cancel",
-      },
+    Alert.alert(`Has seleccionado ${trabajo}`, '¿Aceptar?', [
+      { text: 'Aceptar', onPress: () => console.log('Trabajo aceptado') },
+      { text: 'Cancelar', onPress: () => console.log('Trabajo rechazado'), style: 'cancel' },
     ]);
   };
 
   const activarTrabajo = (trabajo) => {
-    const toggleActivation = () => {
-      toggleFloatingSection();
-      setIsActive(!isActive);
-    };
-
-    Alert.alert(
-      `${
-        isActive
-          ? "Ya no serás visible para los usuarios"
-          : "Te mostrarás como activo hacia los usuarios"
-      }`,
-      "¿Aceptar?",
-      [
-        { text: "Aceptar", onPress: toggleActivation },
-        {
-          text: "Cancelar",
-          onPress: () => console.log("Cancelado"),
-          style: "cancel",
-        },
-      ]
-    );
+    Alert.alert(`${!isActive ? "Te mostraras como activo hacia los usuarios" : "Ya no seras visible para los usuarios"}`, '¿Aceptar?', [
+      { text: 'Aceptar', onPress: () => {
+        toggleFloatingSection()
+        setIsActive(!isActive) } },
+      { text: 'Cancelar', onPress: () => console.log('Cancelado'), style: 'cancel' },
+    ]);
   };
+
+  const cargarMasTrabajos = () => {
+    const nuevosTrabajos = ['Nuevo Trabajo 1', 'Nuevo Trabajo 2', 'Nuevo Trabajo 3'];
+    setTrabajos([...trabajos, ...nuevosTrabajos]);
+  };
+  const cardData = {
+    name: 'Juan Pérez',
+    jobType: 'Plomero',
+    price: '$50',
+    imageUri: 'https://1.bp.blogspot.com/_EZ16vWYvHHg/S7ipNUpJfzI/AAAAAAAAJnA/OvBcbs5fPP8/s1600/www.BancodeImagenesGratuitas.com-Jirafas-1000x-1.jpg',
+    address: '123 Calle Principal, Ciudad',
+    description: 'Reparación de tuberías y grifos en el baño.',
+  };
+
 
   async function requestLocationPermission() {
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
+      if (status !== 'granted') {
+        console.error('Permiso para acceder a la ubicación denegado');
         return;
       }
 
@@ -249,17 +252,18 @@ const HomeWorker = ({type}) => {
       const { latitude, longitude } = location.coords;
       setLocation({ latitude, longitude });
     } catch (err) {
-      console.warn("Error: " + err);
+      console.warn("pito error " + err);
     }
   }
 
   return (
     
     <View style={styles.container}>
- 
       {location ? (
         <MapView style={styles.map} initialRegion={{ ...location, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }} >
-          <Marker key={location} coordinate={location} title='Tu ubicación' description='Aquí estas' />
+          <Marker key={location} coordinate={location} title='Tu ubicación' description='Aquí estas' >
+          <Image source={workerLogo} style={{ width: 50, height: 80 }}/>
+          </Marker>
           {state.type == '2' && jobData2.map((marker, index) => (
             <Marker
               key={index}
@@ -268,23 +272,23 @@ const HomeWorker = ({type}) => {
               description={marker.address}
               //image={require('./persona.png')}
               style={{ width: 3, height: 3 }} // Ajusta el tamaño del marcador según tus necesidades
-              
+              image={workerLogo}
             />
           ))}
          {markerPosition && <MapViewDirections
             origin={location}
             destination={markerPosition}
-            apikey='sin api key ):'  
+            apikey='AIzaSyCqPrRW_GUsZ2D00uTEXsGGPkULbXiIsTY'  
+            strokeWidth={3}
           />
          }
-        {markerPosition && <Marker coordinate={markerPosition} />
+        {markerPosition && <Marker  coordinate={markerPosition}>
+                            <Image source={workerLogo} style={{ width: 50, height: 70 }}/>
+                           </Marker>
 
         }
         </MapView>
-      ) : (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator color="blue" size="large" />
-        </View>
+      ) : (<MapView style={styles.map} />
       )}
       <TouchableOpacity style={styles.floatingButton} onPress={toggleFloatingSection}>
         <Text style={styles.floatingButtonText}>{ state.type == '1' ? 'Buscar chamba' : 'Ver más'}</Text>
@@ -294,12 +298,15 @@ const HomeWorker = ({type}) => {
         onClose={toggleFloatingSection}
         isActive={isActive}
         onSearchJobs={() => {
-          activarTrabajo();
+          activarTrabajo()
         }}
         aceptarTrabajo={(lat, lng) => {
           iniciarRuta(lat, lng)
         }}
       />
+      <Text>{state.token}</Text>
+
+
     </View>
   );
 };
@@ -307,25 +314,20 @@ const HomeWorker = ({type}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  loadingContainer: {
-    flex: 1,
-    backgroundColor: '#ffffff', // Fondo semitransparente
-    justifyContent: 'center',
-    alignItems: 'center',
+
   },
   floatingButton: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 20,
-    backgroundColor: "blue",
+    backgroundColor: 'blue',
     padding: 15,
     borderRadius: 30,
     marginLeft: 50,
-    width: "70%",
+    width: '70%'
   },
   floatingButtonText: {
-    color: "#fff",
-    alignSelf: "center",
+    color: '#fff',
+    alignSelf: 'center',
     fontSize: 20,
   },
   map: {
@@ -346,3 +348,30 @@ const styles = StyleSheet.create({
 });
 
 export default HomeWorker;
+
+
+
+/*import React from 'react';
+import { View, Text } from 'react-native';
+import Card from '../components/Card'; // Asegúrate de importar el componente Card desde la ubicación correcta
+import foto from './persona.png'
+const App = () => {
+  // Datos de ejemplo para el componente Card
+  const cardData = {
+    name: 'Juan Pérez',
+    jobType: 'Plomero',
+    price: '$50',
+    imageUri: 'https://1.bp.blogspot.com/_EZ16vWYvHHg/S7ipNUpJfzI/AAAAAAAAJnA/OvBcbs5fPP8/s1600/www.BancodeImagenesGratuitas.com-Jirafas-1000x-1.jpg',
+    address: '123 Calle Principal, Ciudad',
+    description: 'Reparación de tuberías y grifos en el baño.',
+  };
+
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Card {...cardData} />
+    </View>
+  );
+};
+
+export default App;
+*/
