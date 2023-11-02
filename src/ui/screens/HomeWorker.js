@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { View, Button, Alert, StyleSheet, FlatList, Text, Animated, TouchableOpacity } from 'react-native';
+import { View, Button, Alert, StyleSheet, FlatList, Text, Animated, TouchableOpacity, Image } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import FloatingSection, { jobData2 } from '../components/sectionModalMap';
 import * as Location from 'expo-location';
@@ -8,6 +8,7 @@ import { PermissionsAndroid } from 'react-native';
 import MapViewDirections from 'react-native-maps-directions'
 import { Drawer } from 'react-native-paper';
 import { useAuth } from '../../auth/contextAuth';
+const workerLogo = require('../../../assets/logoconosuperchambitas-removebg-preview.png')
 const HomeWorker = ({type}) => {
   const { state, dispatch } = useAuth();
   const [active, setActive] = useState('');
@@ -258,10 +259,11 @@ const HomeWorker = ({type}) => {
   return (
     
     <View style={styles.container}>
- 
       {location ? (
         <MapView style={styles.map} initialRegion={{ ...location, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }} >
-          <Marker key={location} coordinate={location} title='Tu ubicación' description='Aquí estas' />
+          <Marker key={location} coordinate={location} title='Tu ubicación' description='Aquí estas' >
+          <Image source={workerLogo} style={{ width: 50, height: 80 }}/>
+          </Marker>
           {state.type == '2' && jobData2.map((marker, index) => (
             <Marker
               key={index}
@@ -270,16 +272,19 @@ const HomeWorker = ({type}) => {
               description={marker.address}
               //image={require('./persona.png')}
               style={{ width: 3, height: 3 }} // Ajusta el tamaño del marcador según tus necesidades
-              
+              image={workerLogo}
             />
           ))}
          {markerPosition && <MapViewDirections
             origin={location}
             destination={markerPosition}
-            apikey='sin api key ):'  
+            apikey='AIzaSyCqPrRW_GUsZ2D00uTEXsGGPkULbXiIsTY'  
+            strokeWidth={3}
           />
          }
-        {markerPosition && <Marker coordinate={markerPosition} />
+        {markerPosition && <Marker  coordinate={markerPosition}>
+                            <Image source={workerLogo} style={{ width: 50, height: 70 }}/>
+                           </Marker>
 
         }
         </MapView>
@@ -299,6 +304,8 @@ const HomeWorker = ({type}) => {
           iniciarRuta(lat, lng)
         }}
       />
+      <Text>{state.token}</Text>
+
 
     </View>
   );

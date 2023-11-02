@@ -6,6 +6,8 @@ import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { useAuth } from '../../auth/contextAuth';
 import { Avatar } from 'react-native-paper';
 import useAxios from '../../customHooks/hookAxios';
+import { loadAsync } from 'expo-font';
+import axios from 'axios';
 
 const validationSchema = Yup.object().shape({
     username: Yup.string().required('El nombre de usuario es obligatorio'),
@@ -13,22 +15,56 @@ const validationSchema = Yup.object().shape({
 });
 const consultadb = (()=>{let formdata = new FormData();
 
-console.log('ADSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS ' + data)
+console.log('ADSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS ')
 });
 
 export default function WorkerLoginScreen({navigation}) {
-
-    const { data, error, loading } = useAxios('auth/login', 'POST' );
+    const [credenciales, setCredenciales] = useState({"email": "", "password": ""})
+    const [datas, setData] = useState();
+    const [error, setError] = useState();
+    const [loading, setLoading] = useState();
 
 
 
     const passwordRef = useRef(null);
     const { state, dispatch } = useAuth();
+
+    const getLogin = () =>{
+        setData(useAxios('auth/login', 'post', {"email": "ccauich@blazar.com.mx", "password": "123456"} ));
+        console.log(datas);
+
+    }
+
+    //EJEMPLO DE COMO LLAMAR A LA API
+    /*const fetchData = async () => {
+        let formdata = new FormData();
+        formdata.append("email", "ccauich@blazar.com.mx");
+        formdata.append("password", "123456");
+        try {
+          const response = await axios({
+            url: 'https://supercapi.azurewebsites.net/auth/login',
+            method: 'post',
+            data: {"email": "ccauich@blazar.com.mx", "password": "123456"} ,
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+          setData(response);
+          console.log(response)
+        } catch (err) {
+          setError(err);
+        } finally {
+          setLoading(false);
+        }
+      };*/
+
+
     const handleLogin = (values) => {
-        console.log(data, error, loading)
-        //navigation.navigate('HomeWorker');
+        //fetchData();
+        console.log(datas, error, loading)
+        navigation.navigate('HomeWorker');
         dispatch({ type: 'SET_USER', payload: values.username });
-        dispatch({ type: 'SET_TOKEN', payload: 'SDJJJJ3LKMSAKMLKLASDKLKASDLA' });
+        dispatch({ type: 'SET_TOKEN', payload: 'asdasdasdsaddas' });
         if (values.username == 'Trabajador') {
             dispatch({ type: 'SET_TYPE', payload: '1' });
         }else{
