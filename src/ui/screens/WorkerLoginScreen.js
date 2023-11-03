@@ -15,12 +15,12 @@ const validationSchema = Yup.object().shape({
 });
 const consultadb = (()=>{let formdata = new FormData();
 
-console.log('ADSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS ')
+//console.log('ADSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS ')
 });
 
 export default function WorkerLoginScreen({navigation}) {
     const [credenciales, setCredenciales] = useState({"email": "", "password": ""})
-    const [datas, setData] = useState();
+    const [datos, setDatos] = useState();
     const [error, setError] = useState();
     const [loading, setLoading] = useState();
 
@@ -29,12 +29,11 @@ export default function WorkerLoginScreen({navigation}) {
     const passwordRef = useRef(null);
     const { state, dispatch } = useAuth();
 
-    const getLogin = () =>{
-        setData(useAxios('auth/login', 'post', {"email": "ccauich@blazar.com.mx", "password": "123456"} ));
+    const getLoginsss = () =>{
+       const data =  useAxios('auth/login', 'post', {"email": "ccauich@blazar.com.mx", "password": "123456"} );
+        setData(data);
         console.log(datas);
-
     }
-
     //EJEMPLO DE COMO LLAMAR A LA API
     /*const fetchData = async () => {
         let formdata = new FormData();
@@ -58,29 +57,49 @@ export default function WorkerLoginScreen({navigation}) {
         }
       };*/
 
-
-    const handleLogin = (values) => {
-        //fetchData();
-        console.log(datas, error, loading)
-        navigation.navigate('HomeWorker');
-        dispatch({ type: 'SET_USER', payload: values.username });
-        dispatch({ type: 'SET_TOKEN', payload: 'asdasdasdsaddas' });
-        if (values.username == 'Trabajador') {
-            dispatch({ type: 'SET_TYPE', payload: '1' });
-        }else{
-            dispatch({ type: 'SET_TYPE', payload: '2' });
+      const getLogin = async () => {
+        try {
+          const data = await useAxios('auth/login', 'post', {"email": "ccauich@blazar.com.mx", "password": "123456"});
+          console.log("Datos de la api "+JSON.stringify(data));
+        } catch (error) {
+          console.error("Error de la api " + JSON.stringify(error));
         }
+      };
+    const handleLogin = async (values) => {
+        //getLogin();
+
+
+        try {
+            const data = await useAxios('auth/login', 'post', {"email": values.username, "password": values.password});
+            console.log("Datos de la api "+JSON.stringify(data));
+            if(data.status ==='success' && data.token){
+                setDatos(data.token)
+            }
+          } catch (error) {
+            console.error(error.message);
+          }finally{
+            dispatch({ type: 'SET_USER', payload: values.username });
+            dispatch({ type: 'SET_TOKEN', payload: data });
+            if (values.username == 'Trabajador') {
+                dispatch({ type: 'SET_TYPE', payload: '1' }); //tipo uno(1) es el trabajador, el que usara la app para trabajar
+            }else{
+                dispatch({ type: 'SET_TYPE', payload: '2' });//tipo dos(2) es usuario normal, el cliente que usara la app para contratar empleados
+            }
+          }
+        //console.log("Datos de la api: " + JSON.stringify(data))
+        //navigation.navigate('HomeWorker');
+
         Alert.alert(
             'Inicio de secion',
             'Exito',
             [
               {
                 text: 'Salir',
-                onPress: () => console.log('Botón 1 presionado'),
+                onPress: () => console.log(''),
               },
               {
                 text: 'Aceptar',
-                onPress: () => console.log('Botón 2 presionado'),
+                onPress: () => console.log(''),
               },
             ],
           );

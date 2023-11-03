@@ -10,6 +10,7 @@ import { Drawer } from 'react-native-paper';
 import { useAuth } from '../../auth/contextAuth';
 const workerLogo = require('../../../assets/logoconosuperchambitas-removebg-preview.png')
 const HomeWorker = ({type}) => {
+
   const { state, dispatch } = useAuth();
   const [active, setActive] = useState('');
   const [location, setLocation] = useState(null);
@@ -175,8 +176,7 @@ const HomeWorker = ({type}) => {
 
 
   const iniciarRuta = (lat, lng) => {
-   // console.log(lat, lng)
-
+    // console.log(lat, lng)
     // Lógica para obtener la posición (latitud y longitud) del marcador
     // Esto podría provenir de la geolocalización del dispositivo o cualquier otra fuente
     const newMarkerPosition = {
@@ -186,37 +186,29 @@ const HomeWorker = ({type}) => {
 
     setMarkerPosition(newMarkerPosition);
   };
-
-  
   useEffect(() => {
     requestLocationPermission()
 
   }, []);
   const [isChatModalVisible, setIsChatModalVisible] = useState(false);
-
   const toggleChatModal = () => {
     setIsChatModalVisible(!isChatModalVisible);
   };
   const [isFloatingSectionVisible, setIsFloatingSectionVisible] = useState(false);
-
   const toggleFloatingSection = () => {
     setIsFloatingSectionVisible(!isFloatingSectionVisible);
   };
   const [trabajos, setTrabajos] = useState(['Trabajo 1', 'Trabajo 2', 'Trabajo 3']);
   const [scrollY] = useState(new Animated.Value(0));
-
   const buscarTrabajo = () => {
-
     Alert.alert('Buscando trabajo....');
   };
-
   const seleccionarTrabajo = (trabajo) => {
     Alert.alert(`Has seleccionado ${trabajo}`, '¿Aceptar?', [
       { text: 'Aceptar', onPress: () => console.log('Trabajo aceptado') },
       { text: 'Cancelar', onPress: () => console.log('Trabajo rechazado'), style: 'cancel' },
     ]);
   };
-
   const activarTrabajo = (trabajo) => {
     Alert.alert(`${!isActive ? "Te mostraras como activo hacia los usuarios" : "Ya no seras visible para los usuarios"}`, '¿Aceptar?', [
       { text: 'Aceptar', onPress: () => {
@@ -225,7 +217,6 @@ const HomeWorker = ({type}) => {
       { text: 'Cancelar', onPress: () => console.log('Cancelado'), style: 'cancel' },
     ]);
   };
-
   const cargarMasTrabajos = () => {
     const nuevosTrabajos = ['Nuevo Trabajo 1', 'Nuevo Trabajo 2', 'Nuevo Trabajo 3'];
     setTrabajos([...trabajos, ...nuevosTrabajos]);
@@ -238,8 +229,6 @@ const HomeWorker = ({type}) => {
     address: '123 Calle Principal, Ciudad',
     description: 'Reparación de tuberías y grifos en el baño.',
   };
-
-
   async function requestLocationPermission() {
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -247,7 +236,6 @@ const HomeWorker = ({type}) => {
         console.error('Permiso para acceder a la ubicación denegado');
         return;
       }
-
       let location = await Location.getCurrentPositionAsync();
       const { latitude, longitude } = location.coords;
       setLocation({ latitude, longitude });
@@ -255,9 +243,7 @@ const HomeWorker = ({type}) => {
       console.warn("pito error " + err);
     }
   }
-
   return (
-    
     <View style={styles.container}>
       {location ? (
         <MapView style={styles.map} initialRegion={{ ...location, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }} >
@@ -278,14 +264,13 @@ const HomeWorker = ({type}) => {
          {markerPosition && <MapViewDirections
             origin={location}
             destination={markerPosition}
-            apikey='AIzaSyCqPrRW_GUsZ2D00uTEXsGGPkULbXiIsTY'  
+            apikey=''  
             strokeWidth={3}
           />
          }
         {markerPosition && <Marker  coordinate={markerPosition}>
                             <Image source={workerLogo} style={{ width: 50, height: 70 }}/>
                            </Marker>
-
         }
         </MapView>
       ) : (<MapView style={styles.map} />
@@ -305,12 +290,9 @@ const HomeWorker = ({type}) => {
         }}
       />
       <Text>{state.token}</Text>
-
-
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
