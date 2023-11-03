@@ -133,7 +133,7 @@ export default function WorkerLoginScreen({ navigation, tipo = 1 }) {
     return (
 
         <View style={styles.container}>
-        {loading && <ActivityIndicator size="large" />}
+        {/* {loading && <ActivityIndicator size="large" />} */}
 
             <View style={styles.logoContainer}>
                 <Avatar.Image style={{backgroundColor:'#F5AF19'}} size={190} source={require('../../../assets/LogoSuperChambitas.png')} />

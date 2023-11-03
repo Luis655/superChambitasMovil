@@ -14,6 +14,7 @@ import {
   Montserrat_700Bold,
 } from "@expo-google-fonts/montserrat";
 import * as SplashScreen from "expo-splash-screen";
+import { HomeUser } from "./src/ui/screens/HomeUser";
 SplashScreen.preventAutoHideAsync();
 const theme = {
   // Configuración del tema, si es necesario
@@ -73,6 +74,13 @@ export default function App() {
           }}
           name="HomeWorker"
           component={HomeWorker}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="HomeUser"
+          component={HomeUser}
         />
       </Stack.Navigator>
     </NavigationContainer>

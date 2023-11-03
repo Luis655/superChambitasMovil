@@ -1,12 +1,14 @@
 import React from "react";
 import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { typography } from "../../app/theme/typography";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { observer } from 'mobx-react';
+import { StatusBar } from "expo-status-bar";
 
 const OnBoardingScreen = ({ navigation }) => {
   return (
+
     <View style={styles.container}>
+      <StatusBar hidden={true}/>
       <Image
         source={{
           uri: "https://irp.cdn-website.com/8ac33f62/DESKTOP/jpg/080.jpg",
@@ -47,8 +49,8 @@ const styles = StyleSheet.create({
   image: {
     shadowColor:'black',
     width: "100%",
-    height: "50%",
-    resizeMode: "contain",
+    height: "70%",
+    resizeMode: "cover",
   },
   title: {
     //...typography.heading,
