@@ -9,10 +9,6 @@ async function useAxios (url2, method, body) {
   // const [error, setError] = useState(null);
   // const [loading, setLoading] = useState(true);
 
-      let formdata = new FormData();
-      formdata.append("email", "ccauich@blazar.com.mx");
-      formdata.append("password", "123456");
-
       const response = await axios({
         url: url,
         method: method,

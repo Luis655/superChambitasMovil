@@ -6,7 +6,7 @@ import FloatingSection, { jobData2 } from '../components/sectionModalMap';
 import * as Location from 'expo-location';
 import { PermissionsAndroid } from 'react-native';
 import MapViewDirections from 'react-native-maps-directions'
-import { Drawer } from 'react-native-paper';
+import { Drawer, FAB  } from 'react-native-paper';
 import { useAuth } from '../../auth/contextAuth';
 const workerLogo = require('../../../assets/logoconosuperchambitas-removebg-preview.png')
 const HomeWorker = ({type}) => {
@@ -16,6 +16,9 @@ const HomeWorker = ({type}) => {
   const [location, setLocation] = useState(null);
   const [isActive, setIsActive] = useState(false);
   const [markerPosition, setMarkerPosition] = useState(null);
+  const [imageLoaded1, setImageLoaded1] = useState(false);
+  const [imageLoaded2, setImageLoaded2] = useState(false);
+
   const markers = [
     {
       title: "Plaza Grande",
@@ -248,8 +251,12 @@ const HomeWorker = ({type}) => {
       {location ? (
         <MapView style={styles.map} initialRegion={{ ...location, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }} >
           <Marker key={location} coordinate={location} title='Tu ubicación' description='Aquí estas' >
-          <Image source={workerLogo} style={{ width: 50, height: 80 }}/>
-          </Marker>
+          <Image
+          source={workerLogo}
+          style={{ width: 60, height: 60, marginTop: imageLoaded1 ? 9 : 0 }}
+          onLoad={() => setImageLoaded1(true)}
+        />          
+        </Marker>
           {state.type == '2' && jobData2.map((marker, index) => (
             <Marker
               key={index}
@@ -269,15 +276,26 @@ const HomeWorker = ({type}) => {
           />
          }
         {markerPosition && <Marker  coordinate={markerPosition}>
-                            <Image source={workerLogo} style={{ width: 50, height: 70 }}/>
-                           </Marker>
+        <Image
+          source={workerLogo}
+          style={{ width: 60, height: 60, marginTop: imageLoaded2 ? 9 : 0 }}
+          onLoad={() => setImageLoaded2(true)}
+        />                              
+        </Marker>
         }
         </MapView>
       ) : (<MapView style={styles.map} />
       )}
-      <TouchableOpacity style={styles.floatingButton} onPress={toggleFloatingSection}>
+
+<FAB
+    icon="plus"
+    style={styles.fab}
+    onPress={toggleFloatingSection}
+    
+  />
+      {/*<TouchableOpacity style={styles.floatingButton} onPress={toggleFloatingSection}>
         <Text style={styles.floatingButtonText}>{ state.type == '1' ? 'Buscar chamba' : 'Ver más'}</Text>
-      </TouchableOpacity>
+      </TouchableOpacity>*/}
       <FloatingSection
         visible={isFloatingSectionVisible}
         onClose={toggleFloatingSection}
@@ -289,13 +307,21 @@ const HomeWorker = ({type}) => {
           iniciarRuta(lat, lng)
         }}
       />
-      <Text>{state.token}</Text>
     </View>
   );
 };
 const styles = StyleSheet.create({
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    //right: 'auto',
+    alignSelf: 'center',
+    bottom: 20,
+    backgroundColor: '#F5AF19'
+  },
   container: {
     flex: 1,
+    height:'100%'
 
   },
   floatingButton: {

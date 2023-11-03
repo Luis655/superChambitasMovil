@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import ModalChat from './ModalChat';
-const Card = ({index, job, aceptarTrabajo }) => {
+const Card = ({index, job, aceptarTrabajo, onClose }) => {
 
 //console.log(job.latlng.longitude)
   const aceptado = (trabajo) => {
     Alert.alert(`Aceptar el trabajo ${trabajo}`, '¿Aceptar?', [
-      { text: 'Aceptar', onPress: () => {aceptarTrabajo(job.latlng.latitude, job.latlng.longitude)} },
+      { text: 'Aceptar', onPress: () => {aceptarTrabajo(job.latlng.latitude, job.latlng.longitude), onClose()} },
       { text: 'Cancelar', onPress: () => console.log('Cancelado'), style: 'cancel' },
     ]);
   };
