@@ -51,7 +51,7 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
 
             {
               jobData.map((job, index) => (
-                <Card index={index} job={job} aceptarTrabajo={(lat, lng) => { aceptarTrabajo(lat, lng) }} key={index} />
+                <Card index={index} job={job} aceptarTrabajo={(lat, lng) => { aceptarTrabajo(lat, lng) }} onClose={onClose} key={index} />
               ))
             }
           </ScrollView>
