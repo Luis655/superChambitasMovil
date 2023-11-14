@@ -4,7 +4,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import OnBoardingScreen from "./src/ui/screens/onBoardingScreen";
 import WorkerRegisterScreen from "./src/ui/screens/WorkerRegisterScreen";
+import UserRegisterScreen from "./src/ui/screens/UserRegisterScreen";
+
 import WorkerLoginScreen from "./src/ui/screens/WorkerLoginScreen";
+import CodeScreen from "./src/ui/screens/CodeScreen";
+
 import HomeWorker from "./src/ui/screens/HomeWorker";
 import { Provider as PaperProvider } from 'react-native-paper';
 import { AuthProvider } from './src/auth/contextAuth';
@@ -67,6 +71,20 @@ export default function App() {
         }}
           name="WorkerRegister"
           component={WorkerRegisterScreen}
+        />
+        <Stack.Screen
+         options={{
+          headerShown: false,
+        }}
+          name="UserRegister"
+          component={UserRegisterScreen}
+        />
+        <Stack.Screen
+         options={{
+          headerShown: false,
+        }}
+          name="CodeScreen"
+          component={CodeScreen}
         />
         <Stack.Screen
           options={{

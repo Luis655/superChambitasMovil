@@ -132,7 +132,7 @@ export default function WorkerRegister() {
                   setValue={setValue}
                   setItems={setItems}
                   defaultValue={'Mexico'}
-                  placeholder="Lada"
+                  placeholder="+"
                   containerStyle={{ height: 'auto', marginBottom: '5%', flex: 2 }}
                   style={{ backgroundColor: '#fafafa', borderWidth: .5, borderColor: '#ccc', borderRadius: .5, flex: 1 }}
                   itemStyle={{ justifyContent: 'flex-start' }}

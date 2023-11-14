@@ -1,13 +1,18 @@
 
 import React, { useState, useEffect } from 'react';
-import { View, Button, Alert, StyleSheet, FlatList, Text, Animated, TouchableOpacity, Image } from 'react-native';
+import { View, Alert, StyleSheet, FlatList, Text, Animated, TouchableOpacity, Image, PanResponder } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import FloatingSection, { jobData2 } from '../components/sectionModalMap';
 import MapViewDirections from 'react-native-maps-directions'
-import { Drawer, FAB  } from 'react-native-paper';
+import { Drawer, FAB, Button  } from 'react-native-paper';
 import { useAuth } from '../../auth/contextAuth';
 import { useLocation } from '../../customHooks/useLocation';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 const workerLogo = require('../../../assets/logoconosuperchambitas-removebg-preview.png')
+
+const menuWidth = 250;
+const hiddenPosition = -menuWidth - 50;
 const HomeWorker = ({type}) => {
 
   const { state, dispatch } = useAuth();
@@ -17,11 +22,11 @@ const HomeWorker = ({type}) => {
   const [markerPosition, setMarkerPosition] = useState(null);
   const [imageLoaded1, setImageLoaded1] = useState(false);
   const [imageLoaded2, setImageLoaded2] = useState(false);
-  const {location} = useLocation()
+  const { location, status, errorMsg, requestLocationPermission } = useLocation();
   
-  console.log(state.user)
-  console.log(state.token)
-  console.log(state.type)
+  // console.log(state.user)
+  // console.log(state.token)
+  // console.log(state.type)
 
 
   const iniciarRuta = (lat, lng) => {
@@ -53,8 +58,70 @@ const HomeWorker = ({type}) => {
     ]);
   };
   
+
+
+
+  //MENU 
+
+  const [pan] = useState(new Animated.ValueXY({ x: hiddenPosition, y: 0 }));
+  const [isOpen, setIsOpen] = useState(false);
+
+  const panResponder = PanResponder.create({
+    onMoveShouldSetPanResponder: () => true,
+    onPanResponderMove: (_, gestureState) => {
+      if ((gestureState.dx > 0 && pan.x._value.x >= hiddenPosition) || (gestureState.dx < 0 && pan.x._value.x <= 0)) {
+        pan.setValue({ x: gestureState.dx, y: 0 });
+      }
+    },
+    onPanResponderRelease: (_, gestureState) => {
+      if (gestureState.dx > 50) {
+        openDrawer();
+      } else if (gestureState.dx < -50) {
+        closeDrawer();
+      } else {
+        resetPosition();
+      }
+    },
+  });
+
+  const openclosedrawer = () =>{
+    if (isOpen) {
+      closeDrawer();
+    } else {
+      openDrawer();
+    }
+  }
+
+  const openDrawer = () => {
+    Animated.timing(pan.x, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+    setIsOpen(true);
+  };
+
+  const closeDrawer = () => {
+    Animated.timing(pan.x, {
+      toValue: hiddenPosition,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+    setIsOpen(false);
+  };
+
+  const resetPosition = () => {
+    Animated.timing(pan.x, {
+      toValue: isOpen ? 0 : hiddenPosition,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  //END MENU
   return (
     <View style={styles.container}>
+
       {location ? (
         <MapView style={styles.map} initialRegion={{ ...location, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }} >
           <Marker key={location} coordinate={location} title='Tu ubicación' description='Aquí estas' >
@@ -78,7 +145,7 @@ const HomeWorker = ({type}) => {
          {markerPosition && <MapViewDirections
             origin={location}
             destination={markerPosition}
-            apikey=''  
+            apikey='AIzaSyCqPrRW_GUsZ2D00uTEXsGGPkULbXiIsTY'  
             strokeWidth={3}
           />
          }
@@ -91,7 +158,13 @@ const HomeWorker = ({type}) => {
         </Marker>
         }
         </MapView>
-      ) : (<MapView style={styles.map} />
+      ) : (
+        <>
+      <MapView style={styles.map} />
+      <Button mode="contained" onPress={() => requestLocationPermission}>
+      volver a intentar
+    </Button>
+    </>
       )}
 
 <FAB
@@ -100,6 +173,48 @@ const HomeWorker = ({type}) => {
     onPress={toggleFloatingSection}
     
   />
+
+            <TouchableOpacity style={styles.floatingButton} onPress={openclosedrawer}>
+        <Icon name="bars" size={25} color="#fff" />
+      </TouchableOpacity>
+      <Animated.View
+        style={[styles.menu, { transform: [{ translateX: pan.x }] }]}
+        {...panResponder.panHandlers}
+      >
+        <View style={styles.userContainer}>
+          <Icon name="user-circle" size={60} style={styles.userIcon} />
+          <Text style={styles.username}>Nombre de Usuario</Text>
+        </View>
+        <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
+          <Icon name="briefcase" size={20} style={styles.icon} />
+          <Text style={styles.menuItemText}>Mis Trabajos</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
+          <Icon name="cogs" size={20} style={styles.icon} />
+          <Text style={styles.menuItemText}>Mis Servicios</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
+          <Icon name="search" size={20} style={styles.icon} />
+          <Text style={styles.menuItemText}>Encuentra Empleo</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
+          <Icon name="cog" size={20} style={styles.icon} />
+          <Text style={styles.menuItemText}>Configuraciones</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
+          <Icon name="question" size={20} style={styles.icon} />
+          <Text style={styles.menuItemText}>Ayuda</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
+          <Icon name="life-ring" size={20} style={styles.icon} />
+          <Text style={styles.menuItemText}>Soporte</Text>
+        </TouchableOpacity>
+        <View style={styles.workerModeButtonContainer}>
+          <TouchableOpacity style={styles.workerModeButton} onPress={closeDrawer}>
+            <Text style={styles.workerModeButtonText}>Modo Trabajador</Text>
+          </TouchableOpacity>
+        </View>
+      </Animated.View>
       {/*<TouchableOpacity style={styles.floatingButton} onPress={toggleFloatingSection}>
         <Text style={styles.floatingButtonText}>{ state.type == '1' ? 'Buscar chamba' : 'Ver más'}</Text>
       </TouchableOpacity>*/}
@@ -133,12 +248,15 @@ const styles = StyleSheet.create({
   },
   floatingButton: {
     position: 'absolute',
-    bottom: 20,
+    bottom: -10,
     backgroundColor: 'blue',
     padding: 15,
     borderRadius: 30,
     marginLeft: 50,
-    width: '70%'
+    width: '70%',
+    right: 200,
+
+
   },
   floatingButtonText: {
     color: '#fff',
@@ -159,6 +277,85 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     overflow: 'hidden',
+  },
+
+  container2: {
+    flex: 1,
+    position: 'absolute',
+    //backgroundColor: 'red',
+   
+
+  },
+  menu: {
+    left: 0,
+    position:'absolute',
+    top: 0,
+    bottom: 0,
+    width: 302,
+    backgroundColor: '#ffffff',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    paddingVertical: 20,
+  },
+  userContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  userIcon: {
+    color: '#3498db',
+  },
+  username: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
+  menuItem: {
+    height: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  icon: {
+    marginRight: 15,
+    color: '#3498db',
+  },
+  menuItemText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  workerModeButtonContainer: {
+    marginTop: 'auto',
+    paddingHorizontal: 20,
+  },
+  workerModeButton: {
+    backgroundColor: '#4CAF50',
+    borderRadius: 5,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  workerModeButtonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+  },
+  floatingButton: {
+    position: 'absolute',
+    backgroundColor: '#3498db',
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    right: 20,
+    bottom: 20,
+    elevation: 5,
   },
 });
 

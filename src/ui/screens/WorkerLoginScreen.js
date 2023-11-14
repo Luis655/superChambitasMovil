@@ -19,7 +19,9 @@ const consultadb = (() => {
     //console.log('ADSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS ')
 });
 
-export default function WorkerLoginScreen({ navigation, tipo = 1 }) {
+export default function WorkerLoginScreen({ navigation, route }) {
+    const { parametro } = route.params;
+
     const [credenciales, setCredenciales] = useState({ "email": "", "password": "" })
     const [datos, setDatos] = useState();
     const [error, setError] = useState();
@@ -75,10 +77,10 @@ export default function WorkerLoginScreen({ navigation, tipo = 1 }) {
             const data = await useAxios('auth/login', 'post', { "email": values.username, "password": values.password });
             console.log("Datos de la api " + JSON.stringify(data.data.data));
             if (data.data.status === 'success' && data.data.data) {
-                //setDatos(data)
+                setDatos(data.data.data)
                 dispatch({ type: 'SET_USER', payload: values.username });
                 dispatch({ type: 'SET_TOKEN', payload: datos });
-                if (tipo ==1) {
+                if (parametro ==1) {
                     dispatch({ type: 'SET_TYPE', payload: '1' }); //tipo uno(1) es el trabajador, el que usara la app para trabajar
                 } else {
                     dispatch({ type: 'SET_TYPE', payload: '2' });//tipo dos(2) es usuario normal, el cliente que usara la app para contratar empleados
@@ -87,7 +89,7 @@ export default function WorkerLoginScreen({ navigation, tipo = 1 }) {
             }
         } catch (error) {
             setDatos("")
-            console.error(error.message);
+            console.error(error);
             Alert.alert(
                 'Error al iniciar sesion',
                 'Error',
@@ -107,7 +109,7 @@ export default function WorkerLoginScreen({ navigation, tipo = 1 }) {
             if(datos === 'success'){
            console.log("finalizo la consulta")
         }else{
-            console.log("Error " + datos)
+            console.log("Error " +datos)
         }
         }
         //console.log("Datos de la api: " + JSON.stringify(data))
@@ -222,7 +224,7 @@ export default function WorkerLoginScreen({ navigation, tipo = 1 }) {
                             {/*<TouchableOpacity style={styles.registerButton} onPress={() => navigation.navigate('WorkerRegister')}>
                             <Text style={styles.orButtonText}>Registrarse</Text>
                     </TouchableOpacity>*/}
-                            <Button buttonColor="#F5AF19" mode="contained" onPress={() => navigation.navigate('WorkerRegister')}>
+                            <Button buttonColor="#F5AF19" mode="contained" onPress={() => parametro == "1" ? navigation.navigate('WorkerRegister') : navigation.navigate('UserRegister')}>
                                 Registrarse
                             </Button>
                         </View>

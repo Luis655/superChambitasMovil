@@ -1,14 +1,12 @@
 import React from "react";
 import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { typography } from "../../app/theme/typography";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { observer } from 'mobx-react';
-import { StatusBar } from "expo-status-bar";
 
 const OnBoardingScreen = ({ navigation }) => {
   return (
-
     <View style={styles.container}>
-      <StatusBar hidden={true}/>
       <Image
         source={{
           uri: "https://irp.cdn-website.com/8ac33f62/DESKTOP/jpg/080.jpg",
@@ -19,7 +17,7 @@ const OnBoardingScreen = ({ navigation }) => {
       <Text style={styles.subtitle}>"Tu chamba, tu elección, tu comodidad".</Text>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate('WorkerLoginScreen', {parametro: '1'})}
+        onPress={() => navigation.navigate('WorkerLoginScreen', {parametro: '2'})}
         >
         <Text style={styles.buttonText}>USUARIO</Text>
         <FontAwesome name="long-arrow-right" size={18} color="white" />
@@ -43,14 +41,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#ffffff",
-    borderRadius:22
 
   },
   image: {
     shadowColor:'black',
     width: "100%",
-    height: "70%",
-    resizeMode: "cover",
+    height: "50%",
+    resizeMode: "contain",
   },
   title: {
     //...typography.heading,
