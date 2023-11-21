@@ -9,6 +9,7 @@ import useAxios from '../../customHooks/hookAxios';
 import { loadAsync } from 'expo-font';
 import axios from 'axios';
 import { Button, TextInput, IconButton, Icon } from 'react-native-paper';
+import { SignalRContext } from '../../signal/signalRConext';
 const validationSchema = Yup.object().shape({
     username: Yup.string().required('El nombre de usuario es obligatorio'),
     password: Yup.string().required('La contraseña es obligatoria'),
@@ -38,6 +39,10 @@ export default function WorkerLoginScreen({ navigation, route }) {
         setData(data);
         console.log(datas);
     }
+
+    SignalRContext.useSignalREffect("Users",(message)=>{
+        console.log(message)
+    })
     //EJEMPLO DE COMO LLAMAR A LA API
     /*const fetchData = async () => {
         let formdata = new FormData();

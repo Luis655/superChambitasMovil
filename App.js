@@ -20,6 +20,8 @@ import {
 } from "@expo-google-fonts/montserrat";
 import * as SplashScreen from "expo-splash-screen";
 import { HomeUser } from "./src/ui/screens/HomeUser";
+import {} from "react-signalr"
+import { SignalRContext } from "./src/signal/signalRConext";
 SplashScreen.preventAutoHideAsync();
 
 
@@ -53,6 +55,7 @@ export default function App() {
   return (
     <AuthProvider>
     <PaperProvider theme={theme}>
+    <SignalRContext  url={" https://e48f-2806-10be-9-adbd-1c4f-2c8e-41de-6d6d.ngrok-free.app/notifications"}>
     <NavigationContainer onReady={onLayoutRootView}>
       <Stack.Navigator initialRouteName="onBoarding">
         <Stack.Screen
@@ -113,6 +116,7 @@ export default function App() {
         />
       </Stack.Navigator>
     </NavigationContainer>
+    </SignalRContext>
     </PaperProvider>
     </AuthProvider>
   );
