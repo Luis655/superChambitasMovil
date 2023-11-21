@@ -4,14 +4,19 @@ import * as Location from 'expo-location';
 export const useLocation = ()=>{
     const [location, setLocation] = useState(null);
     const [status, setStatus] = useState(Location.PermissionStatus.DENIED)
-    const [errorMsg, setErrorMsg] = useState(null);
+    const [errorMsg, setErrorMsg] = useState(1);
+    const [estadomsg, setEstadomsg] = useState(false);
+
 
     async function requestLocationPermission() {
-      console.log("hola")
+    console.log("hola")
+
         try {
+          setErrorMsg(1);
+          setEstadomsg(true);
+
           let { status } = await Location.requestForegroundPermissionsAsync();
           if (status !== Location.PermissionStatus.GRANTED) {
-            setErrorMsg('Permiso para acceder a la ubicación denegado');
             console.error('Permiso para acceder a la ubicación denegado');
             return;
           }
@@ -20,9 +25,12 @@ export const useLocation = ()=>{
           const { latitude, longitude } = location.coords;
           setLocation({ latitude, longitude });
         } catch (err) {
-          setErrorMsg('No se pudo obtener la ubicación. Inténtalo de nuevo.');
+          console.error(err)
+          setErrorMsg(2);
+          setEstadomsg(true);
           console.error('No se pudo obtener la ubicación. Inténtalo de nuevo.');
-
+        }finally{
+          setEstadomsg(false);
         }
       }
 
@@ -30,5 +38,5 @@ export const useLocation = ()=>{
         requestLocationPermission()
     },[])
 
-    return {location, status, errorMsg, requestLocationPermission}
+    return {location, status, errorMsg, estadomsg, requestLocationPermission}
 }
