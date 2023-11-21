@@ -72,7 +72,7 @@ export default function WorkerLoginScreen({ navigation, route }) {
     const handleLogin = async (values) => {
         //getLogin();
         setLoading(true)
-
+ 
         try {
             const data = await useAxios('auth/login', 'post', { "email": values.username, "password": values.password });
             console.log("Datos de la api " + JSON.stringify(data.data.data));

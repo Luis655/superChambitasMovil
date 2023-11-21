@@ -1,6 +1,8 @@
-import React, { createContext, useReducer, useContext } from 'react';
+import React, { createContext, useReducer, useContext, useState } from 'react';
+import { useColorScheme } from 'react-native';
 
 const AuthContext = createContext();
+const DarkModeContext = createContext();
 
 const authReducer = (state, action) => {
   switch (action.type) {
@@ -26,10 +28,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   const [state, dispatch] = useReducer(authReducer, initialState);
+  const [colorMode, setDarkColorMode] = useState(useColorScheme() === 'light');
+
 
   return (
     <AuthContext.Provider value={{ state, dispatch }}>
-      {children}
+            <DarkModeContext.Provider value={{colorMode, setDarkColorMode}}>
+              {children}
+            </DarkModeContext.Provider>
     </AuthContext.Provider>
   );
 };
@@ -40,4 +46,9 @@ export const useAuth = () => {
     throw new Error('useAuth debe ser usado dentro de un AuthProvider');
   }
   return context;
+};
+
+export const useDarkMode = () => {
+  const isDarkMode = useContext(DarkModeContext);
+  return isDarkMode;
 };

@@ -4,16 +4,18 @@ import { View, Alert, StyleSheet, FlatList, Text, Animated, TouchableOpacity, Im
 import MapView, { Marker } from 'react-native-maps';
 import FloatingSection, { jobData2 } from '../components/sectionModalMap';
 import MapViewDirections from 'react-native-maps-directions'
-import { Drawer, FAB, Button  } from 'react-native-paper';
+import { Drawer, FAB, Button, ActivityIndicator, MD2Colors, Avatar  } from 'react-native-paper';
 import { useAuth } from '../../auth/contextAuth';
 import { useLocation } from '../../customHooks/useLocation';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useDarkMode } from '../../auth/contextAuth';
 
 const workerLogo = require('../../../assets/logoconosuperchambitas-removebg-preview.png')
 
 const menuWidth = 250;
 const hiddenPosition = -menuWidth - 50;
-const HomeWorker = ({type}) => {
+const HomeWorker = ({navigation, type}) => {
+  const { colorMode, setDarkColorMode } = useDarkMode();
 
   const { state, dispatch } = useAuth();
   const [active, setActive] = useState('');
@@ -22,13 +24,13 @@ const HomeWorker = ({type}) => {
   const [markerPosition, setMarkerPosition] = useState(null);
   const [imageLoaded1, setImageLoaded1] = useState(false);
   const [imageLoaded2, setImageLoaded2] = useState(false);
-  const { location, status, errorMsg, requestLocationPermission } = useLocation();
-  
+  const {location, status, errorMsg, estadomsg, requestLocationPermission} =useLocation();
+
+  const locationReload = () =>{
+  }
   // console.log(state.user)
   // console.log(state.token)
   // console.log(state.type)
-
-
   const iniciarRuta = (lat, lng) => {
     // console.log(lat, lng)
     // Lógica para obtener la posición (latitud y longitud) del marcador
@@ -40,7 +42,22 @@ const HomeWorker = ({type}) => {
 
     setMarkerPosition(newMarkerPosition);
   };
+  const [timeLeft, setTimeLeft] = useState(180);
+
+  const iniciarContador = () => {
+    setIsFloatingSectionVisible(!isFloatingSectionVisible);
+
+      const interval = setInterval(() => {
+        setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
+      }, 1000);
+      if(timeLeft < 1){
+      return () => clearInterval(interval);
+      }
   
+
+  }
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
   // const [isChatModalVisible, setIsChatModalVisible] = useState(false);
   // const toggleChatModal = () => {
   //   setIsChatModalVisible(!isChatModalVisible);
@@ -67,9 +84,16 @@ const HomeWorker = ({type}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const panResponder = PanResponder.create({
-    onMoveShouldSetPanResponder: () => true,
+    onStartShouldSetResponderCapture: () => false,
+    onStartShouldSetPanResponderCapture: () => false,
+    onStartShouldSetPanResponder: () => true,
+
+        
     onPanResponderMove: (_, gestureState) => {
-      if ((gestureState.dx > 0 && pan.x._value.x >= hiddenPosition) || (gestureState.dx < 0 && pan.x._value.x <= 0)) {
+      if (
+        (gestureState.dx > 0 && pan.x._value.x >= hiddenPosition) ||
+        (gestureState.dx < 0 && pan.x._value.x <= 0)
+      ) {
         pan.setValue({ x: gestureState.dx, y: 0 });
       }
     },
@@ -82,7 +106,15 @@ const HomeWorker = ({type}) => {
         resetPosition();
       }
     },
+    onMoveShouldSetPanResponder: (_, gestureState) => {
+      // Permitir el gesto solo si no estás en los bordes del cajón
+      return (
+        (gestureState.dx > 20 && pan.x._value.x >= 20) ||
+        (gestureState.dx < 20 && pan.x._value.x <= 20)
+      );
+    },
   });
+  
 
   const openclosedrawer = () =>{
     if (isOpen) {
@@ -117,13 +149,603 @@ const HomeWorker = ({type}) => {
       useNativeDriver: false,
     }).start();
   };
+  
+  const styles = StyleSheet.create({
+    activityIndicator:{
+      position: 'absolute',
+      margin: 16,
+      //right: 'auto',
+      alignSelf: 'center',
+      bottom: 400,
+      backgroundColor: 'transparent',
+  
+    },
+  
+    fab: {
+      position: 'absolute',
+      margin: 16,
+      //right: 'auto',
+      alignSelf: 'center',
+      bottom: 20,
+      backgroundColor: colorMode ? '#8ec3b9' :'#F5AF19'
+    },
+    container: {
+      flex: 1,
+      height:'100%',
+  
+    },
+    floatingButton: {
+      position: 'absolute',
+      bottom: -10,
+      backgroundColor: 'blue',
+      padding: 15,
+      borderRadius: 30,
+      marginLeft: 50,
+      width: '70%',
+  
+  
+    },
+    floatingButtonText: {
+      color: '#fff',
+      alignSelf: 'center',
+      fontSize: 20,
+    },
+    map: {
+      flex: 1,
+      height: "100%"
+    },
+    overlay: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: 'white',
+      padding: 10,
+      borderTopLeftRadius: 10,
+      borderTopRightRadius: 10,
+      overflow: 'hidden',
+    },
+  
+    container2: {
+      flex: 1,
+      position: 'absolute',
+      //backgroundColor: 'red',
+     
+  
+    },
+    menu: {
+      left: 0,
+      position:'absolute',
+      top: 25,
+      bottom: 0,
+      width: 302,
+      backgroundColor: colorMode ? '#1d2c4d' : '#ffffff',
+      elevation: 5,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      paddingVertical: 20,
+    },
+    userContainer: {
+      alignItems: 'center',
+      marginBottom: 20,
+    },
+    userIcon: {
+      color: '#3498db',
+    },
+    username: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginTop: 10,
+      color: colorMode ? '#fff' : '#000'
+    },
+    menuItem: {
+      height: 50,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingLeft: 20,
+      borderBottomWidth: 1,
+      borderBottomColor: colorMode ? '#000' : '#ccc',
+      color: colorMode ? '#fff' : '#000'
+    },
+    icon: {
+      marginRight: 15,
+      color: '#3498db',
+    },
+    menuItemText: {
+      fontSize: 16,
+      color: colorMode ? '#fff' : '#333',
+    },
+    workerModeButtonContainer: {
+      marginTop: 'auto',
+      paddingHorizontal: 20,
+    },
+    workerModeButton: {
+      backgroundColor: '#4CAF50',
+      borderRadius: 5,
+      paddingVertical: 10,
+      alignItems: 'center',
+    },
+    workerModeButtonText: {
+      color: '#ffffff',
+      fontWeight: 'bold',
+    },
+    floatingButton: {
+      position: 'absolute',
+      backgroundColor: colorMode ? '#1d2c4d' : '#3498db',
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+      alignItems: 'center',
+      justifyContent: 'center',
+      right: isOpen ? 10 : 320, //o 10
+      bottom: 710,
+      elevation: 5,
+    },
+  });
+  const customMapStyRetro = [
+    {
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#ebe3cd"
+        }
+      ]
+    },
+    {
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#523735"
+        }
+      ]
+    },
+    {
+      "elementType": "labels.text.stroke",
+      "stylers": [
+        {
+          "color": "#f5f1e6"
+        }
+      ]
+    },
+    {
+      "featureType": "administrative",
+      "elementType": "geometry.stroke",
+      "stylers": [
+        {
+          "color": "#c9b2a6"
+        }
+      ]
+    },
+    {
+      "featureType": "administrative.land_parcel",
+      "elementType": "geometry.stroke",
+      "stylers": [
+        {
+          "color": "#dcd2be"
+        }
+      ]
+    },
+    {
+      "featureType": "administrative.land_parcel",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#ae9e90"
+        }
+      ]
+    },
+    {
+      "featureType": "landscape.natural",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#dfd2ae"
+        }
+      ]
+    },
+    {
+      "featureType": "poi",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#dfd2ae"
+        }
+      ]
+    },
+    {
+      "featureType": "poi",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#93817c"
+        }
+      ]
+    },
+    {
+      "featureType": "poi.park",
+      "elementType": "geometry.fill",
+      "stylers": [
+        {
+          "color": "#a5b076"
+        }
+      ]
+    },
+    {
+      "featureType": "poi.park",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#447530"
+        }
+      ]
+    },
+    {
+      "featureType": "road",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#f5f1e6"
+        }
+      ]
+    },
+    {
+      "featureType": "road.arterial",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#fdfcf8"
+        }
+      ]
+    },
+    {
+      "featureType": "road.highway",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#f8c967"
+        }
+      ]
+    },
+    {
+      "featureType": "road.highway",
+      "elementType": "geometry.stroke",
+      "stylers": [
+        {
+          "color": "#e9bc62"
+        }
+      ]
+    },
+    {
+      "featureType": "road.highway.controlled_access",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#e98d58"
+        }
+      ]
+    },
+    {
+      "featureType": "road.highway.controlled_access",
+      "elementType": "geometry.stroke",
+      "stylers": [
+        {
+          "color": "#db8555"
+        }
+      ]
+    },
+    {
+      "featureType": "road.local",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#806b63"
+        }
+      ]
+    },
+    {
+      "featureType": "transit.line",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#dfd2ae"
+        }
+      ]
+    },
+    {
+      "featureType": "transit.line",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#8f7d77"
+        }
+      ]
+    },
+    {
+      "featureType": "transit.line",
+      "elementType": "labels.text.stroke",
+      "stylers": [
+        {
+          "color": "#ebe3cd"
+        }
+      ]
+    },
+    {
+      "featureType": "transit.station",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#dfd2ae"
+        }
+      ]
+    },
+    {
+      "featureType": "water",
+      "elementType": "geometry.fill",
+      "stylers": [
+        {
+          "color": "#b9d3c2"
+        }
+      ]
+    },
+    {
+      "featureType": "water",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#92998d"
+        }
+      ]
+    }
+  ]
+  const customMapStyleAuberige =[
+    {
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#1d2c4d"
+        }
+      ]
+    },
+    {
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#8ec3b9"
+        }
+      ]
+    },
+    {
+      "elementType": "labels.text.stroke",
+      "stylers": [
+        {
+          "color": "#1a3646"
+        }
+      ]
+    },
+    {
+      "featureType": "administrative.country",
+      "elementType": "geometry.stroke",
+      "stylers": [
+        {
+          "color": "#4b6878"
+        }
+      ]
+    },
+    {
+      "featureType": "administrative.land_parcel",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#64779e"
+        }
+      ]
+    },
+    {
+      "featureType": "administrative.province",
+      "elementType": "geometry.stroke",
+      "stylers": [
+        {
+          "color": "#4b6878"
+        }
+      ]
+    },
+    {
+      "featureType": "landscape.man_made",
+      "elementType": "geometry.stroke",
+      "stylers": [
+        {
+          "color": "#334e87"
+        }
+      ]
+    },
+    {
+      "featureType": "landscape.natural",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#023e58"
+        }
+      ]
+    },
+    {
+      "featureType": "poi",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#283d6a"
+        }
+      ]
+    },
+    {
+      "featureType": "poi",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#6f9ba5"
+        }
+      ]
+    },
+    {
+      "featureType": "poi",
+      "elementType": "labels.text.stroke",
+      "stylers": [
+        {
+          "color": "#1d2c4d"
+        }
+      ]
+    },
+    {
+      "featureType": "poi.park",
+      "elementType": "geometry.fill",
+      "stylers": [
+        {
+          "color": "#023e58"
+        }
+      ]
+    },
+    {
+      "featureType": "poi.park",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#3C7680"
+        }
+      ]
+    },
+    {
+      "featureType": "road",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#304a7d"
+        }
+      ]
+    },
+    {
+      "featureType": "road",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#98a5be"
+        }
+      ]
+    },
+    {
+      "featureType": "road",
+      "elementType": "labels.text.stroke",
+      "stylers": [
+        {
+          "color": "#1d2c4d"
+        }
+      ]
+    },
+    {
+      "featureType": "road.highway",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#2c6675"
+        }
+      ]
+    },
+    {
+      "featureType": "road.highway",
+      "elementType": "geometry.stroke",
+      "stylers": [
+        {
+          "color": "#255763"
+        }
+      ]
+    },
+    {
+      "featureType": "road.highway",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#b0d5ce"
+        }
+      ]
+    },
+    {
+      "featureType": "road.highway",
+      "elementType": "labels.text.stroke",
+      "stylers": [
+        {
+          "color": "#023e58"
+        }
+      ]
+    },
+    {
+      "featureType": "transit",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#98a5be"
+        }
+      ]
+    },
+    {
+      "featureType": "transit",
+      "elementType": "labels.text.stroke",
+      "stylers": [
+        {
+          "color": "#1d2c4d"
+        }
+      ]
+    },
+    {
+      "featureType": "transit.line",
+      "elementType": "geometry.fill",
+      "stylers": [
+        {
+          "color": "#283d6a"
+        }
+      ]
+    },
+    {
+      "featureType": "transit.station",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#3a4762"
+        }
+      ]
+    },
+    {
+      "featureType": "water",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#0e1626"
+        }
+      ]
+    },
+    {
+      "featureType": "water",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#4e6d70"
+        }
+      ]
+    }
+  ]
+  
+
+
 
   //END MENU
   return (
+    
     <View style={styles.container}>
 
       {location ? (
-        <MapView style={styles.map} initialRegion={{ ...location, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }} >
+        <MapView style={styles.map} initialRegion={{ ...location, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }} customMapStyle={colorMode ? customMapStyleAuberige : customMapStyRetro} >
           <Marker key={location} coordinate={location} title='Tu ubicación' description='Aquí estas' >
           <Image
           source={workerLogo}
@@ -161,29 +783,51 @@ const HomeWorker = ({type}) => {
       ) : (
         <>
       <MapView style={styles.map} />
-      <Button mode="contained" onPress={() => requestLocationPermission}>
-      volver a intentar
-    </Button>
     </>
       )}
 
-<FAB
+{
+  errorMsg == 1 ?
+  <FAB
     icon="plus"
     style={styles.fab}
     onPress={toggleFloatingSection}
     
   />
+  :
+  <FAB
+  icon="reload"
+  style={styles.fab}
+  onPress={() => { requestLocationPermission()}}
+  
+/>
+
+}
+<Text style={{fontSize:40}}>
+      {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+    </Text>
+{estadomsg &&
+<View style={styles.activityIndicator}>
+<ActivityIndicator animating={estadomsg} color={MD2Colors.red800} size={140} />
+</View>}
+
 
             <TouchableOpacity style={styles.floatingButton} onPress={openclosedrawer}>
-        <Icon name="bars" size={25} color="#fff" />
+        <Icon name={isOpen ? 'times' : 'bars'} size={25} color="#fff" />
       </TouchableOpacity>
       <Animated.View
         style={[styles.menu, { transform: [{ translateX: pan.x }] }]}
         {...panResponder.panHandlers}
       >
         <View style={styles.userContainer}>
-          <Icon name="user-circle" size={60} style={styles.userIcon} />
-          <Text style={styles.username}>Nombre de Usuario</Text>
+        <TouchableOpacity onPress={openclosedrawer}>
+
+          <Avatar.Image size={60} style={styles.userIcon} source={{uri: 'https://picsum.photos/700'}} />
+
+          {/*<Icon name="user-circle" size={60} style={styles.userIcon} />*/}
+          </TouchableOpacity>
+
+          <Text style={styles.username}>Luis Macias</Text>
         </View>
         <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
           <Icon name="briefcase" size={20} style={styles.icon} />
@@ -197,7 +841,7 @@ const HomeWorker = ({type}) => {
           <Icon name="search" size={20} style={styles.icon} />
           <Text style={styles.menuItemText}>Encuentra Empleo</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => {console.warn("seleccion"), navigation.navigate('Configuraciones')}}>
           <Icon name="cog" size={20} style={styles.icon} />
           <Text style={styles.menuItemText}>Configuraciones</Text>
         </TouchableOpacity>
@@ -228,136 +872,12 @@ const HomeWorker = ({type}) => {
         aceptarTrabajo={(lat, lng) => {
           iniciarRuta(lat, lng)
         }}
+        Contador={iniciarContador}
       />
     </View>
   );
 };
-const styles = StyleSheet.create({
-  fab: {
-    position: 'absolute',
-    margin: 16,
-    //right: 'auto',
-    alignSelf: 'center',
-    bottom: 20,
-    backgroundColor: '#F5AF19'
-  },
-  container: {
-    flex: 1,
-    height:'100%'
 
-  },
-  floatingButton: {
-    position: 'absolute',
-    bottom: -10,
-    backgroundColor: 'blue',
-    padding: 15,
-    borderRadius: 30,
-    marginLeft: 50,
-    width: '70%',
-    right: 200,
-
-
-  },
-  floatingButtonText: {
-    color: '#fff',
-    alignSelf: 'center',
-    fontSize: 20,
-  },
-  map: {
-    flex: 1,
-    height: "100%"
-  },
-  overlay: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'white',
-    padding: 10,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    overflow: 'hidden',
-  },
-
-  container2: {
-    flex: 1,
-    position: 'absolute',
-    //backgroundColor: 'red',
-   
-
-  },
-  menu: {
-    left: 0,
-    position:'absolute',
-    top: 0,
-    bottom: 0,
-    width: 302,
-    backgroundColor: '#ffffff',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    paddingVertical: 20,
-  },
-  userContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  userIcon: {
-    color: '#3498db',
-  },
-  username: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 10,
-  },
-  menuItem: {
-    height: 50,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  icon: {
-    marginRight: 15,
-    color: '#3498db',
-  },
-  menuItemText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  workerModeButtonContainer: {
-    marginTop: 'auto',
-    paddingHorizontal: 20,
-  },
-  workerModeButton: {
-    backgroundColor: '#4CAF50',
-    borderRadius: 5,
-    paddingVertical: 10,
-    alignItems: 'center',
-  },
-  workerModeButtonText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
-  },
-  floatingButton: {
-    position: 'absolute',
-    backgroundColor: '#3498db',
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-    right: 20,
-    bottom: 20,
-    elevation: 5,
-  },
-});
 
 export default HomeWorker;
 

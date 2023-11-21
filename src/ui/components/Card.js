@@ -1,8 +1,72 @@
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import ModalChat from './ModalChat';
-const Card = ({index, job, aceptarTrabajo, onClose }) => {
+import { useDarkMode } from '../../auth/contextAuth';
 
+const Card = ({index, job, aceptarTrabajo, onClose }) => {
+  const { colorMode, setDarkColorMode } = useDarkMode();
+  const styles = StyleSheet.create({
+    button: {
+      backgroundColor: '#ff9900',
+      height: 50,
+      borderRadius: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      flex: 1,
+      margin: 11
+    },
+    bottonsCard: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    card: {
+      borderWidth: 1,
+      borderColor: colorMode ? '#8ec3b9' : '#fff',
+      borderRadius: 10,
+      margin: 10,
+      backgroundColor: colorMode ? '#1a3646' : '#fff',
+      elevation: 3,
+    },
+    image: {
+      height: 200,
+      borderTopLeftRadius: 10,
+      borderTopRightRadius: 10,
+    },
+    cardContent: {
+      padding: 15,
+    },
+    name: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: 5,
+      color: colorMode ? '#fff': '#000'
+    },
+    jobType: {
+      fontSize: 16,
+      color: colorMode ? 'white' : 'green',
+      marginBottom: 10,
+      color: colorMode ? '#fff': '#000'
+
+    },
+    price: {
+      fontSize: 14,
+      marginBottom: 5,
+      color: colorMode ? '#fff': '#000'
+
+    },
+    address: {
+      fontSize: 14,
+      marginBottom: 5,
+      color: colorMode ? '#fff': '#000'
+
+    },
+    description: {
+      fontSize: 14,
+      color: colorMode ? '#fff': '#000'
+
+    },
+  });
+  
 //console.log(job.latlng.longitude)
   const aceptado = (trabajo) => {
     Alert.alert(`Aceptar el trabajo ${trabajo}`, '¿Aceptar?', [
@@ -52,57 +116,5 @@ const Card = ({index, job, aceptarTrabajo, onClose }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#ff9900',
-    height: 50,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    margin: 11
-  },
-  bottonsCard: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  card: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    margin: 10,
-    backgroundColor: '#fff',
-    elevation: 3,
-  },
-  image: {
-    height: 200,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-  },
-  cardContent: {
-    padding: 15,
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  jobType: {
-    fontSize: 16,
-    color: 'green',
-    marginBottom: 10,
-  },
-  price: {
-    fontSize: 14,
-    marginBottom: 5,
-  },
-  address: {
-    fontSize: 14,
-    marginBottom: 5,
-  },
-  description: {
-    fontSize: 14,
-  },
-});
 
 export default Card;

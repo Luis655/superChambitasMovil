@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, useColorScheme } from "react-native";
 import React, { useCallback } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -8,8 +8,9 @@ import UserRegisterScreen from "./src/ui/screens/UserRegisterScreen";
 
 import WorkerLoginScreen from "./src/ui/screens/WorkerLoginScreen";
 import CodeScreen from "./src/ui/screens/CodeScreen";
-
 import HomeWorker from "./src/ui/screens/HomeWorker";
+import Configuraciones from "./src/ui/screens/Configuraciones";
+
 import { Provider as PaperProvider } from 'react-native-paper';
 import { AuthProvider } from './src/auth/contextAuth';
 import {
@@ -20,17 +21,20 @@ import {
 import * as SplashScreen from "expo-splash-screen";
 import { HomeUser } from "./src/ui/screens/HomeUser";
 SplashScreen.preventAutoHideAsync();
-const theme = {
-  // Configuración del tema, si es necesario
-};
+
 
 export default function App() {
+  const isDarkMode = useColorScheme() === 'dark';
   const Stack = createStackNavigator();
   let [fontsLoaded] = useFonts({
     Montserrat_400Regular,
     Montserrat_700Bold,
   });
 
+  const theme = {
+    backgroundColor: isDarkMode ? '#000' : '#fff'
+    // Configuración del tema, si es necesario
+  };
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
       // This tells the splash screen to hide immediately! If we call this after
@@ -100,6 +104,13 @@ export default function App() {
           name="HomeUser"
           component={HomeUser}
         />
+        <Stack.Screen
+          options={{
+            headerShown: true,
+          }}
+          name="Configuraciones"
+          component={Configuraciones}
+        />
       </Stack.Navigator>
     </NavigationContainer>
     </PaperProvider>
@@ -110,7 +121,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor:"#ffffff",
     alignItems: "center",
     justifyContent: "center",
   },
