@@ -1,5 +1,5 @@
 
 import {createSignalRContext} from "react-signalr"
-export const SignalRContext= createSignalRContext({
+export const SignalRContext = createSignalRContext({
     
 })

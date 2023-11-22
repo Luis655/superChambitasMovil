@@ -1,19 +1,17 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useId } from 'react';
 import { StyleSheet, Text, View, Alert, ActivityIndicator } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useAuth } from '../../auth/contextAuth';
 import { Avatar } from 'react-native-paper';
 import useAxios from '../../customHooks/hookAxios';
-import { loadAsync } from 'expo-font';
-import axios from 'axios';
 import { Button, TextInput, IconButton, Icon } from 'react-native-paper';
 import { SignalRContext } from '../../signal/signalRConext';
 const validationSchema = Yup.object().shape({
     username: Yup.string().required('El nombre de usuario es obligatorio'),
     password: Yup.string().required('La contraseña es obligatoria'),
 });
+import {scheduleNotificationAsync} from 'expo-notifications';
 const consultadb = (() => {
     let formdata = new FormData();
 
@@ -33,16 +31,22 @@ export default function WorkerLoginScreen({ navigation, route }) {
 
     const passwordRef = useRef(null);
     const { state, dispatch } = useAuth();
-
+    // solo activar para recibir notificaciones 
+    // SignalRContext.useSignalREffect("Users",async (message)=>{
+    //     await scheduleNotificationAsync({
+    //         identifier:message, 
+    //         content:{
+    //             title:message
+    //         },
+    //         trigger:null
+    //     })
+    // })
     const getLoginsss = () => {
         const data = useAxios('auth/login', 'post', { "email": "ccauich@blazar.com.mx", "password": "123456" });
         setData(data);
         console.log(datas);
     }
 
-    SignalRContext.useSignalREffect("Users",(message)=>{
-        console.log(message)
-    })
     //EJEMPLO DE COMO LLAMAR A LA API
     /*const fetchData = async () => {
         let formdata = new FormData();

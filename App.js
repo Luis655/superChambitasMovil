@@ -11,8 +11,9 @@ import CodeScreen from "./src/ui/screens/CodeScreen";
 import HomeWorker from "./src/ui/screens/HomeWorker";
 import Configuraciones from "./src/ui/screens/Configuraciones";
 
-import { Provider as PaperProvider } from 'react-native-paper';
-import { AuthProvider } from './src/auth/contextAuth';
+import { Provider as PaperProvider } from "react-native-paper";
+import { AuthProvider } from "./src/auth/contextAuth";
+import { setNotificationHandler,getPermissionsAsync, requestPermissionsAsync } from "expo-notifications";
 import {
   useFonts,
   Montserrat_400Regular,
@@ -20,13 +21,18 @@ import {
 } from "@expo-google-fonts/montserrat";
 import * as SplashScreen from "expo-splash-screen";
 import { HomeUser } from "./src/ui/screens/HomeUser";
-import {} from "react-signalr"
 import { SignalRContext } from "./src/signal/signalRConext";
 SplashScreen.preventAutoHideAsync();
-
+setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 export default function App() {
-  const isDarkMode = useColorScheme() === 'dark';
+  const isDarkMode = useColorScheme() === "dark";
   const Stack = createStackNavigator();
   let [fontsLoaded] = useFonts({
     Montserrat_400Regular,
@@ -34,16 +40,22 @@ export default function App() {
   });
 
   const theme = {
-    backgroundColor: isDarkMode ? '#000' : '#fff'
+    backgroundColor: isDarkMode ? "#000" : "#fff",
     // Configuración del tema, si es necesario
   };
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
-      // This tells the splash screen to hide immediately! If we call this after
-      // `setAppIsReady`, then we may see a blank screen while the app is
-      // loading its initial state and rendering its first pixels. So instead,
-      // we hide the splash screen once we know the root view has already
-      // performed layout.
+      const { status: existingStatus } =
+        await getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        alert('Podras activar las notificaciones en configuración');
+      }
+  
       await SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
@@ -53,79 +65,83 @@ export default function App() {
   }
 
   return (
-    <AuthProvider>
-    <PaperProvider theme={theme}>
-    <SignalRContext  url={" https://e48f-2806-10be-9-adbd-1c4f-2c8e-41de-6d6d.ngrok-free.app/notifications"}>
-    <NavigationContainer onReady={onLayoutRootView}>
-      <Stack.Navigator initialRouteName="onBoarding">
-        <Stack.Screen
-          options={{
-            headerShown: false,
-          }}
-          name="onBoarding"
-          component={OnBoardingScreen}
-        />
-        <Stack.Screen
-          options={{
-            headerShown: false,
-          }}
-          name="WorkerLoginScreen"
-          component={WorkerLoginScreen}
-        />
-        <Stack.Screen
-         options={{
-          headerShown: false,
-        }}
-          name="WorkerRegister"
-          component={WorkerRegisterScreen}
-        />
-        <Stack.Screen
-         options={{
-          headerShown: false,
-        }}
-          name="UserRegister"
-          component={UserRegisterScreen}
-        />
-        <Stack.Screen
-         options={{
-          headerShown: false,
-        }}
-          name="CodeScreen"
-          component={CodeScreen}
-        />
-        <Stack.Screen
-          options={{
-            headerShown: false,
-          }}
-          name="HomeWorker"
-          component={HomeWorker}
-        />
-        <Stack.Screen
-          options={{
-            headerShown: false,
-          }}
-          name="HomeUser"
-          component={HomeUser}
-        />
-        <Stack.Screen
-          options={{
-            headerShown: true,
-          }}
-          name="Configuraciones"
-          component={Configuraciones}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-    </SignalRContext>
-    </PaperProvider>
-    </AuthProvider>
+    <SignalRContext.Provider
+      url={
+        "https://7c5f-2806-10be-9-adbd-d88e-be52-a4f4-f622.ngrok-free.app/notifications"
+      }
+    >
+      <AuthProvider>
+        <PaperProvider theme={theme}>
+          <NavigationContainer onReady={onLayoutRootView}>
+            <Stack.Navigator initialRouteName="onBoarding">
+              <Stack.Screen
+                options={{
+                  headerShown: false,
+                }}
+                name="onBoarding"
+                component={OnBoardingScreen}
+              />
+              <Stack.Screen
+                options={{
+                  headerShown: false,
+                }}
+                name="WorkerLoginScreen"
+                component={WorkerLoginScreen}
+              />
+              <Stack.Screen
+                options={{
+                  headerShown: false,
+                }}
+                name="WorkerRegister"
+                component={WorkerRegisterScreen}
+              />
+              <Stack.Screen
+                options={{
+                  headerShown: false,
+                }}
+                name="UserRegister"
+                component={UserRegisterScreen}
+              />
+              <Stack.Screen
+                options={{
+                  headerShown: false,
+                }}
+                name="CodeScreen"
+                component={CodeScreen}
+              />
+              <Stack.Screen
+                options={{
+                  headerShown: false,
+                }}
+                name="HomeWorker"
+                component={HomeWorker}
+              />
+              <Stack.Screen
+                options={{
+                  headerShown: false,
+                }}
+                name="HomeUser"
+                component={HomeUser}
+              />
+              <Stack.Screen
+                options={{
+                  headerShown: true,
+                }}
+                name="Configuraciones"
+                component={Configuraciones}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </PaperProvider>
+      </AuthProvider>
+    </SignalRContext.Provider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:"#ffffff",
+    backgroundColor: "#ffffff",
     alignItems: "center",
     justifyContent: "center",
   },
