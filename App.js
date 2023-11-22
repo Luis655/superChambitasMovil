@@ -67,7 +67,7 @@ export default function App() {
   return (
     <SignalRContext.Provider
       url={
-        "https://7c5f-2806-10be-9-adbd-d88e-be52-a4f4-f622.ngrok-free.app/notifications"
+        "https://f68e-2806-10be-9-adbd-d88e-be52-a4f4-f622.ngrok-free.app/notifications"
       }
     >
       <AuthProvider>

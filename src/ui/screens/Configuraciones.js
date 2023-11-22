@@ -1,15 +1,11 @@
 import React, { useContext, useState } from 'react';
 import { View, Text, Switch, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { useDarkMode } from '../../auth/contextAuth';
+import { AuthContext, useDarkMode } from '../../auth/contextAuth';
 import { FontAwesome } from '@expo/vector-icons';
 
-const Configuraciones = () => {
-  const { colorMode, setDarkColorMode } = useDarkMode();
-  const [phoneNumber, setPhoneNumber] = useState('123-456-7890');
 
-  const toggleSwitch = () => setDarkColorMode((previousState) => !previousState);
-
-  const styles = StyleSheet.create({
+export const commonStyles = (colorMode) =>
+  StyleSheet.create({
     container: {
       flex: 1,
       padding: 24,
@@ -37,7 +33,7 @@ const Configuraciones = () => {
       fontSize: 18,
       color: colorMode ? '#ffffff' : '#000000',
     },
-    phoneIcon: {
+    icon: {
       fontSize: 31,
       color: colorMode ? '#ffffff' : '#000000',
       marginRight: 12,
@@ -54,6 +50,13 @@ const Configuraciones = () => {
     },
   });
 
+const Configuraciones = ({navigation}) => {
+  const { colorMode, setDarkColorMode } = useDarkMode();
+  const {logout} = useContext(AuthContext)
+  const styles = commonStyles(colorMode);
+
+  const toggleSwitch = () => setDarkColorMode((previousState) => !previousState);
+
   const showAlert = (title, message) => {
     Alert.alert(
       title,
@@ -62,6 +65,15 @@ const Configuraciones = () => {
       { cancelable: false }
     );
   };
+
+  const renderSetting = (title, action) => (
+    <TouchableOpacity onPress={action}>
+      <View style={styles.setting}>
+        <Text style={styles.settingTitle}>{title}</Text>
+        <FontAwesome name="angle-right" style={styles.icon} />
+      </View>
+    </TouchableOpacity>
+  );
 
   const handleChangePhoneNumber = () => {
     showAlert('Cambiar número de teléfono', 'Número de teléfono cambiado con éxito');
@@ -73,28 +85,16 @@ const Configuraciones = () => {
     // Agrega el código para mostrar información sobre la aplicación aquí
   };
 
-  const handleLogout = () => {
-    showAlert('Cerrar sesión', 'Has cerrado sesión');
-    // Agrega el código para cerrar sesión aquí
-  };
+  const handleLogout = () => {navigation.navigate("onBoarding"),logout()};
 
   const handleDeleteAccount = () => {
     showAlert('Eliminar cuenta', 'Cuenta eliminada con éxito');
     // Agrega el código para eliminar la cuenta aquí
   };
 
-  const renderSetting = (title, action) => (
-    <TouchableOpacity onPress={action}>
-      <View style={styles.setting}>
-        <Text style={styles.settingTitle}>{title}</Text>
-        <FontAwesome name="angle-right" style={styles.phoneIcon} />
-      </View>
-    </TouchableOpacity>
-  );
-
   return (
     <View style={styles.container}>
-                <Text style={styles.title}>Configuración de usuario</Text>
+      <Text style={styles.title}>Configuración de usuario</Text>
 
       <View style={styles.card}>
         <View style={styles.setting}>
@@ -102,6 +102,7 @@ const Configuraciones = () => {
           <Switch value={colorMode} onValueChange={toggleSwitch} />
         </View>
       </View>
+
       <View style={styles.card}>
         {renderSetting('Cambiar número de teléfono', handleChangePhoneNumber)}
         {renderSetting('Acerca de la aplicación', handleAboutApp)}

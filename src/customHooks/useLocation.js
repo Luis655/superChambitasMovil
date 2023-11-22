@@ -9,7 +9,6 @@ export const useLocation = ()=>{
 
 
     async function requestLocationPermission() {
-    console.log("hola")
 
         try {
           setErrorMsg(1);

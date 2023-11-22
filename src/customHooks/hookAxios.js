@@ -4,7 +4,7 @@ import axios from 'axios';
 async function useAxios (url2, method, body) {
 
 
-  const url = `https://supercapi.azurewebsites.net/${url2}`;
+  const url = `https://f68e-2806-10be-9-adbd-d88e-be52-a4f4-f622.ngrok-free.app/api/${url2}`;
   // const [data, setData] = useState(null);
   // const [error, setError] = useState(null);
   // const [loading, setLoading] = useState(true);
