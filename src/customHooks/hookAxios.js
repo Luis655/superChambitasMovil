@@ -21,12 +21,13 @@ async function useAxios (url2, method, body) {
 
       try {
         response;
-        //console.log(response.data)
       } catch (err) {
         return err;
       } finally {
         return response;
       } 
 };
+
+
 
 export default useAxios;

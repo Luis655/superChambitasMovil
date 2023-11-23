@@ -68,15 +68,6 @@ const HomeWorker = ({ navigation }) => {
   const seconds = timeLeft % 60;
   const [isFloatingSectionVisible, setIsFloatingSectionVisible] =
     useState(false);
-  // SignalRContext.useSignalREffect(user, async (message) => {
-  //   await scheduleNotificationAsync({
-  //     identifier: message,
-  //     content: {
-  //       title: message,
-  //     },
-  //     trigger: null,
-  //   });
-  // });
   const toggleFloatingSection = () => {
     setIsFloatingSectionVisible(!isFloatingSectionVisible);
   };
@@ -864,7 +855,7 @@ const HomeWorker = ({ navigation }) => {
             {/*<Icon name="user-circle" size={60} style={styles.userIcon} />*/}
           </TouchableOpacity>
 
-          <Text style={styles.username}>{user}</Text>
+          <Text style={styles.username}>{user.userName}</Text>
         </View>
         <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
           <Icon name="briefcase" size={20} style={styles.icon} />

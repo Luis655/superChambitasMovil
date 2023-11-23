@@ -1,20 +1,13 @@
 import React, { createContext, useReducer, useContext, useState } from "react";
 import { useMemo } from "react";
 import { useColorScheme } from "react-native";
-
+import { jwtDecode } from "jwt-decode";
 export const AuthContext = createContext();
 const DarkModeContext = createContext();
-
 const authReducer = (state, action) => {
   switch (action.type) {
     case "SET_USER":
       return { ...state, user: action.payload, logged: true };
-    case "SET_PASSWORD":
-      return { ...state, password: action.payload };
-    case "SET_TOKEN":
-      return { ...state, token: action.payload };
-    case "SET_TYPE":
-      return { ...state, type: action.payload };
     case "LOG_OUT":
       return { logged: false };
     default:
@@ -24,19 +17,24 @@ const authReducer = (state, action) => {
 
 export const AuthProvider = ({ children }) => {
   const initialState = {
-    user: "",
-    password: "",
     token: "",
-    type: "",
+    refreshToken: "",
     logged: false,
   };
 
   const [state, dispatch] = useReducer(authReducer, initialState);
   const [colorMode, setDarkColorMode] = useState(useColorScheme() === "light");
-  const setUser = (user) => {
+  const setUser = ({token, refreshToken}) => {
+    console.log(token);
+    const user= jwtDecode(token)
     const action = {
       type: "SET_USER",
-      payload: user,
+      payload: {
+        user,
+        token,
+        refreshToken,
+        logged: true,
+      },
     };
     dispatch(action);
   };
@@ -62,9 +60,9 @@ export const AuthProvider = ({ children }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth debe ser usado dentro de un AuthProvider");
-  }
+  // if (!context) {
+  //   throw new Error("useAuth debe ser usado dentro de un AuthProvider");
+  // }
   return context;
 };
 

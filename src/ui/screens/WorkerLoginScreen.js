@@ -7,7 +7,7 @@ import { Avatar } from "react-native-paper";
 import useAxios from "../../customHooks/hookAxios";
 import { Button, TextInput, IconButton, Icon } from "react-native-paper";
 import { useContext } from "react";
-import {scheduleNotificationAsync} from 'expo-notifications';
+import { scheduleNotificationAsync } from 'expo-notifications';
 const validationSchema = Yup.object().shape({
   username: Yup.string().required("El nombre de usuario es obligatorio"),
   password: Yup.string().required("La contraseña es obligatoria"),
@@ -26,55 +26,44 @@ export default function WorkerLoginScreen({ navigation, route }) {
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const passwordRef = useRef(null);
-  const { user,dispatch, setUser } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
 
   const handleLogin = async (values) => {
     //getLogin();
     setLoading(true);
-user
+    user
     try {
       const response = await useAxios("user/Autenticar", "post", {
         email: values.username,
         password: values.password,
       });
-  
+
       if (response.data.resultado && response.data.token) {
         setData(response.data);
-        setUser(values.username);
-        
-        dispatch({ type: "SET_TOKEN", payload: response.token });
-        if (parametro == 1) {
-          dispatch({ type: "SET_TYPE", payload: "1" }); //tipo uno(1) es el trabajador, el que usara la app para trabajar
-        } else {
-          dispatch({ type: "SET_TYPE", payload: "2" }); //tipo dos(2) es usuario normal, el cliente que usara la app para contratar empleados
-        }
+        setUser(response.data);
+
         await scheduleNotificationAsync({
-            identifier: Math.random().toString(),
-            content: {
-              title: "Bienvenido a SuperChambitas "+values.username,
-            },
-            trigger: null,
-          });
+          identifier: Math.random().toString(),
+          content: {
+            title: "Bienvenido a SuperChambitas " + values.username,
+          },
+          trigger: null,
+        });
         navigation.navigate("HomeWorker");
       }
     } catch (error) {
-      setData("");
-      console.error(error);
       setLoading(false);
+      console.log(error);
       Alert.alert("Error al iniciar sesion", "Error", [
-        {
-          text: "Salir",
-          onPress: () => console.log(""),
-        },
         {
           text: "Aceptar",
           onPress: () => console.log(""),
         },
       ]);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-   
+
   };
   return (
     <View style={styles.container}>
@@ -133,10 +122,10 @@ user
               <Text style={styles.error}>{errors.password}</Text>
             )}
 
-          
+
 
             <View style={styles.buttonContainer}>
-           
+
               <Button
                 loading={loading}
                 disabled={loading}
@@ -151,7 +140,7 @@ user
                 <Text style={styles.orText}>O</Text>
               </View>
 
-            
+
               <Button
                 buttonColor="#F5AF19"
                 mode="contained"

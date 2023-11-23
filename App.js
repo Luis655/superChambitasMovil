@@ -45,16 +45,16 @@ export default function App() {
   };
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
-      const { status: existingStatus } =
-        await getPermissionsAsync();
-      let finalStatus = existingStatus;
-      if (existingStatus !== "granted") {
-        const { status } = await requestPermissionsAsync();
-        finalStatus = status;
-      }
-      if (finalStatus !== 'granted') {
-        alert('Podras activar las notificaciones en configuración');
-      }
+      // const { status: existingStatus } =
+      //   await getPermissionsAsync();
+      // let finalStatus = existingStatus;
+      // if (existingStatus !== "granted") {
+      //   const { status } = await requestPermissionsAsync();
+      //   finalStatus = status;
+      // }
+      // if (finalStatus !== 'granted') {
+      //   alert('Podras activar las notificaciones en configuración');
+      // }
   
       await SplashScreen.hideAsync();
     }
