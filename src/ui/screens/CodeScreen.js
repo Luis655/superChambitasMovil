@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacit } from 'react-native';
 
 export default function CodeScreensss({navigation}) {
   return (
@@ -24,49 +24,5 @@ export default function CodeScreensss({navigation}) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-    backgroundColor: '#0E4B5E',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '600',
-    marginBottom: 3,
-    textAlign: 'center',
-    color: '#fff',
-  },
-  input: {
-    height: 50,
-    borderColor: '#3498db',
-    borderWidth: 1,
-    borderRadius: 10,
-    marginBottom: 30,
-    textAlign: 'center',
-    fontSize: 18,
-    color: '#fff',
-  },
-  resendButton: {
-    alignSelf: 'center',
-    marginBottom: 20,
-  },
-  resendButtonText: {
-    color: '#3498db',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  nextButton: {
-    backgroundColor: '#3498db',
-    borderRadius: 10,
-    paddingVertical: 15,
-    alignItems: 'center',
-  },
-  nextButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-});
+
 

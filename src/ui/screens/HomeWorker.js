@@ -28,6 +28,8 @@ import { useDarkMode } from "../../auth/contextAuth";
 import { SignalRContext } from "../../signal/signalRConext";
 import { useContext } from "react";
 import { useEffect } from "react";
+import HelpModal from "../components/helpModal";
+import { SupportModal } from "../components/supportModal";
 const workerLogo = require("../../../assets/logoconosuperchambitas-removebg-preview.png");
 
 const menuWidth = 250;
@@ -100,6 +102,8 @@ const HomeWorker = ({ navigation }) => {
 
   const [pan] = useState(new Animated.ValueXY({ x: hiddenPosition, y: 0 }));
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isOpenSupport, setIsOpenSupport] = useState(false);
 
   const panResponder = PanResponder.create({
     onStartShouldSetResponderCapture: () => false,
@@ -139,7 +143,16 @@ const HomeWorker = ({ navigation }) => {
       openDrawer();
     }
   };
-
+  const opencloseModal = () => {
+    isOpenModal ? 
+      setIsOpenModal(false):
+      setIsOpenModal(true)
+  };
+  const opencloseSupport = () => {
+    isOpenSupport ? 
+      setIsOpenSupport(false):
+      setIsOpenSupport(true)
+  };
   const openDrawer = () => {
     Animated.timing(pan.x, {
       toValue: 0,
@@ -855,7 +868,7 @@ const HomeWorker = ({ navigation }) => {
             {/*<Icon name="user-circle" size={60} style={styles.userIcon} />*/}
           </TouchableOpacity>
 
-          <Text style={styles.username}>{user.userName}</Text>
+          <Text style={styles.username}>{user.user.userName}</Text>
         </View>
         <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
           <Icon name="briefcase" size={20} style={styles.icon} />
@@ -878,11 +891,11 @@ const HomeWorker = ({ navigation }) => {
           <Icon name="cog" size={20} style={styles.icon} />
           <Text style={styles.menuItemText}>Configuraciones</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
+        <TouchableOpacity style={styles.menuItem} onPress={opencloseModal}>
           <Icon name="question" size={20} style={styles.icon} />
           <Text style={styles.menuItemText}>Ayuda</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
+        <TouchableOpacity style={styles.menuItem} onPress={opencloseSupport}>
           <Icon name="life-ring" size={20} style={styles.icon} />
           <Text style={styles.menuItemText}>Soporte</Text>
         </TouchableOpacity>
@@ -910,6 +923,8 @@ const HomeWorker = ({ navigation }) => {
         }}
         Contador={iniciarContador}
       />
+      <HelpModal closeModal={opencloseModal} modalVisible={isOpenModal}></HelpModal>
+      <SupportModal closeModal={opencloseSupport} modalVisible={isOpenSupport}></SupportModal>
     </View>
   );
 };

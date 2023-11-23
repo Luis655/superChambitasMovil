@@ -94,6 +94,7 @@ const Configuraciones = ({navigation}) => {
 
   return (
     <View style={styles.container}>
+      
       <Text style={styles.title}>Configuración de usuario</Text>
 
       <View style={styles.card}>

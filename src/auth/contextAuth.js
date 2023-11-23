@@ -1,7 +1,7 @@
 import React, { createContext, useReducer, useContext, useState } from "react";
 import { useMemo } from "react";
 import { useColorScheme } from "react-native";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "./jwtDecode";
 export const AuthContext = createContext();
 const DarkModeContext = createContext();
 const authReducer = (state, action) => {
@@ -24,9 +24,8 @@ export const AuthProvider = ({ children }) => {
 
   const [state, dispatch] = useReducer(authReducer, initialState);
   const [colorMode, setDarkColorMode] = useState(useColorScheme() === "light");
-  const setUser = ({token, refreshToken}) => {
-    console.log(token);
-    const user= jwtDecode(token)
+  const setUser = ({ token, refreshToken }) => {
+    const user = jwtDecode(token);
     const action = {
       type: "SET_USER",
       payload: {
@@ -42,7 +41,7 @@ export const AuthProvider = ({ children }) => {
     const action = {
       type: "LOG_OUT",
     };
-  
+
     dispatch(action);
   };
   const contextValue = useMemo(
