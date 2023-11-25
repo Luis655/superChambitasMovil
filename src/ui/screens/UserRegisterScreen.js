@@ -3,12 +3,12 @@ import { View, StyleSheet, Text, Image, TextInput, KeyboardAvoidingView, Touchab
 import CountryPicker from 'react-native-country-picker-modal';
 import { Button } from 'react-native-paper';
 
-const MyComponent = ({navigation}) => {
+const MyComponent = ({ navigation }) => {
   const [countryCode, setCountryCode] = useState("MX");
   const [country, setCountry] = useState(null);
 
   const onSelectCountry = (country) => {
-    console.log(country)
+    console.log(country);
     setCountryCode(country.cca2);
     setCountry(country);
   };
@@ -16,50 +16,57 @@ const MyComponent = ({navigation}) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{flex:1}}>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      style={{ flex: 1 }}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 
-    <View style={styles.container}>
+        <View style={styles.container}>
+          {/* Fondo naranja con el logo */}
+          <View style={styles.header}>
+            <Image style={styles.logo} source={require('../../../assets/LogoSuperChambitas.png')} />
+          </View>
 
-      <Text style={styles.title}>Introduce tu número de teléfono</Text>
-      <Text style={styles.subtitle}>Te enviaremos un código para verificar tu número telefónica</Text>
+          <Text style={styles.title}>Comencemos</Text>
 
-      <View style={styles.phoneContainer}>
+          <View style={styles.inputContainer}>
+            <View style={styles.countryPickerContainer}>
+              <CountryPicker
+                withFilter
+                withFlag
+                withCallingCode
+                withEmoji
+                countryCode={countryCode}
+                onSelect={onSelectCountry}
+                containerButtonStyle={styles.countryPickerButton}
+              />
 
-        <TextInput
-          style={[styles.input, styles.phoneInput]}
-          placeholder="Número de teléfono"
-          keyboardType="phone-pad"
-        />
-
-        <View style={{marginLeft:-200}}>
-          <CountryPicker
-            withFilter
-            withFlag
-            withCallingCode
-            withEmoji
-            countryCode={countryCode}
-            onSelect={onSelectCountry}
-            containerButtonStyle={styles.countryPickerButton}
-          />        
-
-          {country && (
-            <View style={styles.countryInfo}>
-              <Image style={styles.flag} source={{ uri: country.flag }} />
+              {country && (
+                <View style={styles.countryInfo}>
+                  <Text style={styles.orangeButtonText}>{`+${country.callingCode}`}</Text>
+                  <Image style={styles.flag} source={{ uri: country.flag }} />
+                </View>
+              )}
             </View>
-          )}
+
+            <TextInput
+              style={[styles.input, styles.phoneInput]}
+              placeholder="Ingresa tu celular"
+              keyboardType="numeric"
+              maxLength={10}
+            />
+          </View>
+
+          <TouchableOpacity style={[styles.buttonContainer, styles.orangeButton]} onPress={() => navigation.navigate('CodeScreen')}>
+            <Text style={[styles.buttonText, styles.orangeButtonText]}>Enviar código</Text>
+          </TouchableOpacity>
+
+          <Text style={[styles.disclaimer, { textAlign: 'center' }]}>
+            Al unirte a nuestra aplicación, aceptas nuestros {'\n'}
+            Términos de Uso y Política de privacidad
+          </Text>
+
         </View>
-      </View>
 
-      <TouchableOpacity style={styles.buttonContainer} onPress={() => {navigation.navigate('CodeScreen')}}>
-        <Text style={styles.buttonText}>Enviar código</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.disclaimer}>Al unirte a nuestra aplicación, aceptas nuestros Términos de Uso y Política de privacidad</Text>
-
-    </View>
-    </TouchableWithoutFeedback>
-
+      </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
 };
@@ -67,83 +74,104 @@ const MyComponent = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0E4B5E',
-    padding: 15,
-    justifyContent: 'center',
-    marginTop:-80
+    backgroundColor: '#fff',
+  },
+  header: {
+    backgroundColor: '#ff9900',
+    padding: 20,
+    alignItems: 'center',
+    height: 550,
+  },
+  countryCode: {
+    fontSize: 16,
+    marginRight: 5,
+    color: '#ff9900', // Color naranja
+  },
+  logo: {
+    //width: 500,
+    //height: 550,
+    marginTop: 100,
+    width: 400,
+    height: 350,
+    resizeMode: 'contain',
   },
   title: {
-    color: '#fff',
-    fontSize: 27,
+    marginTop: 20,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 20,
+    color: '#333',
     textAlign: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   subtitle: {
-    color: 'grey',
-    fontSize: 15,
-    marginBottom: 0,
-    textAlign: 'center',
-    fontWeight: '500'
+    fontSize: 16,
+    color: '#555',
+    marginBottom: 20,
   },
-  phoneContainer: {
-    marginTop:40,
+  inputContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 25,
+    alignItems: 'center',
+    marginBottom: 20,
+    margin: 10,
   },
-  input: {
-    backgroundColor: '#fff',
-    height: 50,
-    width: '100%',
-    marginRight: 20,
-    borderRadius: 5,
-    paddingLeft: 15,
-    fontSize: 22,
-    fontWeight:'400'
+  countryPickerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ff9900',
+    borderRadius: 8,
   },
   countryPickerButton: {
-    width: 100,
-    height: 50,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
+    backgroundColor: '#ff9900',
+    borderRadius: 8,
+    padding: 8,
   },
   countryInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 20,
+
   },
   flag: {
     width: 30,
     height: 20,
-    marginRight: 10,
+    marginLeft: 5,
   },
-  callingCode: {
-    color: '#fff',
-    fontSize: 16,
+  input: {
+    flex: 1,
+    height: 50,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingLeft: 10,
+    backgroundColor: '#f5f5f5',
+  },
+  phoneInput: {
+    marginLeft: 10,
   },
   buttonContainer: {
-    backgroundColor: '#4CAF50',
-    borderRadius: 5,
+    backgroundColor: '#009688',
+    borderRadius: 8,
     padding: 15,
-    //marginTop: 20,
     alignItems: 'center',
+    margin: 10,
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },
+  orangeButton: {
+    backgroundColor: '#ff9900',
+  },
+  orangeButtonText: {
+    color: '#fff',
+  },
   disclaimer: {
-    color: 'grey',
-    fontSize: 13,
     marginTop: 20,
-    fontWeight:'400',
-    textAlign: 'center'
+    color: '#777',
+    margin: 10,
   },
 });
-
 
 export default MyComponent;

@@ -136,121 +136,79 @@ export default function WorkerLoginScreen({ navigation, route }) {
 
         <View style={styles.container}>
         {/* {loading && <ActivityIndicator size="large" />} */}
-
-            <View style={styles.logoContainer}>
-                <Avatar.Image style={{backgroundColor:'#F5AF19'}} size={190} source={require('../../../assets/LogoSuperChambitas.png')} />
-
-                <Text style={styles.logo}>SuperChambitas</Text>
-            </View>
-            <Formik
-                initialValues={{ username: '', password: '' }}
-                onSubmit={handleLogin}
-                validationSchema={validationSchema}
-            >
-                {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
-                    <View style={styles.formContainer}>
-
-                        <TextInput
-                            mode="outlined"
-                            label="Correo"
-                            placeholder="Escribe tu correo"
-                            keyboardType="email-address"
-                            onChangeText={handleChange('username')}
-                            onBlur={handleBlur('username')}
-                            value={values.username}
-                            onSubmitEditing={() => passwordRef.current.focus()}
-                            right={<TextInput.Affix text="/100" />}
-                        />
-                        {errors.username && <Text style={styles.error}>{errors.username}</Text>}
-
-                        <TextInput
-                            mode="outlined"
-                            label="Contraseña"
-                            placeholder="Escribe tu contraseña"
-                            secureTextEntry={!passwordVisible}
-                            onChangeText={handleChange('password')}
-                            onBlur={handleBlur('password')}
-                            value={values.password}
-                            ref={passwordRef}
-                            returnKeyType="done"
-                            onSubmitEditing={handleSubmit}
-
-                            right={<TextInput.Icon
-                                icon={passwordVisible ? "eye-off" : "eye"}
-                                onPress={() => setPasswordVisible(!passwordVisible)}
-                            />}
-                        />
-                        {errors.password && <Text style={styles.error}>{errors.password}</Text>}
-
-                        {/*<TextInput
-                            style={styles.input}
-                            placeholder="Nombre de usuario"
-                            onChangeText={handleChange('username')}
-                            onBlur={handleBlur('username')}
-                            value={values.username}
-                            onSubmitEditing={() => passwordRef.current.focus()}
-
-                        />
-                        {errors.username && <Text style={styles.error}>{errors.username}</Text>}
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Contraseña"
-                            secureTextEntry={true}
-                            onChangeText={handleChange('password')}
-                            onBlur={handleBlur('password')}
-                            value={values.password}
-                            ref={passwordRef}
-                            returnKeyType="done"
-                            onSubmitEditing={handleSubmit}
-                        />
-                        {errors.password && <Text style={styles.error}>{errors.password}</Text>}
-                            */}
-
-                        <View style={styles.buttonContainer}>
-
-                            {/*<TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                            <Text style={styles.buttonText}>Iniciar sesión</Text>
-                        </TouchableOpacity>*/}
-                            <Button loading={loading} disabled={loading} buttonColor="#168596" mode="contained" onPress={handleSubmit}>
-                                Iniciar sesión
-                            </Button>
-
-                            <View style={styles.orContainer}>
-                                <Text style={styles.orText}>O</Text>
-                            </View>
-
-
-
-                            {/*<TouchableOpacity style={styles.registerButton} onPress={() => navigation.navigate('WorkerRegister')}>
-                            <Text style={styles.orButtonText}>Registrarse</Text>
-                    </TouchableOpacity>*/}
-                            <Button buttonColor="#F5AF19" mode="contained" onPress={() => parametro == "1" ? navigation.navigate('WorkerRegister') : navigation.navigate('UserRegister')}>
-                                Registrarse
-                            </Button>
-                        </View>
-
-                    </View>
-                )}
-            </Formik>
-
-
+        <View style={styles.logoContainer}>
+            <Avatar.Image style={{ backgroundColor: '#ff9900' }} size={250} source={require('../../../assets/LogoSuperChambitas.png')} />
+            <Text style={styles.logo}>Iniciemos esta aventura!</Text>
         </View>
+    
+        <Formik
+            initialValues={{ username: '', password: '' }}
+            onSubmit={handleLogin}
+            validationSchema={validationSchema}
+        >
+            {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+                <View style={styles.formContainer}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Correo"
+                        keyboardType="email-address"
+                        onChangeText={handleChange('username')}
+                        onBlur={handleBlur('username')}
+                        value={values.username}
+                        onSubmitEditing={() => passwordRef.current.focus()}
+                    />
+                    {errors.username && <Text style={styles.error}>{errors.username}</Text>}
+    
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Contraseña"
+                        secureTextEntry={!passwordVisible}
+                        onChangeText={handleChange('password')}
+                        onBlur={handleBlur('password')}
+                        value={values.password}
+                        ref={passwordRef}
+                        returnKeyType="done"
+                        onSubmitEditing={handleSubmit}
+                    />
+                    {errors.password && <Text style={styles.error}>{errors.password}</Text>}
+    
+                    <View style={styles.buttonContainer}>
+                        <Button loading={loading} disabled={loading} buttonColor="#009688" mode="contained" onPress={handleSubmit}>
+                            Iniciar sesión
+                        </Button>
+    
+                        <View style={styles.orContainer}>
+                            <Text style={styles.orText}>O</Text>
+                        </View>
+    
+                        <Button buttonColor="#009688" mode="contained" onPress={() => parametro == '1' ? navigation.navigate('WorkerRegister') : navigation.navigate('UserRegister')}>
+                            Registrarse
+                        </Button>
+                    </View>
+                </View>
+            )}
+        </Formik>
+    </View>
+    
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#ff9900',
         alignItems: 'center',
         justifyContent: 'center',
     },
     logoContainer: {
         marginBottom: 30,
+        alignItems: 'center',
     },
     logo: {
-        fontSize: 24,
+        fontSize: 30,
         fontWeight: 'bold',
+        color: '#fff',
+        marginTop: 10,
     },
     formContainer: {
         width: '80%',
@@ -259,16 +217,18 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 5,
-        paddingVertical: 10,
+        paddingVertical: 12,
         paddingHorizontal: 15,
-        marginBottom: 10,
+        marginBottom: 15,
+        fontSize: 16,
+        color: '#333',
     },
     button: {
-        backgroundColor: '#007bff',
-        paddingVertical: 10,
+        backgroundColor: '#009688',
+        paddingVertical: 12,
         borderRadius: 5,
         alignItems: 'center',
-        marginBottom: 10,
+        marginBottom: 15,
     },
     buttonText: {
         color: '#fff',
@@ -277,44 +237,45 @@ const styles = StyleSheet.create({
     },
     error: {
         color: 'red',
-        marginBottom: 10,
+        marginBottom: 15,
+        fontSize: 14,
     },
     orButton: {
         backgroundColor: '#fff',
         borderWidth: 1,
-        borderColor: '#007bff',
-        paddingVertical: 10,
+        borderColor: '#009688',
+        paddingVertical: 12,
         borderRadius: 5,
         alignItems: 'center',
-        pointerEvents: 'none'
+        pointerEvents: 'none',
+        marginBottom: 15,
     },
     registerButton: {
         backgroundColor: '#fff',
         borderWidth: 1,
-        borderColor: '#007bff',
-        paddingVertical: 10,
+        borderColor: '#009688',
+        paddingVertical: 12,
         borderRadius: 5,
         alignItems: 'center',
+        marginBottom: 30,
     },
     orButtonText: {
-        color: '#007bff',
+        color: '#009688',
         fontSize: 16,
         fontWeight: 'bold',
     },
     orContainer: {
-        width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 25
+        paddingVertical: 15,
     },
     orText: {
         fontSize: 20,
         fontWeight: 'bold',
-
+        color: '#333',
     },
     buttonContainer: {
         flexDirection: 'column',
-        justifyContent: 'space-between',
-        paddingTop: 30
+        justifyContent: 'center',
     },
 });
