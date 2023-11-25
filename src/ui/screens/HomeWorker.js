@@ -42,7 +42,7 @@ const HomeWorker = ({navigation, type}) => {
 
     setMarkerPosition(newMarkerPosition);
   };
-  const [timeLeft, setTimeLeft] = useState(180);
+  const [timeLeft, setTimeLeft] = useState(60);
 
   const iniciarContador = () => {
     setIsFloatingSectionVisible(!isFloatingSectionVisible);
@@ -56,6 +56,30 @@ const HomeWorker = ({navigation, type}) => {
   
 
   }
+
+  useEffect(() => {
+    if (timeLeft === 0) {
+      Alert.alert(
+        'Tiempo agotado',
+        '¿Quieres reiniciar la búsqueda?',
+        [
+          {
+            text: 'Cancelar',
+            style: 'cancel',
+          },
+          {
+            text: 'Reiniciar',
+            onPress: () => {
+              // Lógica para reiniciar la búsqueda aquí
+              setTimeLeft(10); // Reinicio a 10 segundos para demostración, ajusta según sea necesario
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  }, [timeLeft]);
+
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
   // const [isChatModalVisible, setIsChatModalVisible] = useState(false);
@@ -149,8 +173,32 @@ const HomeWorker = ({navigation, type}) => {
       useNativeDriver: false,
     }).start();
   };
-  
+
   const styles = StyleSheet.create({
+    containers: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: '#fff', // Fondo blanco similar al de Didi
+      elevation: 5, // Sombra para dar un efecto visual similar al de Didi
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    waitingContainer: {
+      alignItems: 'center',
+    },
+    waitingText: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: '#333', // Color oscuro similar al de Didi
+      marginBottom: 10,
+    },
+    timerText: {
+      fontSize: 40,
+      fontWeight: 'bold',
+      color: '#ff9900', // Naranja similar al de Didi
+    },
     activityIndicator:{
       position: 'absolute',
       margin: 16,
@@ -803,9 +851,22 @@ const HomeWorker = ({navigation, type}) => {
 />
 
 }
-<Text style={{fontSize:40}}>
-      {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
-    </Text>
+
+<View style={styles.containers}>
+      <View style={styles.waitingContainer}>
+        <Text style={styles.waitingText}>
+          Esperando respuesta...
+        </Text>
+        <Text style={styles.timerText}>
+          {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+        </Text>
+      </View>
+    </View>
+
+
+
+
+    
 {estadomsg &&
 <View style={styles.activityIndicator}>
 <ActivityIndicator animating={estadomsg} color={MD2Colors.red800} size={140} />
