@@ -84,6 +84,8 @@ const Configuraciones = () => {
     // Agrega el código para eliminar la cuenta aquí
   };
 
+  
+
   const renderSetting = (title, action) => (
     <TouchableOpacity onPress={action}>
       <View style={styles.setting}>

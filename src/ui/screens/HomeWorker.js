@@ -43,7 +43,11 @@ const HomeWorker = ({navigation, type}) => {
 
     setMarkerPosition(newMarkerPosition);
   };
+<<<<<<< HEAD
   const [timeLeft, setTimeLeft] = useState(18);
+=======
+  const [timeLeft, setTimeLeft] = useState(60);
+>>>>>>> f72295d646cf479c0b1d0c0afc4fcbaee3fb2726
 
   const iniciarContador = () => {
     setIsFloatingSectionVisible(!isFloatingSectionVisible);
@@ -55,12 +59,39 @@ const HomeWorker = ({navigation, type}) => {
   
 
   }
+<<<<<<< HEAD
   if(timeLeft < 0){
     setTimeLeft(18)
     setContadorActive(false);
 
   return () => clearInterval(interval);
   }
+=======
+
+  useEffect(() => {
+    if (timeLeft === 0) {
+      Alert.alert(
+        'Tiempo agotado',
+        '¿Quieres reiniciar la búsqueda?',
+        [
+          {
+            text: 'Cancelar',
+            style: 'cancel',
+          },
+          {
+            text: 'Reiniciar',
+            onPress: () => {
+              // Lógica para reiniciar la búsqueda aquí
+              setTimeLeft(10); // Reinicio a 10 segundos para demostración, ajusta según sea necesario
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  }, [timeLeft]);
+
+>>>>>>> f72295d646cf479c0b1d0c0afc4fcbaee3fb2726
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
   // const [isChatModalVisible, setIsChatModalVisible] = useState(false);
@@ -154,8 +185,32 @@ const HomeWorker = ({navigation, type}) => {
       useNativeDriver: false,
     }).start();
   };
-  
+
   const styles = StyleSheet.create({
+    containers: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: '#fff', // Fondo blanco similar al de Didi
+      elevation: 5, // Sombra para dar un efecto visual similar al de Didi
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    waitingContainer: {
+      alignItems: 'center',
+    },
+    waitingText: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: '#333', // Color oscuro similar al de Didi
+      marginBottom: 10,
+    },
+    timerText: {
+      fontSize: 40,
+      fontWeight: 'bold',
+      color: '#ff9900', // Naranja similar al de Didi
+    },
     activityIndicator:{
       position: 'absolute',
       margin: 16,
@@ -809,12 +864,18 @@ const HomeWorker = ({navigation, type}) => {
 
 }
 { contadorActive &&
-<View style={{position:'absolute', bottom: 0, right:170, top: 800, backgroundColor:'8ec3b9'}}>
-  <Text>Tiempo de espera:</Text>
-<Text style={{fontSize:40, color: '#fff'}}>
-      {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
-    </Text>
-    </View>
+
+
+<View style={styles.containers}>
+<View style={styles.waitingContainer}>
+  <Text style={styles.waitingText}>
+    Esperando respuesta...
+  </Text>
+  <Text style={styles.timerText}>
+    {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+  </Text>
+</View>
+</View>
 }
 {estadomsg &&
 <View style={styles.activityIndicator}>
