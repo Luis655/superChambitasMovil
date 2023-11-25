@@ -43,11 +43,7 @@ const HomeWorker = ({navigation, type}) => {
 
     setMarkerPosition(newMarkerPosition);
   };
-<<<<<<< HEAD
-  const [timeLeft, setTimeLeft] = useState(18);
-=======
   const [timeLeft, setTimeLeft] = useState(60);
->>>>>>> f72295d646cf479c0b1d0c0afc4fcbaee3fb2726
 
   const iniciarContador = () => {
     setIsFloatingSectionVisible(!isFloatingSectionVisible);
@@ -59,14 +55,6 @@ const HomeWorker = ({navigation, type}) => {
   
 
   }
-<<<<<<< HEAD
-  if(timeLeft < 0){
-    setTimeLeft(18)
-    setContadorActive(false);
-
-  return () => clearInterval(interval);
-  }
-=======
 
   useEffect(() => {
     if (timeLeft === 0) {
@@ -91,7 +79,6 @@ const HomeWorker = ({navigation, type}) => {
     }
   }, [timeLeft]);
 
->>>>>>> f72295d646cf479c0b1d0c0afc4fcbaee3fb2726
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
   // const [isChatModalVisible, setIsChatModalVisible] = useState(false);
