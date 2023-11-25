@@ -2,12 +2,16 @@ import React, { useState } from 'react';
 import { View, Modal, ScrollView, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import Card from './Card'; // Asegúrate de importar el componente Card desde la ubicación correcta
 import { Searchbar, SegmentedButtons  } from 'react-native-paper';
-import { useDarkMode } from '../../auth/contextAuth';
+import { useDarkMode, useAuth } from '../../auth/contextAuth';
 import SolicitarTrabajo from './SolicitarTrabajo';
 import { MaterialIcons } from '@expo/vector-icons';
 
 const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrabajo, Contador }) => {
     const { colorMode } = useDarkMode();
+    const { state, dispatch } = useAuth();
+
+    const [searchQuery, setSearchQuery] = useState('');
+    const [jobData, setJobData] = useState(jobData2);
     const [value, setValue] = useState('trabajador');
   const styles = StyleSheet.create({
     modalContainer: {
