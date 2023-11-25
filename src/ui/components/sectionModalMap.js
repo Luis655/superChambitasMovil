@@ -153,7 +153,7 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
           </TouchableOpacity>}
  
 
-            <View style={{height:'80%', maxHeight:'60%'}}>
+            <View style={{height:'90%', maxHeight:'100%'}}>
               <SolicitarTrabajo Contador={Contador}/>
             </View>
         </View>}

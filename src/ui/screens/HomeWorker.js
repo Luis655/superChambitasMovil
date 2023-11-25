@@ -25,6 +25,7 @@ const HomeWorker = ({navigation, type}) => {
   const [imageLoaded1, setImageLoaded1] = useState(false);
   const [imageLoaded2, setImageLoaded2] = useState(false);
   const {location, status, errorMsg, estadomsg, requestLocationPermission} =useLocation();
+  const [contadorActive, setContadorActive] = useState(false);
 
   const locationReload = () =>{
   }
@@ -42,19 +43,23 @@ const HomeWorker = ({navigation, type}) => {
 
     setMarkerPosition(newMarkerPosition);
   };
-  const [timeLeft, setTimeLeft] = useState(180);
+  const [timeLeft, setTimeLeft] = useState(18);
 
   const iniciarContador = () => {
     setIsFloatingSectionVisible(!isFloatingSectionVisible);
-
+    setContadorActive(true);
       const interval = setInterval(() => {
         setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
       }, 1000);
-      if(timeLeft < 1){
-      return () => clearInterval(interval);
-      }
+
   
 
+  }
+  if(timeLeft < 0){
+    setTimeLeft(18)
+    setContadorActive(false);
+
+  return () => clearInterval(interval);
   }
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
@@ -282,8 +287,8 @@ const HomeWorker = ({navigation, type}) => {
       borderRadius: 25,
       alignItems: 'center',
       justifyContent: 'center',
-      right: isOpen ? 10 : 320, //o 10
-      bottom: 710,
+      right: isOpen ? '6%' : '85%', //o 10
+      bottom: '88%',
       elevation: 5,
     },
   });
@@ -803,9 +808,14 @@ const HomeWorker = ({navigation, type}) => {
 />
 
 }
-<Text style={{fontSize:40}}>
+{ contadorActive &&
+<View style={{position:'absolute', bottom: 0, right:170, top: 800, backgroundColor:'8ec3b9'}}>
+  <Text>Tiempo de espera:</Text>
+<Text style={{fontSize:40, color: '#fff'}}>
       {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
     </Text>
+    </View>
+}
 {estadomsg &&
 <View style={styles.activityIndicator}>
 <ActivityIndicator animating={estadomsg} color={MD2Colors.red800} size={140} />

@@ -72,7 +72,6 @@ const SolicitarTrabajo = ({Contador}) => {
       borderRadius: 10,
       margin: 10,
       backgroundColor: colorMode ? '#3C7680' : '#fff',
-      marginTop:0
       //elevation: 3,
     },
     image: {
@@ -187,7 +186,7 @@ const SolicitarTrabajo = ({Contador}) => {
   return (
     <KeyboardAvoidingView
     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    style={{flex:1}}>
+    style={{}}>
     <View style={{
             flex: 1,
             justifyContent:'center',
@@ -210,13 +209,14 @@ const SolicitarTrabajo = ({Contador}) => {
         <View>
 
             
+<ScrollView style={{maxHeight: '100%'}}>
 
           <View style={styles.card}>
           <Appbar.Header color='red' style={{ backgroundColor: 'transparent' }}>
             <Appbar.Content color={colorMode ? '#fff' : '#000'} title="Creé una solicitud"/>
             <Appbar.Action icon="camera" onPress={_handleMore} />
 
-          </Appbar.Header>
+          </Appbar.Header> 
           <DropDownPicker
                   open={open}
                   value={value}
@@ -232,7 +232,6 @@ const SolicitarTrabajo = ({Contador}) => {
                   dropDownStyle={{ backgroundColor: colorMode ? '#6f9ba5' : '#fff', borderWidth: .5, borderColor: '#ccc', borderRadius: .5 }}
                   onChangeItem={(item) => setFieldValue('phoneNumber', item.value)}
                 />
-            <ScrollView >
 
             <View style={styles.cardContent}>
                 
@@ -304,9 +303,10 @@ const SolicitarTrabajo = ({Contador}) => {
       style={{ width: 290, height: 290, marginTop:33 }}
     />
             </View>
-            </ScrollView>
 
           </View>
+          </ScrollView>
+
         </View>
       )}
     </Formik>

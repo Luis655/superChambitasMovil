@@ -91,7 +91,7 @@ const Card = ({index, job, aceptarTrabajo, onClose }) => {
       <View style={styles.cardContent}>
         <Text style={styles.name}>{job.name}</Text>
         <Text style={styles.jobType}>{job.jobType}</Text>
-        <Text style={styles.price}>Precio: {job.price}</Text>
+        {/* <Text style={styles.price}>Precio: {job.price}</Text> */}
         <Text style={styles.address}>Dirección: {job.address}</Text>
         <Text style={styles.description}>{job.description}</Text>
         <View style={[styles.bottonsCard]}>
