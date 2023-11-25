@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { MaterialIcons } from '@expo/vector-icons';
-import { View, Modal, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Modal, ScrollView, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import Card from './Card'; // Asegúrate de importar el componente Card desde la ubicación correcta
+import { Searchbar, SegmentedButtons  } from 'react-native-paper';
 import { useDarkMode } from '../../auth/contextAuth';
 import SolicitarTrabajo from './SolicitarTrabajo';
+import { MaterialIcons } from '@expo/vector-icons';
 
-const FloatingSection = ({ visible, onClose, isActive, Contador }) => {
-  const { colorMode } = useDarkMode();
-
+const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrabajo, Contador }) => {
+    const { colorMode } = useDarkMode();
+    const [value, setValue] = useState('trabajador');
   const styles = StyleSheet.create({
     modalContainer: {
       flex: 1,
