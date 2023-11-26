@@ -13,7 +13,6 @@ import Configuraciones from "./src/ui/screens/Configuraciones";
 
 import { Provider as PaperProvider } from 'react-native-paper';
 import { AuthProvider } from './src/auth/contextAuth';
-import { useDarkMode } from "./src/auth/contextAuth";
 import {
   useFonts,
   Montserrat_400Regular,
@@ -25,8 +24,6 @@ SplashScreen.preventAutoHideAsync();
 
 
 export default function App() {
-  
-
   const isDarkMode = useColorScheme() === 'dark';
   const Stack = createStackNavigator();
   let [fontsLoaded] = useFonts({
@@ -110,14 +107,6 @@ export default function App() {
         <Stack.Screen
           options={{
             headerShown: true,
-            headerStyle: {
-              backgroundColor: '#fc9408',
-            },
-            headerTintColor: '#fff', 
-            headerTitleStyle: {
-              fontWeight: 'bold',
-            },
-            
           }}
           name="Configuraciones"
           component={Configuraciones}

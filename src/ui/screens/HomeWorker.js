@@ -25,7 +25,6 @@ const HomeWorker = ({navigation, type}) => {
   const [imageLoaded1, setImageLoaded1] = useState(false);
   const [imageLoaded2, setImageLoaded2] = useState(false);
   const {location, status, errorMsg, estadomsg, requestLocationPermission} =useLocation();
-  const [contadorActive, setContadorActive] = useState(false);
 
   const locationReload = () =>{
   }
@@ -43,18 +42,25 @@ const HomeWorker = ({navigation, type}) => {
 
     setMarkerPosition(newMarkerPosition);
   };
+<<<<<<< HEAD
   const [timeLeft, setTimeLeft] = useState(60);
+=======
+  const [timeLeft, setTimeLeft] = useState(180);
+>>>>>>> parent of 8110425 (cambios)
 
   const iniciarContador = () => {
     setIsFloatingSectionVisible(!isFloatingSectionVisible);
-    setContadorActive(true);
+
       const interval = setInterval(() => {
         setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
       }, 1000);
-
+      if(timeLeft < 1){
+      return () => clearInterval(interval);
+      }
   
 
   }
+<<<<<<< HEAD
 
   useEffect(() => {
     if (timeLeft === 0) {
@@ -79,6 +85,8 @@ const HomeWorker = ({navigation, type}) => {
     }
   }, [timeLeft]);
 
+=======
+>>>>>>> parent of 8110425 (cambios)
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
   // const [isChatModalVisible, setIsChatModalVisible] = useState(false);
@@ -329,8 +337,8 @@ const HomeWorker = ({navigation, type}) => {
       borderRadius: 25,
       alignItems: 'center',
       justifyContent: 'center',
-      right: isOpen ? '6%' : '85%', //o 10
-      bottom: '88%',
+      right: isOpen ? 10 : 320, //o 10
+      bottom: 710,
       elevation: 5,
     },
   });
@@ -850,6 +858,7 @@ const HomeWorker = ({navigation, type}) => {
 />
 
 }
+<<<<<<< HEAD
 { contadorActive &&
 
 
@@ -864,6 +873,11 @@ const HomeWorker = ({navigation, type}) => {
 </View>
 </View>
 }
+=======
+<Text style={{fontSize:40}}>
+      {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+    </Text>
+>>>>>>> parent of 8110425 (cambios)
 {estadomsg &&
 <View style={styles.activityIndicator}>
 <ActivityIndicator animating={estadomsg} color={MD2Colors.red800} size={140} />

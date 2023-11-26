@@ -69,8 +69,16 @@ const SolicitarTrabajo = ({ Contador }) => {
     card: {
       borderWidth: 1,
       borderColor: colorMode ? '#8ec3b9' : '#fff',
+<<<<<<< HEAD
       backgroundColor: colorMode ? '#8ec3b9' : '#fff',
       marginTop: 0
+=======
+      borderRadius: 10,
+      margin: 10,
+      backgroundColor: colorMode ? '#3C7680' : '#fff',
+      marginTop:0
+      //elevation: 3,
+>>>>>>> parent of 8110425 (cambios)
     },
     image: {
       height: 200,
@@ -188,11 +196,21 @@ const SolicitarTrabajo = ({ Contador }) => {
 
   return (
     <KeyboardAvoidingView
+<<<<<<< HEAD
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}>
       <View style={{
         flex: 1,
         justifyContent: 'center',
+=======
+    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    style={{flex:1}}>
+    <View style={{
+            flex: 1,
+            justifyContent:'center',
+            
+    }}>
+>>>>>>> parent of 8110425 (cambios)
 
       }}>
 
@@ -208,12 +226,37 @@ const SolicitarTrabajo = ({ Contador }) => {
           {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
             <View>
 
+<<<<<<< HEAD
               <View style={styles.card}>
                 <Appbar.Header color='#FF5A5F' style={{ backgroundColor: 'transparent', borderRadius: 10 }}>
                   <Appbar.Content color={colorMode ? '#fff' : '#000'} title="Crear una solicitud" />
                   <Appbar.Action icon="camera" onPress={_handleMore} />
                 </Appbar.Header>
                 <DropDownPicker
+=======
+   
+    <Formik
+      initialValues={{ title: '', address: '', description: '', payment: '' }}
+      validationSchema={validationSchema}
+      onSubmit={(values) => {
+        aceptado(values);
+        // Handle form submission here
+        console.log(values);
+      }}
+    >
+      {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+        <View>
+
+            
+
+          <View style={styles.card}>
+          <Appbar.Header color='red' style={{ backgroundColor: 'transparent' }}>
+            <Appbar.Content color={colorMode ? '#fff' : '#000'} title="Creé una solicitud"/>
+            <Appbar.Action icon="camera" onPress={_handleMore} />
+
+          </Appbar.Header>
+          <DropDownPicker
+>>>>>>> parent of 8110425 (cambios)
                   open={open}
                   value={value}
                   items={items}
@@ -228,7 +271,11 @@ const SolicitarTrabajo = ({ Contador }) => {
                   dropDownStyle={{ backgroundColor: colorMode ? '#6f9ba5' : '#fff', borderWidth: .5, borderColor: '#ccc', borderRadius: .5 }}
                   onChangeItem={(item) => setFieldValue('phoneNumber', item.value)}
                 />
+<<<<<<< HEAD
                 <ScrollView >
+=======
+            <ScrollView >
+>>>>>>> parent of 8110425 (cambios)
 
                   <View style={styles.cardContent}>
                     <TextInput
@@ -334,10 +381,24 @@ const SolicitarTrabajo = ({ Contador }) => {
                   <Text style={{ fontSize: 18, color: 'white' }}>Capturar</Text>
                 </TouchableOpacity>
               </View>
+<<<<<<< HEAD
             </Camera>
           </View>
         )}
 
+=======
+              <Image
+      source={{ uri: foto }}
+      style={{ width: 290, height: 290, marginTop:33 }}
+    />
+            </View>
+            </ScrollView>
+
+          </View>
+        </View>
+      )}
+    </Formik>
+>>>>>>> parent of 8110425 (cambios)
 
       </View>
     </KeyboardAvoidingView>
