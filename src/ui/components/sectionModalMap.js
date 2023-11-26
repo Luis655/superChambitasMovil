@@ -65,7 +65,16 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
       fontWeight: 'bold',
     },
   });
+  const onChangeSearch = query => {
+    setSearchQuery(query);
+    console.log(query);
+    const filterjob = jobData2.filter((job) => {
+      const jobType = job.jobType.toLowerCase(); // Convierte a minúsculas para una búsqueda sin distinción entre mayúsculas y minúsculas
+      return jobType.includes(query.toLowerCase());
+    });
+    setJobData(filterjob);
 
+  }
   return (
     <Modal
       animationType="slide"

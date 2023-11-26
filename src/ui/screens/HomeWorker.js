@@ -49,7 +49,12 @@ const HomeWorker = ({navigation, type}) => {
     setIsFloatingSectionVisible(!isFloatingSectionVisible);
     setContadorActive(true);
       const interval = setInterval(() => {
-        setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
+        if (timeLeft < 0) {
+          setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
+        }else{
+          return () => clearInterval(interval);
+
+        }
       }, 1000);
 
   
