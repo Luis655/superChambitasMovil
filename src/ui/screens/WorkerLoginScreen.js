@@ -181,7 +181,7 @@ export default function WorkerLoginScreen({ navigation, route }) {
                             <Text style={styles.orText}>O</Text>
                         </View>
     
-                        <Button buttonColor="#009688" mode="contained" onPress={() => parametro == '1' ? navigation.navigate('WorkerRegister') : navigation.navigate('UserRegister')}>
+                        <Button buttonColor="#009688" mode="contained" onPress={() => parametro == '1' ? navigation.navigate('UserRegister', {parametro}) : navigation.navigate('UserRegister', {parametro})}>
                             Registrarse
                         </Button>
                     </View>

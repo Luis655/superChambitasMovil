@@ -10,7 +10,9 @@ import WorkerLoginScreen from "./src/ui/screens/WorkerLoginScreen";
 import CodeScreen from "./src/ui/screens/CodeScreen";
 import HomeWorker from "./src/ui/screens/HomeWorker";
 import Configuraciones from "./src/ui/screens/Configuraciones";
-
+import NameScreen from "./src/ui/screens/NameScreen";
+import AddWorkerData from "./src/ui/screens/AddWorkerData";
+import MisTrabajos from "./src/ui/screens/MisTrabajos";
 import { Provider as PaperProvider } from 'react-native-paper';
 import { AuthProvider } from './src/auth/contextAuth';
 import { useDarkMode } from "./src/auth/contextAuth";
@@ -106,6 +108,27 @@ export default function App() {
           }}
           name="HomeUser"
           component={HomeUser}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="NameScreen"
+          component={NameScreen}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: true,
+          }}
+          name="Datos del trabajador"
+          component={AddWorkerData}
+        />
+          <Stack.Screen
+          options={{
+            headerShown: true,
+          }}
+          name="Mis trabajos"
+          component={MisTrabajos}
         />
         <Stack.Screen
           options={{

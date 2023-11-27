@@ -9,13 +9,14 @@ export const useLocation = ()=>{
 
 
     async function requestLocationPermission() {
-    console.log("hola")
 
         try {
           setErrorMsg(1);
           setEstadomsg(true);
 
           let { status } = await Location.requestForegroundPermissionsAsync();
+          console.log(status)
+
           if (status !== Location.PermissionStatus.GRANTED) {
             console.error('Permiso para acceder a la ubicación denegado');
             return;
@@ -27,7 +28,7 @@ export const useLocation = ()=>{
         } catch (err) {
           console.error(err)
           setErrorMsg(2);
-          setEstadomsg(true);
+          setEstadomsg(false);
           console.error('No se pudo obtener la ubicación. Inténtalo de nuevo.');
         }finally{
           setEstadomsg(false);

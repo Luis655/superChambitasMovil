@@ -3,7 +3,9 @@ import { View, StyleSheet, Text, Image, TextInput, KeyboardAvoidingView, Touchab
 import CountryPicker from 'react-native-country-picker-modal';
 import { Button } from 'react-native-paper';
 
-const MyComponent = ({ navigation }) => {
+const MyComponent = ({ navigation, route }) => {
+  const { parametro } = route.params;
+
   const [countryCode, setCountryCode] = useState("MX");
   const [country, setCountry] = useState(null);
 
@@ -55,7 +57,7 @@ const MyComponent = ({ navigation }) => {
             />
           </View>
 
-          <TouchableOpacity style={[styles.buttonContainer, styles.orangeButton]} onPress={() => navigation.navigate('CodeScreen')}>
+          <TouchableOpacity style={[styles.buttonContainer, styles.orangeButton]} onPress={() => navigation.navigate('CodeScreen', {parametro})}>
             <Text style={[styles.buttonText, styles.orangeButtonText]}>Enviar código</Text>
           </TouchableOpacity>
 

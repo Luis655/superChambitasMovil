@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
     user: '',
     password: '',
     token: '',
-    type: ''
+    type: '1'
   };
 
   const [state, dispatch] = useReducer(authReducer, initialState);

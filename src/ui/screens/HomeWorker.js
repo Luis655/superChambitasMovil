@@ -24,7 +24,7 @@ const HomeWorker = ({navigation, type}) => {
   const [markerPosition, setMarkerPosition] = useState(null);
   const [imageLoaded1, setImageLoaded1] = useState(false);
   const [imageLoaded2, setImageLoaded2] = useState(false);
-  const {location, status, errorMsg, estadomsg, requestLocationPermission} =useLocation();
+  const {location, status, errorMsg, estadomsg, requestLocationPermission} =  useLocation();
   const [contadorActive, setContadorActive] = useState(false);
 
   const locationReload = () =>{
@@ -796,7 +796,7 @@ const HomeWorker = ({navigation, type}) => {
     
     <View style={styles.container}>
 
-      {location ? (
+      {location? (
         <MapView style={styles.map} initialRegion={{ ...location, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }} customMapStyle={colorMode ? customMapStyleAuberige : customMapStyRetro} >
           <Marker key={location} coordinate={location} title='Tu ubicación' description='Aquí estas' >
           <Image
@@ -892,7 +892,7 @@ const HomeWorker = ({navigation, type}) => {
 
           <Text style={styles.username}>Luis Macias</Text>
         </View>
-        <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Mis trabajos')}}>
           <Icon name="briefcase" size={20} style={styles.icon} />
           <Text style={styles.menuItemText}>Mis Trabajos</Text>
         </TouchableOpacity>
@@ -900,7 +900,7 @@ const HomeWorker = ({navigation, type}) => {
           <Icon name="cogs" size={20} style={styles.icon} />
           <Text style={styles.menuItemText}>Mis Servicios</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
+        <TouchableOpacity style={styles.menuItem} onPress={toggleFloatingSection}>
           <Icon name="search" size={20} style={styles.icon} />
           <Text style={styles.menuItemText}>Encuentra Empleo</Text>
         </TouchableOpacity>
@@ -936,6 +936,7 @@ const HomeWorker = ({navigation, type}) => {
           iniciarRuta(lat, lng)
         }}
         Contador={iniciarContador}
+        Tipo={state.type}
       />
     </View>
   );

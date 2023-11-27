@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { ScrollView } from 'react-native-virtualized-view';
+import { List } from 'react-native-paper';
 
 const areaCodes = [
   { label: 'Aguascalientes (449)', value: '449' },
@@ -61,8 +62,61 @@ export default function WorkerRegister() {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState(areaCodes);
+  const [expanded, setExpanded] = React.useState(true);
+
+  const handlePress = () => setExpanded(!expanded);
   return (
     <>
+
+
+
+    <List.Section title="Accordions">
+      <List.Accordion
+        title="Datos generales"
+        left={props => <List.Icon {...props} icon="plus" />}>
+
+<View style={styles.phoneContainer}>
+
+{/* <TextInput
+style={[styles.input, styles.phoneInput]}
+placeholder="Lada"
+onChangeText={handleChange('phoneNumber')}
+onBlur={handleBlur('phoneNumber')}
+value={values.phoneNumber}
+/>*/}
+<TextInput
+  style={[styles.input, styles.phoneInput]}
+  placeholder="Número de teléfono"
+/>
+<DropDownPicker
+  open={open}
+  value={value}
+  items={items}
+  setOpen={setOpen}
+  setValue={setValue}
+  setItems={setItems}
+  defaultValue={'Mexico'}
+  placeholder="+"
+  containerStyle={{ height: 'auto', marginBottom: '5%', flex: 2 }}
+  style={{ backgroundColor: '#fafafa', borderWidth: .5, borderColor: '#ccc', borderRadius: .5, flex: 1 }}
+  itemStyle={{ justifyContent: 'flex-start' }}
+  dropDownStyle={{ backgroundColor: '#fafafa', borderWidth: .5, borderColor: '#ccc', borderRadius: .5 }}
+  onChangeItem={(item) => setFieldValue('phoneNumber', item.value)}
+/>
+</View>
+
+      </List.Accordion>
+
+      <List.Accordion
+        title="Controlled Accordion"
+        left={props => <List.Icon {...props} icon="folder" />}
+        expanded={expanded}
+        onPress={handlePress}>
+        <List.Item title="First item" />
+        <List.Item title="Second item" />
+      </List.Accordion>
+    </List.Section>
+
       <View style={styles.container}>
         <Formik
           initialValues={{
@@ -107,39 +161,6 @@ export default function WorkerRegister() {
 
 
 
-
-              <View style={styles.phoneContainer}>
-
-                {/* <TextInput
-                style={[styles.input, styles.phoneInput]}
-                placeholder="Lada"
-                onChangeText={handleChange('phoneNumber')}
-                onBlur={handleBlur('phoneNumber')}
-                value={values.phoneNumber}
-            />*/}
-                <TextInput
-                  style={[styles.input, styles.phoneInput]}
-                  placeholder="Número de teléfono"
-                  onChangeText={handleChange('phoneNumber')}
-                  onBlur={handleBlur('phoneNumber')}
-                  value={values.phoneNumber}
-                />
-                <DropDownPicker
-                  open={open}
-                  value={value}
-                  items={items}
-                  setOpen={setOpen}
-                  setValue={setValue}
-                  setItems={setItems}
-                  defaultValue={'Mexico'}
-                  placeholder="+"
-                  containerStyle={{ height: 'auto', marginBottom: '5%', flex: 2 }}
-                  style={{ backgroundColor: '#fafafa', borderWidth: .5, borderColor: '#ccc', borderRadius: .5, flex: 1 }}
-                  itemStyle={{ justifyContent: 'flex-start' }}
-                  dropDownStyle={{ backgroundColor: '#fafafa', borderWidth: .5, borderColor: '#ccc', borderRadius: .5 }}
-                  onChangeItem={(item) => setFieldValue('phoneNumber', item.value)}
-                />
-              </View>
 
               {errors.postalCode && (
                 <Text style={[styles.error, { marginBottom: 0 }]}>{errors.postalCode}</Text>

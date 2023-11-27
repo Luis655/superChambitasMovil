@@ -2,7 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, StyleSheet, Text, Image, TextInput, TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { Button } from 'react-native-paper';
 
-const VerificationScreen = ({ navigation }) => {
+const VerificationScreen = ({ navigation, route }) => {
+  const { parametro } = route.params;
+
   const [verificationCode, setVerificationCode] = useState(['', '', '', '', '', '']);
   const inputRefs = useRef([]);
   const [timer, setTimer] = useState(30);
@@ -97,7 +99,7 @@ const VerificationScreen = ({ navigation }) => {
             color="#3498db"  // Didi's blue color
             style={styles.verifyButton}
             mode="contained"
-            onPress={() => navigation.navigate('HomeWorker')}
+            onPress={() => navigation.navigate('NameScreen', {parametro})}
           >
             Verificar
           </Button>
