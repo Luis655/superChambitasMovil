@@ -86,10 +86,10 @@ const Configuraciones = () => {
   
 
   const renderSetting = (title, action) => (
-    <TouchableOpacity onPress={action}>
+    <TouchableOpacity onPress={action} style={styles.settingContainer}>
       <View style={styles.setting}>
         <Text style={styles.settingTitle}>{title}</Text>
-        <FontAwesome name="angle-right" style={styles.phoneIcon} />
+        <FontAwesome name="angle-right" style={styles.angleRightIcon} />
       </View>
     </TouchableOpacity>
   );

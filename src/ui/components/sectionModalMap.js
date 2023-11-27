@@ -88,103 +88,19 @@ const FloatingSection = ({ visible, onClose, isActive, Contador }) => {
             <Text style={styles.closeButtonText}>Cerrar</Text>
           </TouchableOpacity>
           <View style={{flex:1,marginTop:0}}>
-          <SegmentedButtons
-        value={value}
-        onValueChange={setValue}
-        buttons={[
-          {
-            value: 'trabajador',
-            label: 'Chambeadores',
-            checkedColor:'#000',
-            uncheckedColor: colorMode ? '#fff' : '#000'
-          },
-          {
-            value: 'pedir',
-            label: 'Pedir',
-            checkedColor:'#000',
-            uncheckedColor: colorMode ? '#fff' : '#000'
-          },
-          { 
-            value: 'pendientes', 
-            label: 'Pendientes',
-            checkedColor:'#000',
-            uncheckedColor: colorMode ? '#fff' : '#000'
-          },
-        ]}
-      />
-      </View>
-      {value == 'trabajador'  && <View>
-          {state.type == '1' &&
-          <TouchableOpacity style={styles.searchButton} onPress={onSearchJobs}>
-           <Text style={styles.searchButtonText}>{isActive ? "Desactivar" : "Activar"}</Text>
-          </TouchableOpacity>}
-          {state.type == '1' ?
-            <Text style={styles.textStyle}>Trabajos disponibles en tu area</Text>
           
-           :
-           <TouchableOpacity style={styles.search}>
+      </View>
+    
 
-      
-           <Searchbar
-              placeholder="Buscar trabajos"
-              onChangeText={onChangeSearch}
-              value={searchQuery}
-
-              
-            />
-          </TouchableOpacity>
-          }
-          <ScrollView style={styles.scrollView}>
-
-            {
-              jobData.map((job, index) => (
-                <Card index={index} job={job} aceptarTrabajo={(lat, lng) => { aceptarTrabajo(lat, lng) }} onClose={onClose} key={index} />
-              ))
-            }
-          </ScrollView>
-        </View>}
-
-        {value == 'pedir'  && <View>
-          {state.type == '1' &&
-          <TouchableOpacity style={styles.searchButton} onPress={onSearchJobs}>
-           <Text style={styles.searchButtonText}>{isActive ? "Desactivar" : "Activar"}</Text>
-          </TouchableOpacity>}
- 
+        <View>
 
             <View style={{height:'80%', maxHeight:'60%'}}>
               <SolicitarTrabajo Contador={Contador}/>
             </View>
-        </View>}
+        </View>
 
 
-        {value == 'pendientes'  && <View>
-          {state.type == '1' &&
-          <TouchableOpacity style={styles.searchButton} onPress={onSearchJobs}>
-           <Text style={styles.searchButtonText}>{isActive ? "Desactivar" : "Activar"}</Text>
-          </TouchableOpacity>}
-          {state.type == '1' ?
-            <Text style={styles.textStyle}>Trabajos disponibles en tu area</Text>
-          
-           :
-           <TouchableOpacity style={styles.search}>
-
-      
-           <Searchbar
-              placeholder="Buscar trabajos"
-              onChangeText={onChangeSearch}
-              value={searchQuery}
-
-              
-            />
-          </TouchableOpacity>
-          }
-          <ScrollView style={styles.scrollView}>
-
-              <View>
-                <Text>Vista para ver los trabajos pendientes</Text>
-              </View>
-          </ScrollView>
-        </View>}
+        
         </View>
       </View>
     </Modal>
