@@ -10,7 +10,7 @@ const OnBoardingScreen = ({ navigation }) => {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: colorMode ? "#fff" : "#000",
+    backgroundColor: colorMode ? "#fff" : "#fff",
   };
 
   return (

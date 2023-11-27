@@ -70,7 +70,12 @@ const SolicitarTrabajo = ({ Contador }) => {
       borderWidth: 1,
       borderColor: colorMode ? '#8ec3b9' : '#fff',
       backgroundColor: colorMode ? '#8ec3b9' : '#fff',
-      marginTop: 0
+      marginTop: 0,
+      borderRadius: 10,
+      margin: 10,
+      backgroundColor: colorMode ? '#3C7680' : '#fff',
+      marginTop:0
+      //elevation: 3,
     },
     image: {
       height: 200,
@@ -193,8 +198,8 @@ const SolicitarTrabajo = ({ Contador }) => {
       <View style={{
         flex: 1,
         justifyContent: 'center',
-
-      }}>
+            
+    }}>
 
         <Formik
           initialValues={{ title: '', address: '', description: '', payment: '' }}
@@ -207,13 +212,13 @@ const SolicitarTrabajo = ({ Contador }) => {
         >
           {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
             <View>
-
               <View style={styles.card}>
                 <Appbar.Header color='#FF5A5F' style={{ backgroundColor: 'transparent', borderRadius: 10 }}>
                   <Appbar.Content color={colorMode ? '#fff' : '#000'} title="Crear una solicitud" />
                   <Appbar.Action icon="camera" onPress={_handleMore} />
                 </Appbar.Header>
                 <DropDownPicker
+
                   open={open}
                   value={value}
                   items={items}
@@ -228,7 +233,8 @@ const SolicitarTrabajo = ({ Contador }) => {
                   dropDownStyle={{ backgroundColor: colorMode ? '#6f9ba5' : '#fff', borderWidth: .5, borderColor: '#ccc', borderRadius: .5 }}
                   onChangeItem={(item) => setFieldValue('phoneNumber', item.value)}
                 />
-                <ScrollView >
+
+            <ScrollView >
 
                   <View style={styles.cardContent}>
                     <TextInput

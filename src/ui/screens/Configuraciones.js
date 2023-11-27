@@ -5,7 +5,6 @@ import { FontAwesome } from '@expo/vector-icons';
 
 const Configuraciones = () => {
   const { colorMode, setDarkColorMode } = useDarkMode();
-  console.log(useDarkMode())
   const [phoneNumber, setPhoneNumber] = useState('123-456-7890');
 
   const toggleSwitch = () => setDarkColorMode((previousState) => !previousState);
@@ -14,10 +13,10 @@ const Configuraciones = () => {
     container: {
       flex: 1,
       padding: 24,
-      backgroundColor: colorMode ? '#1d2c4d' : '#ffffff',
+      backgroundColor: colorMode ? '#121212' : '#ffffff',
     },
     card: {
-      backgroundColor: colorMode ? '#1d2c4d' : '#ffffff',
+      backgroundColor: colorMode ? '#1e1e1e' : '#f4f4f4',
       borderRadius: 10,
       padding: 16,
       marginBottom: 16,
@@ -87,10 +86,10 @@ const Configuraciones = () => {
   
 
   const renderSetting = (title, action) => (
-    <TouchableOpacity onPress={action}>
+    <TouchableOpacity onPress={action} style={styles.settingContainer}>
       <View style={styles.setting}>
         <Text style={styles.settingTitle}>{title}</Text>
-        <FontAwesome name="angle-right" style={styles.phoneIcon} />
+        <FontAwesome name="angle-right" style={styles.angleRightIcon} />
       </View>
     </TouchableOpacity>
   );
