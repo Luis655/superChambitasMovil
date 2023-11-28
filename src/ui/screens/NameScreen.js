@@ -23,10 +23,9 @@ const NameScreen = ({ navigation, route }) => {
                   <View style={styles.header}>
             <Image style={styles.logo} source={require('../../../assets/LogoSuperChambitas.png')} />
           </View>
-      <Text style={styles.title}>Ingrese su Nombre Completo</Text>
+      <Text style={styles.title}>Ingrese su nombre completo</Text>
 
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Nombre:</Text>
         <TextInput
           style={styles.input}
           placeholder="Escriba su nombre"
