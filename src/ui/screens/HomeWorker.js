@@ -848,42 +848,42 @@ const HomeWorker = ({ navigation, type }) => {
         </>
       )}
 
-      {
-        errorMsg === 1 ?
-          (
-            <View style={styles.containere}>
-              {/* Otros elementos de la interfaz aquí */}
+{contadorActive ? (
+  <View style={styles.containers}>
+    <View style={styles.waitingContainer}>
+      <Text style={styles.waitingText}>
+        Esperando respuesta...
+      </Text>
+      <Text style={styles.timerText}>
+        {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+      </Text>
+    </View>
+  </View>
+) : (
+  errorMsg === 1 ? (
+    // Render this block if errorMsg is 1
+    <View style={styles.containere}>
+      {/* Other interface elements here */}
 
-              {/* Botón flotante */}
-              <TouchableOpacity style={styles.fab} onPress={toggleFloatingSection}>
-                <Ionicons name="radio-button-on" size={15} color="#ff9900" />
-                <Text style={styles.text}>{state.type == '1' ? "Buscar chamba" : "Solicitar chamba"}</Text>
-              </TouchableOpacity>
-            </View>
-          )
-          :
-          (
-            <FAB
-              text="Cargando"
-              icon="reload"
-              style={styles.fab}
-              onPress={() => { requestLocationPermission() }}
-            />
-          )
-      }
+      {/* Floating button */}
+      <TouchableOpacity style={styles.fab} onPress={toggleFloatingSection}>
+        <Ionicons name="radio-button-on" size={15} color="#ff9900" />
+        <Text style={styles.text}>
+          {state.type == '1' ? "¿ QUE HAREMOS HOY ?" : "¿ CHAMBEADOR ?"}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  ) : (
+    // Render this block if errorMsg is not 1
+    <FAB
+      text="Cargando"
+      icon="reload"
+      style={styles.fab}
+      onPress={() => { requestLocationPermission() }}
+    />
+  )
+)}
 
-      {contadorActive &&
-        <View style={styles.containers}>
-          <View style={styles.waitingContainer}>
-            <Text style={styles.waitingText}>
-              Esperando respuesta...
-            </Text>
-            <Text style={styles.timerText}>
-              {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
-            </Text>
-          </View>
-        </View>
-      }
 
       <View>
 

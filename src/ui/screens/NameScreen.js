@@ -8,11 +8,11 @@ const NameScreen = ({ navigation, route }) => {
 
   const handleGuardar = () => {
     const nombreCompleto = `${nombre} ${apellido}`;
-    alert(`Nombre Completo: ${nombreCompleto}`);
+    //alert(`Nombre Completo: ${nombreCompleto}`);
     if (parametro == '1') {
         navigation.navigate('Datos del trabajador', {parametro})
     }else{
-        navigation.navigate('NameScreen', {parametro})
+        navigation.navigate('HomeWorker', {parametro})
     }
 
   };

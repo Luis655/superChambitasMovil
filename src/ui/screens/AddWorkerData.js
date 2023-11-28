@@ -4,7 +4,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { MultipleSelectList } from "react-native-dropdown-select-list";
 import { TextInput } from 'react-native-paper';
-
+import useAxios from '../../customHooks/hookAxios';
 const AddWorkerDataSchema = Yup.object().shape({
   description: Yup.string()
     .required("La descripción es requerida")
@@ -47,7 +47,11 @@ const AddWorkerData = ({ navigation, route }) => {
     console.log("Formulario enviado con éxito:", values, selected);
   };
   const direccionRef = useRef(null);
+      const data = useAxios('categorías', 'GET');
 
+
+
+      console.log(data)
   return (<>
     <ScrollView>
 
@@ -55,7 +59,7 @@ const AddWorkerData = ({ navigation, route }) => {
         <Image style={styles.logo} source={require('../../../assets/LogoSuperChambitas.png')} />
       </View>
       <Text style={[styles.title, { textAlign: 'center' }]}>
-        Cuentanos más sobre ti
+        {JSON.stringify(data)}
       </Text>
       <View style={styles.cont2}>
 
