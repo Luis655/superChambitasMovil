@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
-import { View, Text, Image, StyleSheet, TouchableOpacity, Alert, Platform, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert, Platform, KeyboardAvoidingView, ScrollView, Keyboard } from 'react-native';
 import ModalChat from './ModalChat';
 import { useDarkMode } from '../../auth/contextAuth';
-import { TextInput, Appbar, Modal } from 'react-native-paper'
+import { TextInput, Appbar, Avatar } from 'react-native-paper'
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import DropDownPicker from 'react-native-dropdown-picker';
+import { SelectList } from "react-native-dropdown-select-list";
 import { Camera } from 'expo-camera';
 
 const MORE_ICON = Platform.OS === 'ios' ? 'dots-horizontal' : 'dots-vertical';
@@ -15,6 +15,8 @@ const SolicitarTrabajo = ({ Contador }) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [foto, setFoto] = useState('');
+  const [camaraFrontal, setCamaraFrontal] = useState(false);
+
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -24,17 +26,26 @@ const SolicitarTrabajo = ({ Contador }) => {
 
   const { colorMode, setDarkColorMode } = useDarkMode();
   const jobs = [
-    { label: 'plomero', value: '1' },
-    { label: 'electricista', value: '2' },
-    { label: 'leñador', value: '3' },
-    { label: 'Chapeador', value: '4' },
-    { label: 'albañil', value: '5' },
-    { label: 'plomero', value: '6' },
-    { label: 'electricista', value: '7' },
-    { label: 'leñador', value: '8' },
-    { label: 'Chapeador', value: '9' },
-    { label: 'albañil', value: '10' },
+    { key: '1', value: 'trabajo 1' },
+    { key: '2', value: 'trabajo 2' },
+    { key: '3', value: 'trabajo 3' },
+    { key: '4', value: 'trabajo 4' },
+    { key: '5', value: 'trabajo 5' },
+    { key: '6', value: 'trabajo 6' },
+    { key: '7', value: 'trabajo 7' },
+    { key: '8', value: 'trabajo 8' },
+    { key: '9', value: 'trabajo 9' },
+    { key: '10', value: 'trabajo 10' },
   ];
+  const data = [
+    { key: '1', value: 'Mobiles', disabled: true },
+    { key: '2', value: 'Appliances' },
+    { key: '3', value: 'Cameras' },
+    { key: '4', value: 'Computers', disabled: true },
+    { key: '5', value: 'Vegetables' },
+    { key: '6', value: 'Diary Products' },
+    { key: '7', value: 'Drinks' },
+  ]
 
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -64,18 +75,17 @@ const SolicitarTrabajo = ({ Contador }) => {
     },
     bottonsCard: {
       flexDirection: 'row',
-      justifyContent: 'space-between',
+      justifyContent: 'center',
+      alignSelf: 'center',
+      marginBottom: 35
     },
     card: {
       borderWidth: 1,
       borderColor: colorMode ? '#8ec3b9' : '#fff',
       backgroundColor: colorMode ? '#8ec3b9' : '#fff',
-      marginTop: 0,
       borderRadius: 10,
-      margin: 10,
       backgroundColor: colorMode ? '#3C7680' : '#fff',
-      marginTop:0
-      //elevation: 3,
+      height: '95%'
     },
     image: {
       height: 200,
@@ -88,23 +98,19 @@ const SolicitarTrabajo = ({ Contador }) => {
     name: {
       fontSize: 18,
       fontWeight: 'bold',
-      marginBottom: 5,
       color: colorMode ? '#fff' : '#000'
     },
     jobType: {
       fontSize: 16,
       color: colorMode ? 'white' : 'green',
-      marginBottom: 10,
       color: colorMode ? '#fff' : '#000'
     },
     price: {
       fontSize: 14,
-      marginBottom: 5,
       color: colorMode ? '#fff' : '#000'
     },
     address: {
       fontSize: 14,
-      marginBottom: 5,
       color: colorMode ? '#fff' : '#000'
     },
     description: {
@@ -116,11 +122,11 @@ const SolicitarTrabajo = ({ Contador }) => {
       fontSize: 17,
       marginBottom: 10,
       borderRadius: 5,
+      justifyContent: 'center'
     },
     errorText: {
       color: 'red',
       fontSize: 12,
-      marginTop: 4,
     },
     descriptionInput: {
       height: 90,
@@ -190,163 +196,221 @@ const SolicitarTrabajo = ({ Contador }) => {
 
     }
   };
+  const tituloRef = useRef(null);
+  const direccionRef = useRef(null);
+  const descripcionRef = useRef(null);
+  const pagoRef = useRef(null);
+
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1 }}>
-      <View style={{
-        flex: 1,
-        justifyContent: 'center',
-            
-    }}>
-
-        <Formik
-          initialValues={{ title: '', address: '', description: '', payment: '' }}
-          validationSchema={validationSchema}
-          onSubmit={(values) => {
-            aceptado(values);
-            // Handle form submission here
-            console.log(values);
-          }}
-        >
-          {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-            <View>
-              <View style={styles.card}>
-                <Appbar.Header color='#FF5A5F' style={{ backgroundColor: 'transparent', borderRadius: 10 }}>
-                  <Appbar.Content color={colorMode ? '#fff' : '#000'} title="Crear una solicitud" />
-                  <Appbar.Action icon="camera" onPress={_handleMore} />
-                </Appbar.Header>
-                <DropDownPicker
-
-                  open={open}
-                  value={value}
-                  items={items}
-                  setOpen={setOpen}
-                  setValue={setValue}
-                  setItems={setItems}
-                  defaultValue={'Mexico'}
-                  placeholder="Selecciona un tipo de trabajo"
-                  containerStyle={{ height: 'auto', marginBottom: '5%', flex: 2, width: '90%', alignSelf: 'center', marginBottom: 40 }}
-                  style={{ backgroundColor: colorMode ? '#6f9ba5' : '#fff', borderWidth: .5, borderColor: '#ccc', borderRadius: .5, flex: 1 }}
-                  itemStyle={{ justifyContent: 'flex-start' }}
-                  dropDownStyle={{ backgroundColor: colorMode ? '#6f9ba5' : '#fff', borderWidth: .5, borderColor: '#ccc', borderRadius: .5 }}
-                  onChangeItem={(item) => setFieldValue('phoneNumber', item.value)}
-                />
-
-            <ScrollView >
-
-                  <View style={styles.cardContent}>
-                    <TextInput
-                      style={styles.textInput}
-                      mode='outlined'
-                      activeOutlineColor={colorMode ? '#ccc' : '#000'}
-                      label="Titulo del Trabajo"
-                      placeholder='Trabajo de plomero ......'
-                      value={values.title}
-                      onChangeText={handleChange('title')}
-                      onBlur={handleBlur('title')}
-                    />
-                    {touched.title && errors.title && <Text style={styles.errorText}>{errors.title}</Text>}
-
-                    <TextInput
-                      style={styles.textInput}
-                      mode='outlined'
-                      activeOutlineColor={colorMode ? '#ccc' : '#000'}
-                      label="Direccion"
-                      placeholder='calle 59 por .....'
-                      value={values.address}
-                      onChangeText={handleChange('address')}
-                      onBlur={handleBlur('address')}
-                    />
-                    {touched.address && errors.address && <Text style={styles.errorText}>{errors.address}</Text>}
 
 
-                    <TextInput
-                      style={[styles.textInput, styles.descriptionInput]}
-                      mode='outlined'
-                      activeOutlineColor={colorMode ? '#ccc' : '#000'}
-                      label="Descripción"
-                      placeholder='Requiero un plomero para ....'
-                      value={values.description}
-                      onChangeText={handleChange('description')}
-                      onBlur={handleBlur('description')}
-                      multiline={true}
-                    />
-                    {touched.description && errors.description && (
-                      <Text style={styles.errorText}>{errors.description}</Text>
-                    )}
-                    <TextInput
-                      style={styles.textInput}
-                      mode='outlined'
-                      activeOutlineColor={colorMode ? '#ccc' : '#000'}
-                      label="¿Cuanto pagaras?"
-                      placeholder='599 pesos'
-                      value={values.payment}
-                      onChangeText={(value) => {
-                        // Only allow numeric input
-                        if (/^\d+$/.test(value) || value === '') {
-                          handleChange('payment')(value);
-                        }
-                      }}
-                      onBlur={handleBlur('payment')}
-                      keyboardType="numeric"
-                    />
-                    {touched.payment && errors.payment && <Text style={styles.errorText}>{errors.payment}</Text>}
-                    
-                    <View style={styles.bottonsCard}>
-                      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                        <Text style={styles.buttonText}>Solicitar Trabajador</Text>
-                      </TouchableOpacity>
-                    </View>
-                    <Image
-                      source={{ uri: foto }}
-                      style={{ width: 100, height: 100, marginTop: 33 }}
-                    />
-                  </View>
-                </ScrollView>
+    <ScrollView>
 
-              </View>
-            </View>
-          )}
-        </Formik>
+      <Formik
+        initialValues={{ title: '', address: '', description: '', payment: '' }}
+        validationSchema={validationSchema}
+        onSubmit={(values) => {
+          aceptado(values);
+          // Handle form submission here
+          console.log(values);
+        }}
+      >
+        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+          <View style={styles.card}>
+            <Appbar.Header color='#FF5A5F' style={{ backgroundColor: 'transparent', borderRadius: 10 }}>
+              <Appbar.Content color={colorMode ? '#fff' : '#000'} title="Crear una solicitud" />
+              <Appbar.Action icon="camera" onPress={_handleMore} />
+            </Appbar.Header>
+            <SelectList
+              setSelected={(val) => setValue(val)}
+              data={jobs}
+              save="key"
+              onSelect={() => alert(value)}
+              label="Selecciona el trabajo"
+              labelStyles={{ fontWeight: '900' }}
+              placeholder="Selecciona tu trabajo"
+              searchPlaceholder="Buscar"
+              defaultOption={{ key: '0', value: 'Selecciona un trabajo' }}   //default selected option
+              boxStyles={{ backgroundColor: colorMode ? '#6f9ba5' : '#fff', color: '#fff', width: '96%', alignSelf: 'center' }}
+              dropdownItemStyles={{ backgroundColor: colorMode ? '#6f9ba5' : '#fff', width: '90%', alignSelf: 'center' }}
+              dropdownTextStyles={{ color: colorMode ? '#fff' : '#000' }}
 
-        {openCamera && (
-          <View style={{ width: '30%', height: '30%', position: 'absolute', top: 0 }}>
-            <Camera
-              style={{ flex: 1 }}
-              type={Camera.Constants.Type.back}
-              ref={setCameraRef}
-            >
-              <View
-                style={{
-                  flex: 1,
-                  backgroundColor: 'transparent',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  padding: 16,
+
+
+            />
+
+
+            <View style={styles.cardContent}>
+              <TextInput
+                style={styles.textInput}
+                mode='outlined'
+                activeOutlineColor={colorMode ? '#ccc' : '#000'}
+                label="Titulo del Trabajo"
+                placeholder='Trabajo de plomero ......'
+                value={values.title}
+                onChangeText={handleChange('title')}
+                onBlur={handleBlur('title')}
+                returnKeyType="next"
+                onSubmitEditing={() => { Keyboard.dismiss(), direccionRef.current.focus() }}
+
+              />
+              {touched.title && errors.title && <Text style={styles.errorText}>{errors.title}</Text>}
+
+              <TextInput
+                style={styles.textInput}
+                mode='outlined'
+                activeOutlineColor={colorMode ? '#ccc' : '#000'}
+                label="Direccion"
+                placeholder='calle 59 por .....'
+                value={values.address}
+                onChangeText={handleChange('address')}
+                onBlur={handleBlur('address')}
+                ref={direccionRef}
+                returnKeyType="next"
+                onSubmitEditing={() => { Keyboard.dismiss(), descripcionRef.current.focus() }}
+
+
+              />
+              {touched.address && errors.address && <Text style={styles.errorText}>{errors.address}</Text>}
+
+
+              <TextInput
+                style={[styles.textInput, styles.descriptionInput]}
+                mode='outlined'
+                activeOutlineColor={colorMode ? '#ccc' : '#000'}
+                label="Descripción"
+                placeholder='Requiero un plomero para ....'
+                value={values.description}
+                onChangeText={handleChange('description')}
+                onBlur={handleBlur('description')}
+                multiline={true}
+                ref={descripcionRef}
+
+
+                textAlignVertical="top"
+                numberOfLines={4}
+                keyboardType="default"
+                returnKeyType="next"
+                blurOnSubmit={true}
+                onSubmitEditing={() => { Keyboard.dismiss(), pagoRef.current.focus() }}
+                right={<TextInput.Affix text={values.description.length + "/200"} />}
+              />
+              {touched.description && errors.description && (
+                <Text style={styles.errorText}>{errors.description}</Text>
+              )}
+              <TextInput
+                style={styles.textInput}
+                mode='outlined'
+                activeOutlineColor={colorMode ? '#ccc' : '#000'}
+                label="¿Cuanto pagaras?"
+                placeholder='599 pesos'
+                value={values.payment}
+                onChangeText={(value) => {
+                  // Only allow numeric input
+                  if (/^\d+$/.test(value) || value === '') {
+                    handleChange('payment')(value);
+                  }
                 }}
-              >
-                <TouchableOpacity
-                  style={{
-                    alignSelf: 'flex-end',
-                    alignItems: 'center',
-                    backgroundColor: '#FF5A5F',
-                    padding: 10,
-                    borderRadius: 8,
-                  }}
-                  onPress={takePicture}
-                >
-                  <Text style={{ fontSize: 18, color: 'white' }}>Capturar</Text>
+                onBlur={handleBlur('payment')}
+                keyboardType="numeric"
+                ref={pagoRef}
+                returnKeyType="done"
+                onSubmitEditing={handleSubmit}
+              />
+              {touched.payment && errors.payment && <Text style={styles.errorText}>{errors.payment}</Text>}
+
+              <View style={styles.bottonsCard}>
+                <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+                  <Text style={styles.buttonText}>Solicitar Trabajador</Text>
                 </TouchableOpacity>
+                {foto != '' ?
+                  <TouchableOpacity onPress={_handleMore}>
+                    <Avatar.Image size={80} style={{ backgroundColor: 'transparent' }} source={{ uri: foto }} />
+                  </TouchableOpacity>
+
+                  :
+
+                  <TouchableOpacity onPress={_handleMore}>
+                    <Avatar.Icon size={80} style={{ backgroundColor: 'transparent' }} icon="camera" />
+                  </TouchableOpacity>
+                }
+
               </View>
-            </Camera>
+
+            </View>
+
           </View>
         )}
+      </Formik>
+
+      {openCamera && (
+        <View style={{ flex: 1, height: '100%', width: '100%', position: 'absolute', top: 0 }}>
+          <Camera
+            style={{ flex: 1 }}
+            type={!camaraFrontal ? Camera.Constants.Type.back : Camera.Constants.Type.front}
+            ref={setCameraRef}
+          >
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: 'transparent',
+                flexDirection: 'row',
+                padding: 16,
+                justifyContent: 'center'
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  alignSelf: 'flex-end',
+                  alignItems: 'center',
+                  backgroundColor: 'transparent',
+                  padding: 10,
+                  flexDirection: 'row',
+                }}
+                onPress={() => { setOpenCamera(!openCamera); setFoto('') }}
+              >
+                <Avatar.Icon style={{ backgroundColor: 'transparent' }} size={70} icon="close-circle" />
+
+              </TouchableOpacity>
 
 
-      </View>
-    </KeyboardAvoidingView>
+              <TouchableOpacity
+                style={{
+                  alignSelf: 'flex-end',
+                  alignItems: 'center',
+                  backgroundColor: 'transparent',
+                  padding: 10,
+                  flexDirection: 'row',
+                }}
+                onPress={takePicture}
+              >
+                <Avatar.Icon style={{ backgroundColor: 'transparent' }} size={70} icon="camera" />
+
+              </TouchableOpacity>
+
+
+
+              <TouchableOpacity
+                style={{
+                  alignSelf: 'flex-end',
+                  alignItems: 'center',
+                  backgroundColor: 'transparent',
+                  padding: 10,
+                  flexDirection: 'row',
+                }}
+                onPress={() => { setCamaraFrontal(!camaraFrontal) }}
+              >
+                <Avatar.Icon style={{ backgroundColor: 'transparent' }} size={70} icon="camera-party-mode" />
+
+              </TouchableOpacity>
+            </View>
+          </Camera>
+        </View>
+      )}
+    </ScrollView>
+
+
 
   );
 

@@ -6,7 +6,7 @@ import { useDarkMode, useAuth } from '../../auth/contextAuth';
 import SolicitarTrabajo from './SolicitarTrabajo';
 import { MaterialIcons } from '@expo/vector-icons';
 
-const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrabajo, Contador, Tipo }) => {
+const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrabajo, Contador, Tipo, Titulo }) => {
   const { colorMode } = useDarkMode();
   const { state, dispatch } = useAuth();
 
@@ -20,7 +20,7 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalContent: {
-      backgroundColor: colorMode ? '#ffffff' : '#1d2c4d',
+      backgroundColor: colorMode ? '#1d2c4d' : '#ffffff',
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
       height: '100%'
@@ -88,7 +88,7 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
         <View style={styles.modalContent}>
 
           <View style={styles.container}>
-            <Text style={styles.requestServiceText}>Solicitar Servicio</Text>
+            <Text style={styles.requestServiceText}>{Titulo}</Text>
             <TouchableOpacity style={styles.closeButton} onPress={onClose}>
               <MaterialIcons name="close" size={30} color="#fff" />
             </TouchableOpacity>
@@ -105,13 +105,13 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
                   value: 'trabajador',
                   label: 'Chambas',
                   checkedColor: '#000',
-                  uncheckedColor: colorMode ? '#000' : '#fff'
+                  uncheckedColor: colorMode ? '#fff' : '#000'
                 },
                 {
                   value: 'pendientes',
                   label: 'Pendientes',
                   checkedColor: '#000',
-                  uncheckedColor: colorMode ? '#000' : '#fff'
+                  uncheckedColor: colorMode ? '#fff' : '#000'
                 },
                 
               ]}
@@ -124,14 +124,13 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
           {value == 'trabajador' &&
             <View>
 
-              {state.type == '3' &&
+              {state.type == '1' &&
                 <TouchableOpacity style={styles.searchButton} onPress={onSearchJobs}>
                   <Text style={styles.searchButtonText}>{isActive ? "Desactivar" : "Activar"}</Text>
                 </TouchableOpacity>}
-              {state.type == '3' ?
+              {state.type == '1' ?
+              <View>
                 <Text style={styles.textStyle}>Trabajos disponibles en tu area</Text>
-
-                :
                 <TouchableOpacity style={styles.search}>
 
 
@@ -143,15 +142,22 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
 
                   />
                 </TouchableOpacity>
-              }
-              <ScrollView style={{height:'75%'}}>
+                              <ScrollView style={{height:'75%'}}>
 
-                {
-                  jobData.map((job, index) => (
-                    <Card index={index} job={job} aceptarTrabajo={(lat, lng) => { aceptarTrabajo(lat, lng) }} onClose={onClose} key={index} />
-                  ))
-                }
-              </ScrollView>
+                              {
+                                jobData.map((job, index) => (
+                                  <Card index={index} job={job} aceptarTrabajo={(lat, lng) => { aceptarTrabajo(lat, lng) }} onClose={onClose} key={index} />
+                                ))
+                              }
+                            </ScrollView>
+                            </View>
+                :
+                <View style={{ height: '100%', maxHeight: '100%', justifyContent:'center' }}>
+                <SolicitarTrabajo Contador={Contador} />
+              </View>
+
+              }
+
             </View>}
 
           {value == 'pedir' && <View>
@@ -161,9 +167,7 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
               </TouchableOpacity>}
 
 
-            <View style={{ height: '90%', maxHeight: '100%' }}>
-              <SolicitarTrabajo Contador={Contador} />
-            </View>
+
           </View>}
 
 

@@ -5,7 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import OnBoardingScreen from "./src/ui/screens/onBoardingScreen";
 import WorkerRegisterScreen from "./src/ui/screens/WorkerRegisterScreen";
 import UserRegisterScreen from "./src/ui/screens/UserRegisterScreen";
-
+import BarraLateral from "./src/ui/components/BarraLateral";
 import WorkerLoginScreen from "./src/ui/screens/WorkerLoginScreen";
 import CodeScreen from "./src/ui/screens/CodeScreen";
 import HomeWorker from "./src/ui/screens/HomeWorker";
@@ -133,6 +133,13 @@ export default function App() {
           }}
           name="Configuraciones"
           component={Configuraciones}
+        />
+                <Stack.Screen
+          options={{
+            headerShown: true,
+          }}
+          name="BarraLAterar"
+          component={BarraLateral}
         />
       </Stack.Navigator>
     </NavigationContainer>
