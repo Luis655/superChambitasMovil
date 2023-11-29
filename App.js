@@ -13,7 +13,10 @@ import Configuraciones from "./src/ui/screens/Configuraciones";
 
 import { Provider as PaperProvider } from "react-native-paper";
 import { AuthProvider } from "./src/auth/contextAuth";
-import { setNotificationHandler,getPermissionsAsync, requestPermissionsAsync } from "expo-notifications";
+import { setNotificationHandler } from "expo-notifications";
+import NameScreen from "./src/ui/screens/NameScreen";
+import AddWorkerData from "./src/ui/screens/AddWorkerData";
+import MisTrabajos from "./src/ui/screens/MisTrabajos";
 import {
   useFonts,
   Montserrat_400Regular,
@@ -55,7 +58,7 @@ export default function App() {
       // if (finalStatus !== 'granted') {
       //   alert('Podras activar las notificaciones en configuración');
       // }
-  
+
       await SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
@@ -67,7 +70,7 @@ export default function App() {
   return (
     <SignalRContext.Provider
       url={
-        "https://f68e-2806-10be-9-adbd-d88e-be52-a4f4-f622.ngrok-free.app/notifications"
+        "https://4784-2806-10be-9-32a8-6522-9464-4172-f256.ngrok-free.app/notifications"
       }
     >
       <AuthProvider>
@@ -122,6 +125,28 @@ export default function App() {
                 }}
                 name="HomeUser"
                 component={HomeUser}
+              />
+              <Stack.Screen
+                options={{
+                  headerShown: false,
+                }}
+                name="NameScreen"
+                component={NameScreen}
+              />
+              <Stack.Screen
+                options={{
+                  headerBackTitleVisible: false,
+                  headerShown: true,
+                }}
+                name="Datos del trabajador"
+                component={AddWorkerData}
+              />
+              <Stack.Screen
+                options={{
+                  headerShown: true,
+                }}
+                name="Mis trabajos"
+                component={MisTrabajos}
               />
               <Stack.Screen
                 options={{

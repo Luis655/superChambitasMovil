@@ -7,9 +7,8 @@ import { Avatar } from "react-native-paper";
 import useAxios from "../../customHooks/hookAxios";
 import { Button, TextInput, IconButton, Icon } from "react-native-paper";
 import { useContext } from "react";
-import { scheduleNotificationAsync } from 'expo-notifications';
 const validationSchema = Yup.object().shape({
-  username: Yup.string().required("El nombre de usuario es obligatorio"),
+  email: Yup.string().required("El nombre de usuario es obligatorio"),
   password: Yup.string().required("La contraseña es obligatoria"),
 });
 
@@ -17,15 +16,9 @@ const validationSchema = Yup.object().shape({
 export default function WorkerLoginScreen({ navigation, route }) {
   const { parametro } = route.params;
 
-  const [credenciales, setCredenciales] = useState({ email: "", password: "" });
   const [data, setData] = useState();
-  const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
-
-  const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
-
-  const passwordRef = useRef(null);
   const { user, setUser } = useContext(AuthContext);
 
   const handleLogin = async (values) => {
@@ -33,31 +26,22 @@ export default function WorkerLoginScreen({ navigation, route }) {
     setLoading(true);
     user
     try {
-      const response = await useAxios("user/Autenticar", "post", {
-        email: values.username,
+      const response = await useAxios("user/Autenticar", "post", JSON.stringify({
+        email: values.email,
         password: values.password,
-      });
+      }));
 
       if (response.data.resultado && response.data.token) {
         setData(response.data);
-        setUser(response.data);
-
-        await scheduleNotificationAsync({
-          identifier: Math.random().toString(),
-          content: {
-            title: "Bienvenido a SuperChambitas " + values.username,
-          },
-          trigger: null,
-        });
+        await setUser(response.data);
         navigation.navigate("HomeWorker");
       }
     } catch (error) {
       setLoading(false);
-      console.log(error);
       Alert.alert("Error al iniciar sesion", "Error", [
         {
           text: "Aceptar",
-          onPress: () => console.log(""),
+          onPress: () => {},
         },
       ]);
     } finally {
@@ -66,89 +50,64 @@ export default function WorkerLoginScreen({ navigation, route }) {
 
   };
   return (
+
     <View style={styles.container}>
-      {/* {loading && <ActivityIndicator size="large" />} */}
-
       <View style={styles.logoContainer}>
-        <Avatar.Image
-          style={{ backgroundColor: "#F5AF19" }}
-          size={190}
-          source={require("../../../assets/LogoSuperChambitas.png")}
-        />
-
-        <Text style={styles.logo}>SuperChambitas</Text>
+        <Avatar.Image style={styles.logoImage} size={250} source={require('../../../assets/LogoSuperChambitas.png')} />
+        <Text style={styles.logoText}>Continuemos esta aventura!</Text>
       </View>
+
       <Formik
-        initialValues={{ username: "", password: "" }}
+        initialValues={{ email: '', password: '' }}
         onSubmit={handleLogin}
         validationSchema={validationSchema}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
           <View style={styles.formContainer}>
             <TextInput
-              mode="outlined"
-              label="Correo"
-              placeholder="Escribe tu correo"
+              style={styles.input}
+              placeholder="Correo"
               keyboardType="email-address"
-              onChangeText={handleChange("username")}
-              onBlur={handleBlur("username")}
-              value={values.username}
-              onSubmitEditing={() => passwordRef.current.focus()}
-              right={<TextInput.Affix text="/100" />}
+              onChangeText={handleChange('email')}
+              onBlur={handleBlur('email')}
+              value={values.email}
             />
-            {errors.username && (
-              <Text style={styles.error}>{errors.username}</Text>
-            )}
+
+
+            {errors.email && <Text style={styles.error}>{errors.email}</Text>}
 
             <TextInput
-              mode="outlined"
-              label="Contraseña"
-              placeholder="Escribe tu contraseña"
+              style={styles.input}
+              placeholder="Contraseña"
               secureTextEntry={!passwordVisible}
-              onChangeText={handleChange("password")}
-              onBlur={handleBlur("password")}
+              onChangeText={handleChange('password')}
+              onBlur={handleBlur('password')}
               value={values.password}
-              ref={passwordRef}
-              returnKeyType="done"
-              onSubmitEditing={handleSubmit}
               right={
                 <TextInput.Icon
-                  icon={passwordVisible ? "eye-off" : "eye"}
+                  name={passwordVisible ? 'eye-off' : 'eye'}
                   onPress={() => setPasswordVisible(!passwordVisible)}
+                  icon={() => <Icon name={passwordVisible ? 'eye-slash' : 'eye'} size={20} color="#000" />} // Change the color and size as needed
                 />
               }
             />
-            {errors.password && (
-              <Text style={styles.error}>{errors.password}</Text>
-            )}
+            {errors.password && <Text style={styles.error}>{errors.password}</Text>}
+            <Button
+              loading={loading}
+              disabled={loading}
+              style={styles.loginButton}
+              mode="contained"
+              onPress={handleSubmit}
+            >
+              Iniciar sesión
+            </Button>
 
-
-
-            <View style={styles.buttonContainer}>
-
+            <View style={styles.registerContainer}>
+              <Text style={styles.registerText}>¿No tienes una cuenta?</Text>
               <Button
-                loading={loading}
-                disabled={loading}
-                buttonColor="#168596"
-                mode="contained"
-                onPress={handleSubmit}
-              >
-                Iniciar sesión
-              </Button>
-
-              <View style={styles.orContainer}>
-                <Text style={styles.orText}>O</Text>
-              </View>
-
-
-              <Button
-                buttonColor="#F5AF19"
-                mode="contained"
-                onPress={() =>
-                  parametro == "1"
-                    ? navigation.navigate("WorkerRegister")
-                    : navigation.navigate("UserRegister")
-                }
+                style={styles.registerButton}
+                mode="text"
+                onPress={() => parametro === '1' ? navigation.navigate('UserRegister', { parametro }) : navigation.navigate('UserRegister', { parametro })}
               >
                 Registrarse
               </Button>
@@ -163,79 +122,48 @@ export default function WorkerLoginScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#ff9900',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   logoContainer: {
     marginBottom: 30,
+    alignItems: 'center',
   },
-  logo: {
-    fontSize: 24,
-    fontWeight: "bold",
+  logoImage: {
+    backgroundColor: '#ff9900',
+  },
+  logoText: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginTop: 10,
   },
   formContainer: {
-    width: "80%",
+    width: '80%',
   },
   input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    marginBottom: 10,
+    marginBottom: 15,
   },
-  button: {
-    backgroundColor: "#007bff",
-    paddingVertical: 10,
-    borderRadius: 5,
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
+  loginButton: {
+    backgroundColor: '#009688',
+    marginBottom: 15,
   },
   error: {
-    color: "red",
-    marginBottom: 10,
+    color: 'red',
+    marginBottom: 15,
+    fontSize: 14,
   },
-  orButton: {
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#007bff",
-    paddingVertical: 10,
-    borderRadius: 5,
-    alignItems: "center",
-    pointerEvents: "none",
+  registerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  registerText: {
+    color: '#fff',
+    marginRight: 10,
   },
   registerButton: {
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#007bff",
-    paddingVertical: 10,
-    borderRadius: 5,
-    alignItems: "center",
-  },
-  orButtonText: {
-    color: "#007bff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  orContainer: {
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 25,
-  },
-  orText: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  buttonContainer: {
-    flexDirection: "column",
-    justifyContent: "space-between",
-    paddingTop: 30,
+    color: '#009688',
   },
 });

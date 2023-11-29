@@ -67,21 +67,18 @@ const Card = ({index, job, aceptarTrabajo, onClose }) => {
     },
   });
   
-//console.log(job.latlng.longitude)
   const aceptado = (trabajo) => {
     Alert.alert(`Aceptar el trabajo ${trabajo}`, '¿Aceptar?', [
       { text: 'Aceptar', onPress: () => {aceptarTrabajo(job.latlng.latitude, job.latlng.longitude), onClose()} },
-      { text: 'Cancelar', onPress: () => console.log('Cancelado'), style: 'cancel' },
+      { text: 'Cancelar', onPress: () => {}, style: 'cancel' },
     ]);
   };
   const [isChatModalVisible, setIsChatModalVisible] = useState(false);
 
   const toggleChatModal = () => {
     setIsChatModalVisible(!isChatModalVisible);
-    console.log({isChatModalVisible})
   };
   const handleSubmit = (amount) => {
-    console.log({amount})
     toggleChatModal();
   };
 

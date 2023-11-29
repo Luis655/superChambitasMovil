@@ -1,22 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Alert,
   StyleSheet,
-  FlatList,
   Text,
   Animated,
   TouchableOpacity,
   Image,
   PanResponder,
+  Modal
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import FloatingSection, { jobData2 } from "../components/sectionModalMap";
 import MapViewDirections from "react-native-maps-directions";
 import {
-  Drawer,
   FAB,
-  Button,
   ActivityIndicator,
   MD2Colors,
   Avatar,
@@ -25,27 +23,27 @@ import { AuthContext, useAuth } from "../../auth/contextAuth";
 import { useLocation } from "../../customHooks/useLocation";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useDarkMode } from "../../auth/contextAuth";
-import { SignalRContext } from "../../signal/signalRConext";
-import { useContext } from "react";
-import { useEffect } from "react";
 import HelpModal from "../components/helpModal";
 import { SupportModal } from "../components/supportModal";
 const workerLogo = require("../../../assets/logoconosuperchambitas-removebg-preview.png");
-
+import Ionicons from '@expo/vector-icons/Ionicons';
 const menuWidth = 250;
 const hiddenPosition = -menuWidth - 50;
-const HomeWorker = ({ navigation }) => {
+const HomeWorker = ({ navigation,route }) => {
   const { colorMode, setDarkColorMode } = useDarkMode();
-
-  const { user,type ,dispatch } = useContext(AuthContext);
-  const [active, setActive] = useState("");
+  
+  const { user, profile } = useContext(AuthContext);
+  const { role, userName} = user
+  // const [active, setActive] = useState("");
+  const [modalVisible1, setModalVisible1] = useState(false);
 
   const [isActive, setIsActive] = useState(false);
   const [markerPosition, setMarkerPosition] = useState(null);
   const [imageLoaded1, setImageLoaded1] = useState(false);
   const [imageLoaded2, setImageLoaded2] = useState(false);
-  const { location, status, errorMsg, estadomsg, requestLocationPermission } =
-    useLocation();
+  const {location, status, errorMsg, estadomsg, requestLocationPermission} =  useLocation();
+  const [contadorActive, setContadorActive] = useState(false);
+
   const iniciarRuta = (lat, lng) => {
     const newMarkerPosition = {
       latitude: lat,
@@ -54,18 +52,46 @@ const HomeWorker = ({ navigation }) => {
 
     setMarkerPosition(newMarkerPosition);
   };
-  const [timeLeft, setTimeLeft] = useState(180);
+  const [timeLeft, setTimeLeft] = useState(15);
 
   const iniciarContador = () => {
     setIsFloatingSectionVisible(!isFloatingSectionVisible);
-
+    setContadorActive(true);
+  
+    let tiempoRestante = 15; // Establece el tiempo inicial en segundos (ajusta según tus necesidades)
     const interval = setInterval(() => {
       setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
+      tiempoRestante--;
+  
+      if (tiempoRestante === 0) {
+        clearInterval(interval); // Detén el intervalo cuando el tiempo llega a cero
+        setModalVisible1(true);
+        // Muestra un cuadro de diálogo para preguntar al usuario si quiere reiniciar la búsqueda
+        
+      }
     }, 1000);
-    if (timeLeft < 1) {
-      return () => clearInterval(interval);
-    }
   };
+  
+  const reiniciarBusqueda = () => {
+    setModalVisible1(false); // Cierra el modal después de reiniciar
+
+    // Reinicia el contador y realiza las acciones necesarias para reiniciar la búsqueda
+    setTimeLeft(15); // Establece el tiempo inicial nuevamente (ajusta según tus necesidades)
+    // Otras acciones para reiniciar la búsqueda aquí
+    setContadorActive(false); // Pausa el contador para reiniciar
+    iniciarContador(); // Llamada recursiva para reiniciar el contador
+  };
+  
+  const cancelarBusqueda = () => {
+    setModalVisible1(false); // Cierra el modal después de cancelar
+
+    // Cancela y restablece el timer de la petición
+    setContadorActive(false);
+    setTimeLeft(15); // Establece el tiempo a cero
+    // Otras acciones para cancelar la búsqueda aquí
+  };
+
+
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
   const [isFloatingSectionVisible, setIsFloatingSectionVisible] =
@@ -91,7 +117,7 @@ const HomeWorker = ({ navigation }) => {
         },
         {
           text: "Cancelar",
-          onPress: () => console.log("Cancelado"),
+          onPress: () => {},
           style: "cancel",
         },
       ]
@@ -178,23 +204,65 @@ const HomeWorker = ({ navigation }) => {
       useNativeDriver: false,
     }).start();
   };
+
   const styles = StyleSheet.create({
-    activityIndicator: {
-      position: "absolute",
+    containers: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: '#fff', // Fondo blanco similar al de Didi
+      elevation: 5, // Sombra para dar un efecto visual similar al de Didi
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    waitingContainer: {
+      alignItems: 'center',
+    },
+    waitingText: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: '#333', // Color oscuro similar al de Didi
+      marginBottom: 10,
+    },
+    timerText: {
+      fontSize: 40,
+      fontWeight: 'bold',
+      color: '#ff9900', // Naranja similar al de Didi
+    },
+    activityIndicator:{
+      position: 'absolute',
       margin: 16,
       //right: 'auto',
       alignSelf: "center",
       bottom: 400,
       backgroundColor: "transparent",
     },
-  
+    containere: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      // Otros estilos del contenedor principal aquí
+    },
     fab: {
-      position: "absolute",
-      margin: 16,
-      //right: 'auto',
-      alignSelf: "center",
-      bottom: 20,
-      backgroundColor: colorMode ? "#8ec3b9" : "#F5AF19",
+      backgroundColor: '#E0E0E0', // Color gris claro similar al de Didi
+      borderRadius: 20, // Ajusta según tus preferencias
+      width: 400,
+      padding: 15, // Ajusta según tus preferencias
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      elevation: 5,
+      position: 'absolute',
+      bottom: 20, // Ajusta según la posición deseada desde la parte inferior
+      borderWidth: 30, // Ancho del borde
+      borderColor: 'white', // Color del borde
+    },
+    text: {
+      color: 'black',
+      marginLeft: 10,
+      fontSize: 20, // Ajusta según tus preferencias
+      fontWeight: 'bold',
     },
     container: {
       flex: 1,
@@ -237,11 +305,11 @@ const HomeWorker = ({ navigation }) => {
     },
     menu: {
       left: 0,
-      position: "absolute",
-      top: 25,
+      position:'absolute',
+      top: 0,
       bottom: 0,
       width: 302,
-      backgroundColor: colorMode ? "#1d2c4d" : "#ffffff",
+      backgroundColor: colorMode ? '#ffffff' : '#ffffff',
       elevation: 5,
       shadowColor: "#000",
       shadowOffset: {
@@ -255,24 +323,63 @@ const HomeWorker = ({ navigation }) => {
     userContainer: {
       alignItems: "center",
       marginBottom: 20,
+      backgroundColor: 'rgba(255, 255, 255, 0.5)', // Fondo semi-transparente
+    
+      borderRadius: 10,
+      padding: 25,
+      backdropFilter: 'blur(10px)', // Ajusta el valor según tus preferencias
     },
+    
+    
+    
+    userRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    
+    userContainerContent: {
+      marginRight: 10, // Ajusta según tus preferencias
+      
+    },
+    
     userIcon: {
-      color: "#3498db",
+      width: 60,
+      height: 60,
+      borderRadius: 30,
     },
+    
+    userInfo: {
+      flex: 1,
+    },
+    
     username: {
       fontSize: 18,
-      fontWeight: "bold",
-      marginTop: 10,
-      color: colorMode ? "#fff" : "#000",
+      fontWeight: 'bold',
+      color: '#333', // Ajusta según tus preferencias
+    },
+    
+    editProfileContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    
+    editProfileText: {
+      color: '#888', // Color gris
+      fontSize: 16,
+      marginRight: 5, // Ajusta según tus preferencias
+    },
+    
+    editProfileIcon: {
+      color: '#888', // Color gris para el icono
     },
     menuItem: {
       height: 50,
       flexDirection: "row",
       alignItems: "center",
       paddingLeft: 20,
+      color: colorMode ? '#fff' : '#000',
       borderBottomWidth: 1,
-      borderBottomColor: colorMode ? "#000" : "#ccc",
-      color: colorMode ? "#fff" : "#000",
+      borderBottomColor: colorMode ? '#fff' : '#ddd', // Ajusta el color del borde según el modo
     },
     icon: {
       marginRight: 15,
@@ -280,7 +387,8 @@ const HomeWorker = ({ navigation }) => {
     },
     menuItemText: {
       fontSize: 16,
-      color: colorMode ? "#fff" : "#333",
+      color: colorMode ? '#fff' : '#333',
+      fontFamily: 'Arial', // Ajusta la fuente según tu preferencia
     },
     workerModeButtonContainer: {
       marginTop: "auto",
@@ -293,20 +401,66 @@ const HomeWorker = ({ navigation }) => {
       alignItems: "center",
     },
     workerModeButtonText: {
-      color: "#ffffff",
-      fontWeight: "bold",
+      color: '#ffffff',
+      fontWeight: 'bold',
+      fontSize: 18,
     },
     floatingButton: {
-      position: "absolute",
-      backgroundColor: colorMode ? "#1d2c4d" : "#3498db",
+      position: 'absolute',
+      backgroundColor: colorMode ? '#fff' : '#fff',
       width: 50,
       height: 50,
-      borderRadius: 25,
-      alignItems: "center",
-      justifyContent: "center",
-      right: isOpen ? 10 : 320, //o 10
-      bottom: 710,
+      top: 30,
+      borderRadius: 30,
+      alignItems: 'center',
+      justifyContent: 'center',
+      right: isOpen ? '6%' : '85%', //o 10
       elevation: 5,
+    },
+    modalContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+      width: 300,
+      padding: 20,
+      backgroundColor: '#fff',
+      borderRadius: 10,
+      alignItems: 'center',
+    },
+    title: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: 10,
+      color: '#ff9900',
+    },
+    message: {
+      marginBottom: 20,
+      color: '#555',
+    },
+    confirmButton: {
+      backgroundColor: '#ff9900',
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 5,
+      marginBottom: 10,
+    },
+    cancelButton: {
+      backgroundColor: '#ff0000',
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 5,
+      marginBottom: 10,
+    },
+    buttonText: {
+      color: '#fff',
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+    closeButton: {
+      marginTop: 10,
     },
   });
   const customMapStyRetro = [
@@ -762,31 +916,17 @@ const HomeWorker = ({ navigation }) => {
  
   return (
     <View style={styles.container}>
+
       {location ? (
-        <MapView
-          style={styles.map}
-          initialRegion={{
-            ...location,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-          customMapStyle={
-            colorMode ? customMapStyleAuberige : customMapStyRetro
-          }
-        >
-          <Marker
-            key={location}
-            coordinate={location}
-            title="Tu ubicación"
-            description="Aquí estas"
-          >
-            <Image
-              source={workerLogo}
-              style={{ width: 60, height: 60, marginTop: imageLoaded1 ? 9 : 0 }}
-              onLoad={() => setImageLoaded1(true)}
-            />
-          </Marker>
-          {type == "2" &&
+        <MapView style={styles.map} initialRegion={{ ...location, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }} customMapStyle={colorMode ? customMapStyleAuberige : customMapStyRetro} >
+          <Marker key={location} coordinate={location} title='Tu ubicación' description='Aquí estas' >
+          <Image
+          source={workerLogo}
+          style={{ width: 60, height: 60, marginTop: imageLoaded1 ? 9 : 0 }} 
+          onLoad={() => setImageLoaded1(true)}
+        />          
+        </Marker>
+          {role == "2" &&
             jobData2.map((marker, index) => (
               <Marker
                 key={index}
@@ -824,92 +964,140 @@ const HomeWorker = ({ navigation }) => {
         <>
           <MapView style={styles.map} />
         </>
-      )}
+      )
+      }
 
-      {errorMsg == 1 ? (
-        <FAB icon="plus" style={styles.fab} onPress={toggleFloatingSection} />
-      ) : (
-        <FAB
-          icon="reload"
-          style={styles.fab}
-          onPress={() => {
-            requestLocationPermission();
-          }}
-        />
-      )}
-      {/* <Text style={{fontSize:40}}>
-      {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
-    </Text> */}
-      {estadomsg && (
-        <View style={styles.activityIndicator}>
-          <ActivityIndicator
-            animating={estadomsg}
-            color={MD2Colors.red800}
-            size={140}
-          />
+{
+  errorMsg === 1 ?
+  (
+    <View style={styles.containere}>
+      {/* Otros elementos de la interfaz aquí */}
+
+      {/* Botón flotante */}
+      <TouchableOpacity style={styles.fab} onPress={toggleFloatingSection}>
+        <Ionicons name="radio-button-on" size={15} color="#ff9900" />
+        <Text style={styles.text}>¿ CHAMBEADOR ?</Text>
+      </TouchableOpacity>
+    </View>
+  )
+  :
+  (
+    <FAB
+      text="Cargando"
+      icon="reload"
+      style={styles.fab}
+      onPress={() => { requestLocationPermission()}}
+    />
+  )
+}
+
+{ contadorActive &&
+<View style={styles.containers}>
+<View style={styles.waitingContainer}>
+  <Text style={styles.waitingText}>
+    Esperando respuesta...
+  </Text>
+  <Text style={styles.timerText}>
+    {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+  </Text>
+</View>
+</View>
+}
+
+<View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible1}
+        onRequestClose={() => setModalVisible1(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.title}>Confirmación</Text>
+            <Text style={styles.message}>¿Desea reiniciar la búsqueda?</Text>
+            <TouchableOpacity onPress={reiniciarBusqueda} style={styles.confirmButton}>
+              <Text style={styles.buttonText}>Continuar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={cancelarBusqueda} style={styles.cancelButton}>
+              <Text style={styles.buttonText}>No</Text>
+            </TouchableOpacity>
+           
+          </View>
         </View>
-      )}
+      </Modal>
+    </View>
+{estadomsg &&
+<View style={styles.activityIndicator}>
+<ActivityIndicator animating={estadomsg} color={MD2Colors.red800} size={140} />
+</View>}
 
-      <TouchableOpacity style={styles.floatingButton} onPress={openclosedrawer}>
-        <Icon name={isOpen ? "times" : "bars"} size={25} color="#fff" />
+
+        <TouchableOpacity style={styles.floatingButton} onPress={openclosedrawer}>
+        <Icon name={isOpen ? 'times' : 'bars'} size={25} color="#000" />
       </TouchableOpacity>
       <Animated.View
         style={[styles.menu, { transform: [{ translateX: pan.x }] }]}
         {...panResponder.panHandlers}
       >
-        <View style={styles.userContainer}>
+      <View style={styles.userContainer}>
+        <View style={styles.userRow}>
+          
+          <View style={styles.userInfo}>
+            <Text style={styles.username}>{userName}</Text>
+            <TouchableOpacity style={styles.editProfileContainer}>
+              <Text style={styles.editProfileText}>Editar perfil</Text>
+              <Icon name="chevron-right" size={10} color="#888" style={styles.editProfileIcon} />
+            </TouchableOpacity>
+          </View>
           <TouchableOpacity onPress={openclosedrawer}>
-            <Avatar.Image
-              size={60}
-              style={styles.userIcon}
-              source={{ uri: "https://picsum.photos/700" }}
-            />
-
-            {/*<Icon name="user-circle" size={60} style={styles.userIcon} />*/}
-          </TouchableOpacity>
-
-          <Text style={styles.username}>{user.user.userName}</Text>
-        </View>
-        <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
-          <Icon name="briefcase" size={20} style={styles.icon} />
-          <Text style={styles.menuItemText}>Mis Trabajos</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
-          <Icon name="cogs" size={20} style={styles.icon} />
-          <Text style={styles.menuItemText}>Mis Servicios</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
-          <Icon name="search" size={20} style={styles.icon} />
-          <Text style={styles.menuItemText}>Encuentra Empleo</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => {
-            navigation.navigate("Configuraciones");
-          }}
-        >
-          <Icon name="cog" size={20} style={styles.icon} />
-          <Text style={styles.menuItemText}>Configuraciones</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={opencloseModal}>
-          <Icon name="question" size={20} style={styles.icon} />
-          <Text style={styles.menuItemText}>Ayuda</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={opencloseSupport}>
-          <Icon name="life-ring" size={20} style={styles.icon} />
-          <Text style={styles.menuItemText}>Soporte</Text>
-        </TouchableOpacity>
-        <View style={styles.workerModeButtonContainer}>
-          <TouchableOpacity
-            style={styles.workerModeButton}
-            onPress={closeDrawer}
-          >
-            <Text style={styles.workerModeButtonText}>Modo Trabajador</Text>
+            <View style={styles.userContainerContent}>
+              <Avatar.Image size={60} style={styles.userIcon} source={{uri: profile}} />
+            </View>
           </TouchableOpacity>
         </View>
+      </View>
+
+
+      <TouchableOpacity style={styles.menuItem} onPress={() => {navigation.navigate('Mis trabajos')}}>
+  <Icon name="briefcase" size={20} style={styles.icon} />
+  <Text style={styles.menuItemText}>Mis Trabajos</Text>
+</TouchableOpacity>
+
+<TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
+  <Icon name="cogs" size={20} style={styles.icon} />
+  <Text style={styles.menuItemText}>Mis Servicios</Text>
+</TouchableOpacity>
+
+<TouchableOpacity style={styles.menuItem} onPress={toggleFloatingSection}>
+  <Icon name="search" size={20} style={styles.icon} />
+  <Text style={styles.menuItemText}>Encuentra Empleo</Text>
+</TouchableOpacity>
+
+<TouchableOpacity style={styles.menuItem} onPress={() => { console.warn("seleccion"); navigation.navigate('Configuraciones'); }}>
+  <Icon name="cog" size={20} style={styles.icon} />
+  <Text style={styles.menuItemText}>Configuraciones</Text>
+</TouchableOpacity>
+
+<TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
+  <Icon name="question" size={20} style={styles.icon} />
+  <Text style={styles.menuItemText}>Ayuda</Text>
+</TouchableOpacity>
+
+<TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
+  <Icon name="life-ring" size={20} style={styles.icon} />
+  <Text style={styles.menuItemText}>Soporte</Text>
+</TouchableOpacity>
+
+<View style={styles.workerModeButtonContainer}>
+  <TouchableOpacity style={styles.workerModeButton} onPress={closeDrawer}>
+    <Text style={styles.workerModeButtonText}>Modo Trabajador</Text>
+  </TouchableOpacity>
+</View>
+
       </Animated.View>
       {/*<TouchableOpacity style={styles.floatingButton} onPress={toggleFloatingSection}>
-        <Text style={styles.floatingButtonText}>{ state.type == '1' ? 'Buscar chamba' : 'Ver más'}</Text>
+        <Text style={styles.floatingButtonText}>{ state.role == '1' ? 'Buscar chamba' : 'Ver más'}</Text>
       </TouchableOpacity>*/}
       <FloatingSection
         visible={isFloatingSectionVisible}
@@ -922,6 +1110,7 @@ const HomeWorker = ({ navigation }) => {
           iniciarRuta(lat, lng);
         }}
         Contador={iniciarContador}
+        Tipo={role}
       />
       <HelpModal closeModal={opencloseModal} modalVisible={isOpenModal}></HelpModal>
       <SupportModal closeModal={opencloseSupport} modalVisible={isOpenSupport}></SupportModal>

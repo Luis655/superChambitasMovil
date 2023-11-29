@@ -26,7 +26,7 @@ export const useLocation = ()=>{
         } catch (err) {
           console.error(err)
           setErrorMsg(2);
-          setEstadomsg(true);
+          setEstadomsg(false);
           console.error('No se pudo obtener la ubicación. Inténtalo de nuevo.');
         }finally{
           setEstadomsg(false);

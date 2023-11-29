@@ -61,36 +61,38 @@ const Configuraciones = ({navigation}) => {
     Alert.alert(
       title,
       message,
-      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+      [{ text: 'OK', onPress: () => {}}],
       { cancelable: false }
     );
   };
 
-  const renderSetting = (title, action) => (
-    <TouchableOpacity onPress={action}>
-      <View style={styles.setting}>
-        <Text style={styles.settingTitle}>{title}</Text>
-        <FontAwesome name="angle-right" style={styles.icon} />
-      </View>
-    </TouchableOpacity>
-  );
-
   const handleChangePhoneNumber = () => {
-    showAlert('Cambiar número de teléfono', 'Número de teléfono cambiado con éxito');
+    // showAlert('Cambiar número de teléfono', 'Número de teléfono cambiado con éxito');
     // Agrega el código para cambiar el número de teléfono aquí
   };
 
   const handleAboutApp = () => {
-    showAlert('Acerca de la aplicación', 'Información sobre la aplicación');
+    // showAlert('Acerca de la aplicación', 'Información sobre la aplicación');
     // Agrega el código para mostrar información sobre la aplicación aquí
   };
 
   const handleLogout = () => {navigation.navigate("onBoarding"),logout()};
 
   const handleDeleteAccount = () => {
-    showAlert('Eliminar cuenta', 'Cuenta eliminada con éxito');
+    // showAlert('Eliminar cuenta', 'Cuenta eliminada con éxito');
     // Agrega el código para eliminar la cuenta aquí
   };
+
+  
+
+  const renderSetting = (title, action) => (
+    <TouchableOpacity onPress={action} style={styles.settingContainer}>
+      <View style={styles.setting}>
+        <Text style={styles.settingTitle}>{title}</Text>
+        <FontAwesome name="angle-right" style={styles.angleRightIcon} />
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
