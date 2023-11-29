@@ -4,7 +4,7 @@ import axios from 'axios';
 async function useAxios(url2, method, body) {
 
 
-  const url = `https://4784-2806-10be-9-32a8-6522-9464-4172-f256.ngrok-free.app/api/${url2}`;
+  const url = `https://4e14-2806-10be-9-32a8-d088-7513-d5ee-a114.ngrok-free.app/api/${url2}`;
   // const [data, setData] = useState(null);
   // const [error, setError] = useState(null);
   // const [loading, setLoading] = useState(true);
