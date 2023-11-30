@@ -1,10 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { View, Text, Button, StyleSheet, Image, TouchableOpacity, ScrollView, Keyboard } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { MultipleSelectList } from "react-native-dropdown-select-list";
 import { TextInput } from 'react-native-paper';
-import useAxios from '../../customHooks/hookAxios';
+import useAxiosGet from '../../customHooks/hookAxiosGet';
 const AddWorkerDataSchema = Yup.object().shape({
   description: Yup.string()
     .required("La descripción es requerida")
@@ -42,16 +42,24 @@ const AddWorkerData = ({ navigation, route }) => {
   const { parametro } = route.params;
 
   const [selected, setSelected] = useState([]);
+  const [datos, setDatos] = useState([]);
   const handleRegistration = (values) => {
     navigation.navigate('HomeWorker', { parametro })
     console.log("Formulario enviado con éxito:", values, selected);
   };
   const direccionRef = useRef(null);
-      const data = useAxios('categorías', 'GET');
 
+  const url = 'https://4e14-2806-10be-9-32a8-d088-7513-d5ee-a114.ngrok-free.app/api/categorias';
+  const { data, error, loading } =  useAxiosGet(url);
+  useEffect(() => {
+    if (!loading) {
+      console.log(data);
+      if(data!==null){
+        setDatos(data.map(item => ({ key: item.categoryId, value: item.titulo })));
+      }
+    }
+  }, [data, loading]);
 
-
-      console.log(data)
   return (<>
     <ScrollView>
 
@@ -59,7 +67,7 @@ const AddWorkerData = ({ navigation, route }) => {
         <Image style={styles.logo} source={require('../../../assets/LogoSuperChambitas.png')} />
       </View>
       <Text style={[styles.title, { textAlign: 'center' }]}>
-        {JSON.stringify(data)}
+        lksdlakjsdlkjasdljkasdjkl
       </Text>
       <View style={styles.cont2}>
 
@@ -67,7 +75,7 @@ const AddWorkerData = ({ navigation, route }) => {
 
           <MultipleSelectList
             setSelected={(val) => setSelected(val)}
-            data={trabajosData}
+            data={datos}
             label="Lo que sabes hacer"
             notFoundText="Sin datos para mostrar"
             searchPlaceholder="Buscar"

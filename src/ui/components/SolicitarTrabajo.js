@@ -8,6 +8,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import { SelectList } from "react-native-dropdown-select-list";
 import { Camera } from 'expo-camera';
+import useAxiosGet from '../../customHooks/hookAxiosGet';
 
 const MORE_ICON = Platform.OS === 'ios' ? 'dots-horizontal' : 'dots-vertical';
 
@@ -16,6 +17,7 @@ const SolicitarTrabajo = ({ Contador }) => {
   const [cameraRef, setCameraRef] = useState(null);
   const [foto, setFoto] = useState('');
   const [camaraFrontal, setCamaraFrontal] = useState(false);
+  const [datos, setDatos] = useState([]);
 
   useEffect(() => {
     (async () => {
@@ -23,7 +25,17 @@ const SolicitarTrabajo = ({ Contador }) => {
       setHasPermission(status === 'granted');
     })();
   }, []);
+  const url = 'https://4e14-2806-10be-9-32a8-d088-7513-d5ee-a114.ngrok-free.app/api/categorias';
+  const { data, error, loading } =  useAxiosGet(url);
+  useEffect(() => {
+    if (!loading) {
+      console.log(data);
+      if(data!==null){
+        setDatos(data.map(item => ({ key: item.categoryId, value: item.titulo })));
 
+      }
+    }
+  }, [data, loading]);
   const { colorMode, setDarkColorMode } = useDarkMode();
   const jobs = [
     { key: '1', value: 'trabajo 1' },
@@ -37,7 +49,7 @@ const SolicitarTrabajo = ({ Contador }) => {
     { key: '9', value: 'trabajo 9' },
     { key: '10', value: 'trabajo 10' },
   ];
-  const data = [
+  const dataw = [
     { key: '1', value: 'Mobiles', disabled: true },
     { key: '2', value: 'Appliances' },
     { key: '3', value: 'Cameras' },
@@ -224,13 +236,14 @@ const SolicitarTrabajo = ({ Contador }) => {
             </Appbar.Header>
             <SelectList
               setSelected={(val) => setValue(val)}
-              data={jobs}
+              data={datos}
               save="key"
               onSelect={() => alert(value)}
               label="Selecciona el trabajo"
               labelStyles={{ fontWeight: '900' }}
               placeholder="Selecciona tu trabajo"
               searchPlaceholder="Buscar"
+              notFoundText="Sin datos para mostrar"
               defaultOption={{ key: '0', value: 'Selecciona un trabajo' }}   //default selected option
               boxStyles={{ backgroundColor: colorMode ? '#6f9ba5' : '#fff', color: '#fff', width: '96%', alignSelf: 'center' }}
               dropdownItemStyles={{ backgroundColor: colorMode ? '#6f9ba5' : '#fff', width: '90%', alignSelf: 'center' }}

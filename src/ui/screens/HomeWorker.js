@@ -869,7 +869,7 @@ const HomeWorker = ({ navigation, type }) => {
       <TouchableOpacity style={styles.fab} onPress={toggleFloatingSection}>
         <Ionicons name="radio-button-on" size={15} color="#ff9900" />
         <Text style={styles.text}>
-          {state.type == '1' ? "¿ QUE HAREMOS HOY ?" : "¿ CHAMBEADOR ?"}
+          {state.type == '1' ? "¿ QUE HAREMOS HOY ?" : JSON.stringify(location)}
         </Text>
       </TouchableOpacity>
     </View>

@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const [state, dispatch] = useReducer(authReducer, initialState);
-  const [colorMode, setDarkColorMode] = useState(useColorScheme() === 'light');
+  const [colorMode, setDarkColorMode] = useState(useColorScheme() === 'dark');
 
 
   return (
