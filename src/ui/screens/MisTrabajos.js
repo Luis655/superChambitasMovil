@@ -11,7 +11,6 @@ const WorkHistoryScreen = () => {
   const handlePress = () => setExpanded(!expanded);
   const onChangeSearch = query => {
     setSearchQuery(query);
-    console.log(query);
     const filterjob = jobData2.filter((job) => {
       const jobType = job.jobType.toLowerCase();
       return jobType.includes(query.toLowerCase());

@@ -69,7 +69,6 @@ const SolicitarTrabajo = ({ Contador }) => {
 
     selectedChips.map((data) => {
       setSelectedChips(selectedChips.filter((chip) => {
-        console.log(chip)
         chip.id !== data.id
       }));
     })
@@ -155,7 +154,7 @@ const SolicitarTrabajo = ({ Contador }) => {
   const aceptado = (trabajo) => {
     Alert.alert(`¿Estás seguro de realizar esta acción?`, 'Aceptar', [
       { text: 'Aceptar', onPress: () => { Contador() } },
-      { text: 'Cancelar', onPress: () => console.log('Cancelado'), style: 'cancel' },
+      { text: 'Cancelar', onPress: () => {}, style: 'cancel' },
     ]);
   };
   const hideModal = () => setVisible(false);
@@ -164,11 +163,9 @@ const SolicitarTrabajo = ({ Contador }) => {
 
   const toggleChatModal = () => {
     setIsChatModalVisible(!isChatModalVisible);
-    console.log({ isChatModalVisible })
   };
 
   const handleSubmit = (amount) => {
-    console.log({ amount })
     toggleChatModal();
   };
 
@@ -191,7 +188,6 @@ const SolicitarTrabajo = ({ Contador }) => {
 
   const [openCamera, setOpenCamera] = useState(false);
   const _handleMore = async () => {
-    console.log("perra madre")
     const { status } = await Camera.requestCameraPermissionsAsync();
     setHasPermission(status === 'granted');
     if (status === 'granted') {
@@ -202,7 +198,6 @@ const SolicitarTrabajo = ({ Contador }) => {
   const takePicture = async () => {
     if (cameraRef) {
       const { uri } = await cameraRef.takePictureAsync();
-      console.log(uri);
       setFoto(uri);
       setOpenCamera(!openCamera);
 

@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Modal, ScrollView, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import Card from './Card'; // Asegúrate de importar el componente Card desde la ubicación correcta
 import { Searchbar, SegmentedButtons } from 'react-native-paper';
-import { useDarkMode, useAuth } from '../../auth/contextAuth';
+import { useDarkMode, AuthContext } from '../../auth/contextAuth';
 import SolicitarTrabajo from './SolicitarTrabajo';
 import { MaterialIcons } from '@expo/vector-icons';
 
 const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrabajo, Contador, Tipo, Titulo }) => {
   const { colorMode } = useDarkMode();
-  const { state, dispatch } = useAuth();
+  const { user } = useContext(AuthContext);
+  const {role} = user
 
   const [searchQuery, setSearchQuery] = useState('');
   const [jobData, setJobData] = useState(jobData2);
@@ -67,7 +68,6 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
   });
   const onChangeSearch = query => {
     setSearchQuery(query);
-    console.log(query);
     const filterjob = jobData2.filter((job) => {
       const jobType = job.jobType.toLowerCase();
       return jobType.includes(query.toLowerCase());
@@ -124,11 +124,11 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
           {value == 'trabajador' &&
             <View>
 
-              {state.type == '1' &&
+              {role == '3' &&
                 <TouchableOpacity style={styles.searchButton} onPress={onSearchJobs}>
                   <Text style={styles.searchButtonText}>{isActive ? "Desactivar" : "Activar"}</Text>
                 </TouchableOpacity>}
-              {state.type == '1' ?
+              {role == '3' ?
               <View>
                 <Text style={styles.textStyle}>Trabajos disponibles en tu area</Text>
                 <TouchableOpacity style={styles.search}>
@@ -161,7 +161,7 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
             </View>}
 
           {value == 'pedir' && <View>
-            {state.type == '1' &&
+            {role == '1' &&
               <TouchableOpacity style={styles.searchButton} onPress={onSearchJobs}>
                 <Text style={styles.searchButtonText}>{isActive ? "Desactivar" : "Activar"}</Text>
               </TouchableOpacity>}
@@ -172,11 +172,11 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
 
 
           {value == 'pendientes' && <View>
-            {state.type == '1' &&
+            {role == '1' &&
               <TouchableOpacity style={styles.searchButton} onPress={onSearchJobs}>
                 <Text style={styles.searchButtonText}>{isActive ? "Desactivar" : "Activar"}</Text>
               </TouchableOpacity>}
-            {state.type == '1' ?
+            {role == '1' ?
               <Text style={styles.textStyle}>Trabajos disponibles en tu area</Text>
 
               :

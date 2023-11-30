@@ -57,7 +57,6 @@ const validationSchema = Yup.object().shape({
 
 export default function WorkerRegister() {
   const handleRegister = (values) => {
-    console.log(values);
   };
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);

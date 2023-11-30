@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  Alert,
   View,
   StyleSheet,
   Text,
@@ -11,66 +12,94 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import CountryPicker from 'react-native-country-picker-modal';
-import { Button } from 'react-native-paper';
-import { Modal } from 'react-native';
+import { Formik } from "formik";
+import * as Yup from "yup";
 
-const MyComponent = ({ navigation, route }) => {
+const AddWorkerDataSchema = Yup.object().shape({
+  phoneNumber: Yup.string()
+    .required("El numero es requerido")
+    .min(10, "Numero no valido")
+    .max(10, "Numero no valido"),
+});
+
+
+const UserRegisterScreenPhone = ({ navigation, route }) => {
   const { parametro } = route.params;
-  const [phoneNumber, setPhoneNumber] = useState('');
+  //const [phoneNumber, setPhoneNumber] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedPhoneNumber, setSelectedPhoneNumber] = useState('');
   const [countryCode, setCountryCode] = useState('MX');
   const [country, setCountry] = useState(null);
 
   const onSelectCountry = (country) => {
-    console.log(country);
     setCountryCode(country.cca2);
     setCountry(country);
   };
 
-  const handlePhoneNumberInputClick = () => {
-    setIsModalVisible(true);
-  };
 
-  const cancelarBusqueda = () => {
-    setIsModalVisible(false); // Cierra el modal después de cancelar
-  };
+  // const handlePhoneNumberInputClick = () => {
+  //   setIsModalVisible(true);
+  // };
 
-  const handleModalClose = () => {
-    setIsModalVisible(false);
-    setPhoneNumber(selectedPhoneNumber);
-  };
+  // const cancelarBusqueda = () => {
+  //   setIsModalVisible(false); // Cierra el modal después de cancelar
+  // };
+
+  // const handleModalClose = () => {
+  //   setIsModalVisible(false);
+  //   setPhoneNumber(selectedPhoneNumber);
+  // };
   const handlePhoneInput = (text) => {
     // Filtrar caracteres no numéricos
     const numericText = text.replace(/[^0-9]/g, '');
 
     // Actualizar el estado con el texto numérico
-    setPhoneNumber(numericText);
+    // selectedPhoneNumber(numericText);
+    setPhoneNumber(numericText)
   };
+
+  const handleSubmit=async ()=>{
+      navigation.navigate('CodeScreen', { parametro, phoneNumber})
+
+  //  try {
+  //   const response = await useAxios("Sms/send-code", "POST", JSON.stringify(phoneNumber))
+  //   Alert.alert(
+  //     `${response.data.mensaje}`,
+
+  //   );
+  //   navigation.navigate('CodeScreen', { parametro, phoneNumber})
+  //  } catch (error) {
+  //   Alert.alert(
+  //     `${error}`,
+
+  //   );
+  //  }
+  }
+  const datosNumero = (values) => {
+    const phoneNumber= values.phoneNumber
+    navigation.navigate('CodeScreen', { parametro, phoneNumber})
+    console.log(values.phoneNumber);
+  }
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <Formik
+          initialValues={{
+            phoneNumber: "",
+          }}
+          validationSchema={AddWorkerDataSchema}
+          onSubmit={datosNumero}
+        >
+          {({
+            values,
+            handleChange,
+            handleSubmit,
+            errors,
+            touched,
+            setFieldValue,
+            handleBlur,
+          }) => (
         <View style={styles.container}>
-          <Modal animationType="slide" transparent={true} visible={isModalVisible}>
-            <View style={styles.modalContainer}>
-              <View style={styles.modalContent}>
-                <TextInput
-                  style={styles.modalInput}
-                  placeholder="Ingresa tu celular"
-                  keyboardType="numeric"
-                  maxLength={10}
-                  value={selectedPhoneNumber}
-                  onChangeText={(text) => setSelectedPhoneNumber(text)}
-                />
-                <TouchableOpacity style={[styles.buttonContainer, styles.orangeButton]} onPress={handleModalClose}>
-                  <Text style={[styles.buttonText, styles.orangeButtonText]}>Aceptar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.buttonContainer, styles.redButton]} onPress={cancelarBusqueda}>
-                  <Text style={[styles.buttonText, styles.orangeButtonText]}>Cancelar</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Modal>
           {/* Fondo naranja con el logo */}
           <View style={styles.header}>
             <Image style={styles.logo} source={require('../../../assets/LogoSuperChambitas.png')} />
@@ -98,15 +127,24 @@ const MyComponent = ({ navigation, route }) => {
               )}
             </View>
 
-            <TouchableOpacity style={styles.phoneInputContainer} onPress={handlePhoneNumberInputClick}>
-              <View style={styles.phoneInputContent}>
-                <Text style={styles.phoneInputLabel}>Número de Teléfono</Text>
-                <Text style={styles.phoneNumber}>{phoneNumber}</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Ingresa tu celular"
+              keyboardType="numeric"
+              onChangeText={handleChange("phoneNumber")}
+              onBlur={handleBlur("phoneNumber")}
+              maxLength={10}
+              value={values.phoneNumber}
+              returnKeyType="done"
+              onSubmitEditing={handleSubmit}
 
-          <TouchableOpacity style={[styles.buttonContainer, styles.orangeButton]} onPress={() => navigation.navigate('CodeScreen', { parametro })}>
+              //onChangeText={(text) => handlePhoneInput(text)}
+            />
+          </View>
+          {touched.phoneNumber && errors.phoneNumber && (
+                <Text style={styles.errorText}>{errors.phoneNumber}</Text>
+              )}
+          <TouchableOpacity style={[styles.buttonContainer, styles.orangeButton]} onPress={handleSubmit}>
             <Text style={[styles.buttonText, styles.orangeButtonText]}>Enviar código</Text>
           </TouchableOpacity>
 
@@ -115,164 +153,174 @@ const MyComponent = ({ navigation, route }) => {
             Términos de Uso y Política de privacidad
           </Text>
         </View>
+        )}</Formik>
+
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
 };
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-    },
-    header: {
-      backgroundColor: '#ff9900',
-      padding: 20,
-      alignItems: 'center',
-      height: 550,
-    },
-    countryCode: {
-      fontSize: 16,
-      marginRight: 5,
-      color: '#ff9900', // Color naranja
-    },
-    logo: {
-      //width: 500,
-      //height: 550,
-      marginTop: 100,
-      width: 400,
-      height: 350,
-      resizeMode: 'contain',
-    },
-    title: {
-      marginTop: 20,
-      fontSize: 24,
-      fontWeight: 'bold',
-      marginBottom: 20,
-      color: '#333',
-      textAlign: 'center',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    subtitle: {
-      fontSize: 16,
-      color: '#555',
-      marginBottom: 20,
-    },
-    inputContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginBottom: 20,
-      margin: 10,
-    },
-    countryPickerContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: '#ff9900',
-      borderRadius: 8,
-    },
-    countryPickerButton: {
-      backgroundColor: '#ff9900',
-      borderRadius: 8,
-      padding: 8,
-    },
-    countryInfo: {
-      flexDirection: 'row',
-      alignItems: 'center',
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    justifyContent:'center'
+  },
+  header: {
+    backgroundColor: '#ff9900',
+    padding: 20,
+    alignItems: 'center',
+    height: 550,
+  },
+  countryCode: {
+    fontSize: 16,
+    marginRight: 5,
+    color: '#ff9900', // Color naranja
+  },
+  logo: {
+    //width: 500,
+    //height: 550,
+    marginTop: 100,
+    width: 400,
+    height: 350,
+    resizeMode: 'contain',
+  },
+  title: {
+    marginTop: 20,
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#333',
+    textAlign: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#555',
+    marginBottom: 20,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    margin: 10,
+  },
+  countryPickerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ff9900',
+    borderRadius: 8,
+  },
+  countryPickerButton: {
+    backgroundColor: '#ff9900',
+    borderRadius: 8,
+    padding: 8,
+  },
+  countryInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
 
-    },
-    flag: {
-      width: 30,
-      height: 20,
-      marginLeft: 5,
-    },
-    input: {
-      flex: 1,
-      height: 50,
-      borderColor: '#ccc',
-      borderWidth: 1,
-      borderRadius: 8,
-      paddingLeft: 10,
-      backgroundColor: '#f5f5f5',
-    },
-    phoneInputContainer: {
-      flex: 1,
-      marginLeft: 10,
-    },
-    phoneInputContent: {
-      borderBottomWidth: 1,
-      borderColor: '#ccc',
-      paddingBottom: 5,
-    },
-    phoneInputLabel: {
-      color: '#777',
-      fontSize: 12,
-    },
-    phoneNumber: {
-      fontSize: 16,
-      color: '#333',
-    },
-    phoneInput: {
-      marginLeft: 10,
-    },
-    buttonContainer: {
-      backgroundColor: '#009688',
-      borderRadius: 8,
-      padding: 15,
-      alignItems: 'center',
-      margin: 10,
-    },
-    buttonText: {
-      color: '#fff',
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-    orangeButton: {
-      backgroundColor: '#ff9900',
-    },
-    redButton: {
-      backgroundColor: 'red',
-    },
-    orangeButtonText: {
-      color: '#fff',
-    },
-    disclaimer: {
-      marginTop: 60,
-      color: '#777',
-      margin: 10,
-    },
-    modalContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    modalContent: {
-      backgroundColor: '#fff',
-      padding: 20,
-      borderRadius: 8,
-      width: '80%',
-    },
-    modalInput: {
-      height: 50,
-      borderColor: '#ccc',
-      borderWidth: 1,
-      borderRadius: 8,
-      paddingLeft: 10,
-      marginBottom: 20,
-    },
-    cancelButton: {
-      backgroundColor: '#ff0000',
-      paddingVertical: 10,
-      paddingHorizontal: 20,
-      borderRadius: 5,
-      marginBottom: 10,
-    },
-    buttonText: {
-      color: '#fff',
-      fontWeight: 'bold',
-      textAlign: 'center',
-    },
-  });
+  },
+  flag: {
+    width: 30,
+    height: 20,
+    marginLeft: 5,
+  },
+  input: {
+    flex: 1,
+    height: 50,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingLeft: 10,
+    backgroundColor: '#f5f5f5',
+  },
+  phoneInputContainer: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  phoneInputContent: {
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+    paddingBottom: 5,
+  },
+  phoneInputLabel: {
+    color: '#777',
+    fontSize: 12,
+  },
+  phoneNumber: {
+    fontSize: 16,
+    color: '#333',
+  },
+  phoneInput: {
+    marginLeft: 10,
+  },
+  buttonContainer: {
+    backgroundColor: '#009688',
+    borderRadius: 8,
+    padding: 15,
+    alignItems: 'center',
+    margin: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  orangeButton: {
+    backgroundColor: '#ff9900',
+  },
+  redButton: {
+    backgroundColor: 'red',
+  },
+  orangeButtonText: {
+    color: '#fff',
+  },
+  disclaimer: {
+    marginTop: 60,
+    color: '#777',
+    margin: 10,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 8,
+    width: '80%',
+  },
+  modalInput: {
+    fontSize: 16,
+    color: '#333',
+    height: 50,
+    borderColor: '#ccc',
+    borderBottomWidth: .5,
+    borderRadius: 8,
+    paddingLeft: 10,
+    marginBottom: 0,
+    width: '80%',
+  },
+  cancelButton: {
+    backgroundColor: '#ff0000',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  errorText: {
+    color: "red",
+    alignSelf:'center'
+  },
+});
 
-  export default MyComponent;
+export default UserRegisterScreenPhone;

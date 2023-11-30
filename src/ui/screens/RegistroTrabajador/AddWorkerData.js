@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Text, Button, StyleSheet, Image, TouchableOpacity, ScrollView, Keyboard } from "react-native";
+import { Alert,View, Text, Button, StyleSheet, Image, TouchableOpacity, ScrollView, Keyboard } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { MultipleSelectList } from "react-native-dropdown-select-list";
 import { TextInput } from 'react-native-paper';
-import useAxiosGet from '../../customHooks/hookAxiosGet';
+import useAxios from "../../../customHooks/hookAxios";
+
 const AddWorkerDataSchema = Yup.object().shape({
   description: Yup.string()
     .required("La descripción es requerida")
@@ -14,60 +15,64 @@ const AddWorkerDataSchema = Yup.object().shape({
     .required("La dirección es requerida")
     .min(5, "La dirección debe tener al menos 5 caracteres")
     .max(100, "La dirección no debe exceder los 100 caracteres"),
+    password: Yup.string()
+    .required("La contraseña es requerida")
+    .min(8, "La contraseña debe tener al menos 5 caracteres"),
+    email: Yup.string()
+    .required("El correo es requerido")
 });
 
-const trabajosData = [
-  { name: '1', val: 'plomero', disabled: true },
-  { name: '2', val: 'electricista' },
-  { name: '3', val: 'plomero 2' },
-  { name: '4', val: 'plomero 3', disabled: true },
-  { name: '5', val: 'plomero 5' },
-  { name: '5', val: 'plomero 5' },
-  { name: '5', val: 'plomero 5' },
-  { name: '5', val: 'plomero 5' },
-  { name: '5', val: 'plomero 5' },
-  { name: '5', val: 'plomero 5' },
-  { name: '5', val: 'plomero 5' },
-  { name: '5', val: 'plomero 5' },
-  { name: '5', val: 'plomero 5' },
-  { name: '5', val: 'plomero 5' },
-  { name: '5', val: 'plomero 5' },
-  { name: '5', val: 'plomero 5' },
-  { name: '5', val: 'plomero 5' },
-  { name: '5', val: 'plomero 5' },
 
-].map(item => ({ key: item.name, value: item.val, disabled: item.disabled }));
 
 const AddWorkerData = ({ navigation, route }) => {
-  const { parametro } = route.params;
+  const { parametro, nombreCompleto, phoneNumber} = route.params;
+  console.log(parametro)
+  console.log(nombreCompleto)
+  console.log(phoneNumber)
+
 
   const [selected, setSelected] = useState([]);
-  const [datos, setDatos] = useState([]);
-  const handleRegistration = (values) => {
-    navigation.navigate('Toma tu foto', { parametro })
-    console.log("Formulario enviado con éxito:", values, selected);
+  const handleRegistration = async (values) => {
+    let {address, ...rest}= values
+    const userData = {...rest, categories: selected, phone:phoneNumber, location:address, name: nombreCompleto, role:parametro}
+    navigation.navigate('Mi perfil', {userData})
+ 
+  //  try {
+    
+  //   let {address,categories, ...rest}= values
+  //   categories = selected
+  //   const userData = {...rest, categories, phone:phoneNumber, location:address, name: nombreCompleto, role:parametro}
+  //   const registration = await useAxios("user/registrar", "POST", JSON.stringify(userData));
+  //   Alert.alert(
+  //     `${registration.data}`,
+  //   );
+  //   navigation.navigate('Toma tu foto', { parametro })
+  //   console.log("Formulario enviado con éxito:", values, selected);
+  //   //navigation.navigate('WorkerLoginScreen', { parametro })
+  //  } catch (error) {
+  //   Alert.alert(
+  //     `${error}`,
+  //   );
+  //  }
   };
   const direccionRef = useRef(null);
+  const [data, setData] = useState([])
 
-  const url = 'https://4e14-2806-10be-9-32a8-d088-7513-d5ee-a114.ngrok-free.app/api/categorias';
-  const { data, error, loading } =  useAxiosGet(url);
+  const getCategories = async () => {
+    const { data } = await useAxios("categorias", "GET");
+    setData(data.map(item => ({ key: item.categoryId, value: item.titulo })))
+  }
   useEffect(() => {
-    if (!loading) {
-      console.log(data);
-      if(data!==null){
-        setDatos(data.map(item => ({ key: item.categoryId, value: item.titulo })));
-      }
-    }
-  }, [data, loading]);
-
+    getCategories();
+  }, [])
   return (<>
     <ScrollView>
 
       <View style={styles.header}>
-        <Image style={styles.logo} source={require('../../../assets/LogoSuperChambitas.png')} />
+        <Image style={styles.logo} source={require('../../../../assets/LogoSuperChambitas.png')} />
       </View>
       <Text style={[styles.title, { textAlign: 'center' }]}>
-        lksdlakjsdlkjasdljkasdjkl
+        Cuentanos más sobre ti
       </Text>
       <View style={styles.cont2}>
 
@@ -75,12 +80,11 @@ const AddWorkerData = ({ navigation, route }) => {
 
           <MultipleSelectList
             setSelected={(val) => setSelected(val)}
-            data={datos}
+            data={data}
             label="Lo que sabes hacer"
             notFoundText="Sin datos para mostrar"
             searchPlaceholder="Buscar"
             selectedItemsText="Lo que sabes hacer"
-            onSelect={() => console.log(selected)}
             save="key"
             labelStyles={{ fontWeight: '900' }}
             placeholder="Selecciona tus trabajos"
@@ -88,9 +92,11 @@ const AddWorkerData = ({ navigation, route }) => {
         </View>
         <Formik
           initialValues={{
-            selectedJobs: [],
+            categories: [],
             description: "",
             address: "",
+            password:"",
+            email:""
           }}
           validationSchema={AddWorkerDataSchema}
           onSubmit={handleRegistration}
@@ -138,26 +144,53 @@ const AddWorkerData = ({ navigation, route }) => {
                 onBlur={handleBlur("address")}
                 value={values.address}
                 placeholder="Escribe la dirección"
-                returnKeyType="done"
-                onSubmitEditing={handleSubmit}
+                returnKeyType="next"
                 ref={direccionRef}
               />
               {touched.address && errors.address && (
                 <Text style={styles.errorText}>{errors.address}</Text>
               )}
-
+              <Text style={styles.label}>Correo:</Text>
+              <TextInput
+                mode="outlined"
+                keyboardType="email-address"
+                style={styles.input}
+                onChangeText={handleChange("email")}
+                onBlur={handleBlur("email")}
+                value={values.email}
+                placeholder="Escribe tu correo"
+                returnKeyType="next"
+              />
+              {touched.email && errors.email && (
+                <Text style={styles.errorText}>{errors.email}</Text>
+              )}
+              <Text style={styles.label}>Contraseña:</Text>
+              <TextInput
+                mode="outlined"
+                keyboardType="visible-password"
+                style={styles.input}
+                onChangeText={handleChange("password")}
+                onBlur={handleBlur("password")}
+                value={values.password}
+                placeholder="Escribe tu contraseña"
+                returnKeyType="done"
+                onSubmitEditing={handleSubmit}
+              />
+              {touched.password && errors.password && (
+                <Text style={styles.errorText}>{errors.password}</Text>
+              )}
               <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                 <Text style={styles.buttonText}>Agregar información</Text>
               </TouchableOpacity>
             </View>
           )}
         </Formik>
-        <TouchableOpacity onPress={() => { navigation.navigate('HomeWorker', { parametro }) }}>
+        {/* <TouchableOpacity onPress={() => { navigation.navigate('HomeWorker', { parametro }) }}>
           <Text style={[styles.omitText, { textAlign: 'center' }]}>
 
             Dejar para despues
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
       </View>
     </ScrollView>

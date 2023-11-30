@@ -7,7 +7,12 @@ import { Camera } from 'expo-camera';
 import * as FileSystem from 'expo-file-system';
 const MORE_ICON = Platform.OS === 'ios' ? 'dots-horizontal' : 'dots-vertical';
 
-const PhotoUser = ({ Contador }) => {
+const PhotoUser = ({ route }) => {
+  console.log(route.params)
+  const {userData} = route.params
+
+
+  console.log(userData.categories)
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [foto, setFoto] = useState('');

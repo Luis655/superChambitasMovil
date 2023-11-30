@@ -2,17 +2,18 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 
 const NameScreen = ({ navigation, route }) => {
-  const { parametro } = route.params;
+  const { parametro, phoneNumber } = route.params;
+  console.log(parametro);
+  console.log(phoneNumber);
   const [nombre, setNombre] = useState('');
-  const [apellido, setApellido] = useState('');
 
   const handleGuardar = () => {
-    const nombreCompleto = `${nombre} ${apellido}`;
-    //alert(`Nombre Completo: ${nombreCompleto}`);
+    const nombreCompleto = `${nombre}`;
+   
     if (parametro == '1') {
-        navigation.navigate('Datos del trabajador', {parametro})
-    }else{
-        navigation.navigate('HomeWorker', {parametro})
+      navigation.navigate('Datos del trabajador', { parametro, nombreCompleto, phoneNumber})
+    } else {
+      navigation.navigate('NameScreen', { parametro, nombreCompleto, phoneNumber })
     }
 
   };
@@ -20,9 +21,9 @@ const NameScreen = ({ navigation, route }) => {
   return (
 
     <View style={styles.container}>
-                  <View style={styles.header}>
-            <Image style={styles.logo} source={require('../../../assets/LogoSuperChambitas.png')} />
-          </View>
+      <View style={styles.header}>
+        <Image style={styles.logo} source={require('../../../../assets/LogoSuperChambitas.png')} />
+      </View>
       <Text style={styles.title}>Ingrese su nombre completo</Text>
 
       <View style={styles.inputContainer}>
@@ -33,9 +34,6 @@ const NameScreen = ({ navigation, route }) => {
           value={nombre}
         />
       </View>
-
-
-
       <TouchableOpacity style={styles.button} onPress={handleGuardar}>
         <Text style={styles.buttonText}>Siguiente</Text>
       </TouchableOpacity>
@@ -52,8 +50,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   logo: {
-    justifyContent:'center',
-    alignSelf:'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
     width: 250,
     height: 250,
     resizeMode: 'contain',
@@ -73,7 +71,7 @@ const styles = StyleSheet.create({
     color: '#333333',
   },
   input: {
-    height:55,
+    height: 55,
     borderColor: '#cccccc',
     borderWidth: 1,
     borderRadius: 8,

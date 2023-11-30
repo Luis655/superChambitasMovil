@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, StyleSheet, Text, Image, TextInput, TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Alert, Platform, View, StyleSheet, Text, Image, TextInput, TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { Button } from 'react-native-paper';
+import useAxios from '../../../customHooks/hookAxios';
 
 const VerificationScreen = ({ navigation, route }) => {
-  const { parametro } = route.params;
+  const { parametro, phoneNumber } = route.params;
 
   const [verificationCode, setVerificationCode] = useState(['', '', '', '', '', '']);
   const inputRefs = useRef([]);
@@ -47,10 +48,37 @@ const VerificationScreen = ({ navigation, route }) => {
     }
   };
 
-  const handleResendCode = () => {
+  const handleResendCode = async () => {
     // Add logic to resend code here
-    setTimer(60); // Reset timer
+
+    const response = await useAxios("Sms/send-code", "POST", phoneNumber)
+    Alert.alert(
+      `${response.data}`,
+
+    );
+    setTimer(60);
   };
+
+  const handleSubmit = async () => {
+    console.log("sdasdasdasdasd "+ JSON.stringify(parametro))
+    navigation.navigate('NameScreen', { parametro, phoneNumber })
+
+    // try {
+    //   const code = verificationCode.toString().replace(",","").replace(",","").replace(",","").replace(",","").replace(",","").replace(",","")
+    //   const data = {numeroDestino:phoneNumber, codigoIngresado:Number.parseInt(code)}
+    //   const response = await useAxios("Sms/code-verify", "POST", JSON.stringify(data))
+    //   navigation.navigate('NameScreen', { parametro, phoneNumber })
+    //   Alert.alert(
+    //     `${response.data.mensaje}`,
+  
+    //   );
+    // } catch (error) {
+    //   Alert.alert(
+    //     `${error}`,
+  
+    //   );
+    // }
+  }
 
   return (
     <KeyboardAvoidingView
@@ -60,7 +88,7 @@ const VerificationScreen = ({ navigation, route }) => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
           <View style={styles.header}>
-            <Image style={styles.logo} source={require('../../../assets/LogoSuperChambitas.png')} />
+            <Image style={styles.logo} source={require('../../../../assets/LogoSuperChambitas.png')} />
           </View>
 
           <Text style={styles.title}>Verificación</Text>
@@ -99,7 +127,7 @@ const VerificationScreen = ({ navigation, route }) => {
             color="#3498db"  // Didi's blue color
             style={styles.verifyButton}
             mode="contained"
-            onPress={() => navigation.navigate('NameScreen', {parametro})}
+            onPress={handleSubmit}
           >
             Verificar
           </Button>

@@ -1,49 +1,56 @@
-import React, { useState, useRef } from 'react';
-import { StyleSheet, View, Text, Alert } from 'react-native';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import { TextInput, Button } from 'react-native-paper';
-import { Avatar } from 'react-native-paper';
-import { useAuth } from '../../auth/contextAuth';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { Ionicons } from '@expo/vector-icons';
-
+import React, { useState, useRef, useEffect, useId } from "react";
+import { StyleSheet, Text, View, Alert, ActivityIndicator } from "react-native";
+import { Formik } from "formik";
+import * as Yup from "yup";
+import { AuthContext, useAuth } from "../../auth/contextAuth";
+import { Avatar } from "react-native-paper";
+import useAxios from "../../customHooks/hookAxios";
+import { Button, TextInput, IconButton, Icon } from "react-native-paper";
+import { useContext } from "react";
 const validationSchema = Yup.object().shape({
-  phoneNumber: Yup.string()
-    .matches(/^[0-9]+$/, 'El número de teléfono debe contener solo números')
-    .required('El número de teléfono es obligatorio'),
-  password: Yup.string().required('La contraseña es obligatoria'),
+  email: Yup.string().required("El nombre de usuario es obligatorio"),
+  password: Yup.string().required("La contraseña es obligatoria"),
 });
+
 
 export default function WorkerLoginScreen({ navigation, route }) {
   const { parametro } = route.params;
+
+  const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
-  const { dispatch } = useAuth();
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const { user, setUser } = useContext(AuthContext);
 
   const handleLogin = async (values) => {
+    //getLogin();
     setLoading(true);
-
+    user
     try {
-      // Your login logic here
-      // Example: const data = await useAxios('auth/login', 'post', { "email": values.phoneNumber, "password": values.password });
-      // ...
+      const response = await useAxios("user/Autenticar", "post", JSON.stringify({
+        email: values.email,
+        password: values.password,
+      }));
 
-      // Update the dispatch and navigate logic as needed
-      // dispatch({ type: 'SET_USER', payload: values.phoneNumber });
-      // dispatch({ type: 'SET_TOKEN', payload: data });
-      // ...
-
-      navigation.navigate('HomeWorker');
+      if (response.data.resultado && response.data.token) {
+        setData(response.data);
+        await setUser(response.data);
+        navigation.navigate("HomeWorker");
+      }
     } catch (error) {
-      console.error(error);
-      Alert.alert('Error al iniciar sesión', 'Error');
+      setLoading(false);
+      Alert.alert("Error al iniciar sesion", "Error", [
+        {
+          text: "Aceptar",
+          onPress: () => {},
+        },
+      ]);
     } finally {
       setLoading(false);
     }
-  };
 
+  };
   return (
+
     <View style={styles.container}>
       <View style={styles.logoContainer}>
         <Avatar.Image style={styles.logoImage} size={250} source={require('../../../assets/LogoSuperChambitas.png')} />
@@ -51,51 +58,40 @@ export default function WorkerLoginScreen({ navigation, route }) {
       </View>
 
       <Formik
-        initialValues={{ phoneNumber: '', password: '' }}
+        initialValues={{ email: '', password: '' }}
         onSubmit={handleLogin}
         validationSchema={validationSchema}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
           <View style={styles.formContainer}>
-           <TextInput
-  style={styles.input}
-  placeholder="Número de teléfono"
-  keyboardType="numeric"
-  maxLength={10}
-  onChangeText={(text) => {
-    // Remove non-numeric characters from the input
-    const numericText = text.replace(/[^0-9]/g, '');
-
-    // Trim the text to a maximum length of 10 characters
-    const trimmedText = numericText.slice(0, 10);
-
-    handleChange('phoneNumber')(trimmedText);
-  }}
-  onBlur={handleBlur('phoneNumber')}
-  value={values.phoneNumber}
-/>
+            <TextInput
+              style={styles.input}
+              placeholder="Correo"
+              keyboardType="email-address"
+              onChangeText={handleChange('email')}
+              onBlur={handleBlur('email')}
+              value={values.email}
+            />
 
 
-            {errors.phoneNumber && <Text style={styles.error}>{errors.phoneNumber}</Text>}
+            {errors.email && <Text style={styles.error}>{errors.email}</Text>}
 
             <TextInput
-  style={styles.input}
-  placeholder="Contraseña"
-  secureTextEntry={!passwordVisible}
-  onChangeText={handleChange('password')}
-  onBlur={handleBlur('password')}
-  value={values.password}
-  right={
-    <TextInput.Icon
-      name={passwordVisible ? 'eye-off' : 'eye'}
-      onPress={() => setPasswordVisible(!passwordVisible)}
-      icon={() => <Icon name={passwordVisible ? 'eye-slash' : 'eye'} size={20} color="#000" />} // Change the color and size as needed
-    />
-  }
-/>
-
+              style={styles.input}
+              placeholder="Contraseña"
+              secureTextEntry={!passwordVisible}
+              onChangeText={handleChange('password')}
+              onBlur={handleBlur('password')}
+              value={values.password}
+              right={
+                <TextInput.Icon
+                  name={passwordVisible ? 'eye-off' : 'eye'}
+                  onPress={() => setPasswordVisible(!passwordVisible)}
+                  icon={() => <Icon name={passwordVisible ? 'eye-slash' : 'eye'} size={20} color="#000" />} // Change the color and size as needed
+                />
+              }
+            />
             {errors.password && <Text style={styles.error}>{errors.password}</Text>}
-
             <Button
               loading={loading}
               disabled={loading}
