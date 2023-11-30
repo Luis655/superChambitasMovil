@@ -64,7 +64,6 @@ const VerificationScreen = ({ navigation, route }) => {
       const code = verificationCode.toString().replace(",","").replace(",","").replace(",","").replace(",","").replace(",","").replace(",","")
       const data = {numeroDestino:phoneNumber, codigoIngresado:Number.parseInt(code)}
       const response = await useAxios("Sms/code-verify", "POST", JSON.stringify(data))
-      set
       navigation.navigate('NameScreen', { parametro, phoneNumber })
       Alert.alert(
         `${response.data.mensaje}`,
