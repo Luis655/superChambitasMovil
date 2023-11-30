@@ -44,7 +44,7 @@ const AddWorkerData = ({ navigation, route }) => {
   const [selected, setSelected] = useState([]);
   const [datos, setDatos] = useState([]);
   const handleRegistration = (values) => {
-    navigation.navigate('HomeWorker', { parametro })
+    navigation.navigate('Toma tu foto', { parametro })
     console.log("Formulario enviado con éxito:", values, selected);
   };
   const direccionRef = useRef(null);

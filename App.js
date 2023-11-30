@@ -15,6 +15,7 @@ import AddWorkerData from "./src/ui/screens/AddWorkerData";
 import MisTrabajos from "./src/ui/screens/MisTrabajos";
 import { Provider as PaperProvider } from 'react-native-paper';
 import { AuthProvider } from './src/auth/contextAuth';
+import PhotoUser from "./src/ui/screens/PhotoUser";
 import {
   useFonts,
   Montserrat_400Regular,
@@ -140,6 +141,13 @@ export default function App() {
           }}
           name="BarraLAterar"
           component={BarraLateral}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: true,
+          }}
+          name="Toma tu foto"
+          component={PhotoUser}
         />
       </Stack.Navigator>
     </NavigationContainer>
