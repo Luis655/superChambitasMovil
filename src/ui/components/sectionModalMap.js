@@ -162,7 +162,7 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
                             </View>
                 :
                 <View style={{ height: '100%', maxHeight: '100%', justifyContent:'center' }}>
-                <SolicitarTrabajo Contador={Contador} toggleModal={toggleModal} />
+                <SolicitarTrabajo Contador={(id) => {Contador(id)}} toggleModal={toggleModal} />
               </View>
 
               }

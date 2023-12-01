@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 
-import { View, Text, Image, StyleSheet, TouchableOpacity, Alert, Platform, KeyboardAvoidingView, ScrollView, Keyboard } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert, Platform, KeyboardAvoidingView, ScrollView, Keyboard, ActivityIndicator } from 'react-native';
 import ModalChat from './ModalChat';
 import { useDarkMode } from '../../auth/contextAuth';
 import { TextInput, Appbar, Avatar } from 'react-native-paper'
@@ -23,6 +23,7 @@ const SolicitarTrabajo = ({ Contador,toggleModal }) => {
   const [foto, setFoto] = useState('');
   const [camaraFrontal, setCamaraFrontal] = useState(false);
   const [datos, setDatos] = useState([]);
+  const [estadomsg, setEstadomsg] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -136,6 +137,8 @@ const SolicitarTrabajo = ({ Contador,toggleModal }) => {
       "fecha": "2023-12-01"
      }
     const registration = await useAxios("user/registrar", "POST", JSON.stringify(userData));
+
+
     Alert.alert(
       `${JSON.stringify(registration.data)}`,
     );
@@ -146,22 +149,14 @@ const SolicitarTrabajo = ({ Contador,toggleModal }) => {
     );
    }
   };
-
+const chambaAcept = (values) => {
+  Alert.alert(`¿Estás seguro de realizar esta acción?`, 'Aceptar', [
+    { text: 'Aceptar', onPress: () => {aceptado(values)  } },
+    { text: 'Cancelar', onPress: () => {}, style: 'cancel' },
+  ]);
+}
   const aceptado =  async (trabajo) => {
-// Obtener la fecha y hora actuales
-var fechaActual = new Date();
-
-// Obtener los componentes de la fecha y hora
-var año = fechaActual.getFullYear();
-var mes = (fechaActual.getMonth() + 1).toString().padStart(2, '0');
-var dia = fechaActual.getDate().toString().padStart(2, '0');
-var horas = fechaActual.getHours().toString().padStart(2, '0');
-var minutos = fechaActual.getMinutes().toString().padStart(2, '0');
-var segundos = fechaActual.getSeconds().toString().padStart(2, '0');
-var milisegundos = fechaActual.getMilliseconds().toString().padStart(3, '0');
-
-// Construir la cadena con el formato "YYYY-MM-DDTHH:mm:ss.sssZ"
-var fechaFormateada = `${año}-${mes}-${dia}T${horas}:${minutos}:${segundos}.${milisegundos}Z`;
+    setEstadomsg(true)
 const userData = {
   "title": trabajo.title,
   "userId": id,
@@ -175,21 +170,23 @@ const userData = {
     try {
 
       const registration = await useAxios("Service/CrearServicio", "POST", JSON.stringify(userData));
+      console.log(registration.data);
+      console.log("service id " + JSON.stringify(registration.data.serviceId));
       Alert.alert(
-        `${registration.data}`,
+        `¡¡Servicio creado con exito!!`,
       );
-      navigation.navigate('WorkerLoginScreen', {userData})
+      Contador(registration.data.serviceId.toString())
+      // navigation.navigate('WorkerLoginScreen', {userData})
       //navigation.navigate('WorkerLoginScreen', { parametro })
      } catch (error) {
       Alert.alert(
-        `${error}`,
+        `!Upps, ha ocurrido un error¡¡`,
       );
+     }finally{
+      setEstadomsg(false);
      }
     //console.log(trabajo)
-    Alert.alert(`¿Estás seguro de realizar esta acción?`, 'Aceptar', [
-      { text: 'Aceptar', onPress: () => { Contador() } },
-      { text: 'Cancelar', onPress: () => {}, style: 'cancel' },
-    ]);
+
   };
   const hideModal = () => setVisible(false);
 
@@ -247,12 +244,16 @@ const userData = {
 
 
     <ScrollView>
+      {estadomsg &&
+        <View style={styles.activityIndicator}>
+          <ActivityIndicator animating={estadomsg} color="orange" size={140} />
+        </View>}
 
       <Formik
         initialValues={{ title: '', address: '', description: '', payment: '' }}
         validationSchema={validationSchema}
         onSubmit={(values) => {
-          aceptado(values);
+          chambaAcept(values);
           // Handle form submission here
           //console.log(values);
         }}

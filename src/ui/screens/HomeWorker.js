@@ -29,6 +29,7 @@ const workerLogo = require("../../../assets/logoconosuperchambitas-removebg-prev
 import Ionicons from '@expo/vector-icons/Ionicons';
 import BarraLateral from '../components/BarraLateral';
 import OfertaModal from "../components/OfertaModal";
+import useAxios from "../../customHooks/hookAxios";
 const menuWidth = 250;
 const hiddenPosition = -menuWidth - 50;
 const HomeWorker = ({ navigation,route }) => {
@@ -40,7 +41,7 @@ const HomeWorker = ({ navigation,route }) => {
 
 
 
-  console.warn(profile);
+  //console.warn(profile);
   // const [active, setActive] = useState("");
   const [modalVisible1, setModalVisible1] = useState(false);
 
@@ -58,19 +59,25 @@ const HomeWorker = ({ navigation,route }) => {
     };
 
     setMarkerPosition(newMarkerPosition);
-  };
+  }; 
   const [timeLeft, setTimeLeft] = useState(15);
-  const [data,setData] = useEffect();
+  const [datos, setDatos] = useState();
   const getoferta = async () => {
-    const { data } = await useAxios("Service", "GET");
-    setData(data)
+    const { data } = await useAxios(`Service/${1080}`, "GET");
+    if(data.status ==1){
+      setModalVisible(!isModalVisible);
+    }
+    setDatos(data)
   }
   useEffect(() => {
     getoferta();
   }, [])
 
 
-  const iniciarContador = () => {
+  const iniciarContador = (id) => {
+    Alert.alert(
+      id,
+    );
     setModalVisible(!isModalVisible);
     setIsFloatingSectionVisible(!isFloatingSectionVisible);
     setContadorActive(true);
@@ -85,7 +92,7 @@ const HomeWorker = ({ navigation,route }) => {
         setModalVisible1(true);
         // Muestra un cuadro de diálogo para preguntar al usuario si quiere reiniciar la búsqueda
       }else{
-        getoferta
+        //getoferta
       }
     }, 1000);
   };
@@ -1074,7 +1081,9 @@ const HomeWorker = ({ navigation,route }) => {
         aceptarTrabajo={(lat, lng) => {
           iniciarRuta(lat, lng);
         }}
-        Contador={iniciarContador}
+        Contador={(id) =>{
+          iniciarContador(id)
+        }}
         Titulo={role == '1' ? "Buscar Trabajo" : "Solicitar servicio"}
         Tipo={role}
         toggleModal={toggleModal}
@@ -1086,6 +1095,7 @@ const HomeWorker = ({ navigation,route }) => {
         onAccept={handleAccept}
         onContraofertar={handleContraofertar}
         onClose={toggleModal}
+        
       />
     </View>
   );
