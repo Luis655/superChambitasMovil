@@ -9,10 +9,14 @@ import * as yup from 'yup';
 import { SelectList } from "react-native-dropdown-select-list";
 import { Camera } from 'expo-camera';
 import useAxiosGet from '../../customHooks/hookAxiosGet';
+import { AuthContext, useAuth } from "../../auth/contextAuth";
 
 const MORE_ICON = Platform.OS === 'ios' ? 'dots-horizontal' : 'dots-vertical';
 
 const SolicitarTrabajo = ({ Contador,toggleModal }) => {
+  const { user, profile } = useContext(AuthContext);
+  const {id, userName,email,phone, role } = user
+
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [foto, setFoto] = useState('');
@@ -142,7 +146,44 @@ const SolicitarTrabajo = ({ Contador,toggleModal }) => {
    }
   };
 
-  const aceptado = (trabajo) => {
+  const aceptado =  async (trabajo) => {
+    console.log(value)
+// Obtener la fecha y hora actuales
+var fechaActual = new Date();
+
+// Obtener los componentes de la fecha y hora
+var año = fechaActual.getFullYear();
+var mes = (fechaActual.getMonth() + 1).toString().padStart(2, '0');
+var dia = fechaActual.getDate().toString().padStart(2, '0');
+var horas = fechaActual.getHours().toString().padStart(2, '0');
+var minutos = fechaActual.getMinutes().toString().padStart(2, '0');
+var segundos = fechaActual.getSeconds().toString().padStart(2, '0');
+var milisegundos = fechaActual.getMilliseconds().toString().padStart(3, '0');
+
+// Construir la cadena con el formato "YYYY-MM-DDTHH:mm:ss.sssZ"
+var fechaFormateada = `${año}-${mes}-${dia}T${horas}:${minutos}:${segundos}.${milisegundos}Z`;
+
+
+    try {
+      const userData = {
+        "title": trabajo.address,
+        "userId": id,
+        "description": trabajo.description,
+        "categoryId": "3", 
+        "price": trabajo.payment,
+        "fecha": fechaFormateada
+       }
+      const registration = await useAxios("user/registrar", "POST", JSON.stringify(userData));
+      Alert.alert(
+        `${registration.data}`,
+      );
+      navigation.navigate('WorkerLoginScreen', {userData})
+      //navigation.navigate('WorkerLoginScreen', { parametro })
+     } catch (error) {
+      Alert.alert(
+        `${error}`,
+      );
+     }
     console.log(trabajo)
     Alert.alert(`¿Estás seguro de realizar esta acción?`, 'Aceptar', [
       { text: 'Aceptar', onPress: () => { Contador() } },
