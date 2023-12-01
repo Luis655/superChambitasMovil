@@ -6,7 +6,7 @@ import { useDarkMode, AuthContext } from '../../auth/contextAuth';
 import SolicitarTrabajo from './SolicitarTrabajo';
 import { MaterialIcons } from '@expo/vector-icons';
 
-const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrabajo, Contador, Tipo, Titulo }) => {
+const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrabajo, Contador, Tipo, Titulo, toggleModal }) => {
   const { colorMode } = useDarkMode();
   const { user } = useContext(AuthContext);
   const {role} = user
@@ -153,7 +153,7 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
                             </View>
                 :
                 <View style={{ height: '100%', maxHeight: '100%', justifyContent:'center' }}>
-                <SolicitarTrabajo Contador={Contador} />
+                <SolicitarTrabajo Contador={Contador} toggleModal={toggleModal} />
               </View>
 
               }
