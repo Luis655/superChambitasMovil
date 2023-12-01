@@ -4,7 +4,7 @@ import { Button } from 'react-native-paper';
 import useAxios from '../../../customHooks/hookAxios';
 
 const VerificationScreen = ({ navigation, route }) => {
-  const { parametro, phoneNumber } = route.params;
+  const { role, phoneNumber } = route.params;
 
   const [verificationCode, setVerificationCode] = useState(['', '', '', '', '', '']);
   const inputRefs = useRef([]);
@@ -60,24 +60,22 @@ const VerificationScreen = ({ navigation, route }) => {
   };
 
   const handleSubmit = async () => {
-    console.log("sdasdasdasdasd "+ JSON.stringify(parametro))
-    navigation.navigate('NameScreen', { parametro, phoneNumber })
 
-    // try {
-    //   const code = verificationCode.toString().replace(",","").replace(",","").replace(",","").replace(",","").replace(",","").replace(",","")
-    //   const data = {numeroDestino:phoneNumber, codigoIngresado:Number.parseInt(code)}
-    //   const response = await useAxios("Sms/code-verify", "POST", JSON.stringify(data))
-    //   navigation.navigate('NameScreen', { parametro, phoneNumber })
-    //   Alert.alert(
-    //     `${response.data.mensaje}`,
+    try {
+      const code = verificationCode.toString().replace(",","").replace(",","").replace(",","").replace(",","").replace(",","").replace(",","")
+      const data = {numeroDestino:phoneNumber, codigoIngresado:Number.parseInt(code)}
+      const response = await useAxios("Sms/code-verify", "POST", JSON.stringify(data))
+      navigation.navigate('NameScreen', { role, phoneNumber })
+      Alert.alert(
+        `${response.data.mensaje}`,
   
-    //   );
-    // } catch (error) {
-    //   Alert.alert(
-    //     `${error}`,
+      );
+    } catch (error) {
+      Alert.alert(
+        `${error}`,
   
-    //   );
-    // }
+      );
+    }
   }
 
   return (

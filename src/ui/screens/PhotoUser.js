@@ -4,15 +4,17 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, Alert, Platform, Keybo
 import { useDarkMode } from '../../auth/contextAuth';
 import { TextInput, Appbar, Avatar } from 'react-native-paper'
 import { Camera } from 'expo-camera';
+import useAxios from "../../customHooks/hookAxios";
+
 import * as FileSystem from 'expo-file-system';
 const MORE_ICON = Platform.OS === 'ios' ? 'dots-horizontal' : 'dots-vertical';
 
-const PhotoUser = ({ route }) => {
+const PhotoUser = ({navigation, route }) => {
   console.log(route.params)
   const {userData} = route.params
 
 
-  console.log(userData.categories)
+  console.log(userData.role)
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [foto, setFoto] = useState('');
@@ -113,6 +115,27 @@ const PhotoUser = ({ route }) => {
  
 
   const [openCamera, setOpenCamera] = useState(false);
+  const handleRegistration = async () => {
+    //let {address, ...rest}= values
+    //const userData = {...rest, categories: selected, phone:phoneNumber, location:address, name: nombreCompleto, role:parametro}
+    //navigation.navigate('Mi perfil', {userData})
+   try {
+    //let {address,categories, ...rest}= values
+    //categories = selected
+    //const userData = {...rest, categories, phone:phoneNumber, location:address, name: nombreCompleto, role:parametro}
+    const registration = await useAxios("user/registrar", "POST", JSON.stringify(userData));
+    Alert.alert(
+      `${registration.data}`,
+    );
+    navigation.navigate('WorkerLoginScreen', {userData})
+    //navigation.navigate('WorkerLoginScreen', { parametro })
+   } catch (error) {
+    Alert.alert(
+      `${error}`,
+    );
+   }
+  };
+
   const _handleMore = async () => {
     console.log("perra madre")
     const { status } = await Camera.requestCameraPermissionsAsync();
@@ -218,13 +241,13 @@ const PhotoUser = ({ route }) => {
                   </TouchableOpacity>
                 }
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={console.log("hola")}>
+                <TouchableOpacity style={styles.button} onPress={handleRegistration}>
                 <Text style={styles.buttonText}>Agregar información</Text>
               </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={handleRegistration}>
                     <Text style={{
                         fontSize:17, fontWeight:'400', color:'orange', 
-                }}>¿No puedes?, !gregarlo más tarde¡</Text>
+                }}>Preguntame mas tarde</Text>
                 </TouchableOpacity>
             </View>
             )

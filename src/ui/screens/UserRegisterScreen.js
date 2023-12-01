@@ -14,7 +14,7 @@ import {
 import CountryPicker from 'react-native-country-picker-modal';
 import { Formik } from "formik";
 import * as Yup from "yup";
-
+import useAxios from '../../customHooks/hookAxios';
 const AddWorkerDataSchema = Yup.object().shape({
   phoneNumber: Yup.string()
     .required("El numero es requerido")
@@ -24,7 +24,7 @@ const AddWorkerDataSchema = Yup.object().shape({
 
 
 const UserRegisterScreenPhone = ({ navigation, route }) => {
-  const { parametro } = route.params;
+  const { role } = route.params;
   //const [phoneNumber, setPhoneNumber] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedPhoneNumber, setSelectedPhoneNumber] = useState('');
@@ -59,7 +59,7 @@ const UserRegisterScreenPhone = ({ navigation, route }) => {
   };
 
   const handleSubmit=async ()=>{
-      navigation.navigate('CodeScreen', { parametro, phoneNumber})
+      navigation.navigate('CodeScreen', { role, phoneNumber})
 
   //  try {
   //   const response = await useAxios("Sms/send-code", "POST", JSON.stringify(phoneNumber))
@@ -75,9 +75,23 @@ const UserRegisterScreenPhone = ({ navigation, route }) => {
   //   );
   //  }
   }
-  const datosNumero = (values) => {
+  const datosNumero = async (values) => {
     const phoneNumber= values.phoneNumber
-    navigation.navigate('CodeScreen', { parametro, phoneNumber})
+
+       try {
+    const response = await useAxios("Sms/send-code", "POST", JSON.stringify(phoneNumber))
+    Alert.alert(
+      `${response.data.mensaje}`,
+
+    );
+    navigation.navigate('CodeScreen', { role, phoneNumber})
+    
+   } catch (error) {
+    Alert.alert(
+      `${error}`,
+
+    );
+   }
     console.log(values.phoneNumber);
   }
   return (

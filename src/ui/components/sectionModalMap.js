@@ -124,11 +124,11 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
           {value == 'trabajador' &&
             <View>
 
-              {role == '3' &&
+              {role == '2' &&
                 <TouchableOpacity style={styles.searchButton} onPress={onSearchJobs}>
                   <Text style={styles.searchButtonText}>{isActive ? "Desactivar" : "Activar"}</Text>
                 </TouchableOpacity>}
-              {role == '3' ?
+              {role == '2' ?
               <View>
                 <Text style={styles.textStyle}>Trabajos disponibles en tu area</Text>
                 <TouchableOpacity style={styles.search}>
@@ -161,7 +161,7 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
             </View>}
 
           {value == 'pedir' && <View>
-            {role == '1' &&
+            {role == '2' &&
               <TouchableOpacity style={styles.searchButton} onPress={onSearchJobs}>
                 <Text style={styles.searchButtonText}>{isActive ? "Desactivar" : "Activar"}</Text>
               </TouchableOpacity>}
@@ -172,11 +172,11 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
 
 
           {value == 'pendientes' && <View>
-            {role == '1' &&
+            {role == '2' &&
               <TouchableOpacity style={styles.searchButton} onPress={onSearchJobs}>
                 <Text style={styles.searchButtonText}>{isActive ? "Desactivar" : "Activar"}</Text>
               </TouchableOpacity>}
-            {role == '1' ?
+            {role == '2' ?
               <Text style={styles.textStyle}>Trabajos disponibles en tu area</Text>
 
               :

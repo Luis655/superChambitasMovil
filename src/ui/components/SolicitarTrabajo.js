@@ -12,7 +12,7 @@ import useAxiosGet from '../../customHooks/hookAxiosGet';
 
 const MORE_ICON = Platform.OS === 'ios' ? 'dots-horizontal' : 'dots-vertical';
 
-const SolicitarTrabajo = ({ Contador }) => {
+const SolicitarTrabajo = ({ Contador,toggleModal }) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [foto, setFoto] = useState('');
@@ -37,42 +37,10 @@ const SolicitarTrabajo = ({ Contador }) => {
     }
   }, [data, loading]);
   const { colorMode, setDarkColorMode } = useDarkMode();
-  const jobs = [
-    { key: '1', value: 'trabajo 1' },
-    { key: '2', value: 'trabajo 2' },
-    { key: '3', value: 'trabajo 3' },
-    { key: '4', value: 'trabajo 4' },
-    { key: '5', value: 'trabajo 5' },
-    { key: '6', value: 'trabajo 6' },
-    { key: '7', value: 'trabajo 7' },
-    { key: '8', value: 'trabajo 8' },
-    { key: '9', value: 'trabajo 9' },
-    { key: '10', value: 'trabajo 10' },
-  ];
-  const dataw = [
-    { key: '1', value: 'Mobiles', disabled: true },
-    { key: '2', value: 'Appliances' },
-    { key: '3', value: 'Cameras' },
-    { key: '4', value: 'Computers', disabled: true },
-    { key: '5', value: 'Vegetables' },
-    { key: '6', value: 'Diary Products' },
-    { key: '7', value: 'Drinks' },
-  ]
 
-  const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
-  const [items, setItems] = useState(jobs);
 
   const [selectedChips, setSelectedChips] = useState([]);
-  const handleChipPress = (value, index) => {
-    setSelectedChips([...selectedChips, value]);
-
-    selectedChips.map((data) => {
-      setSelectedChips(selectedChips.filter((chip) => {
-        chip.id !== data.id
-      }));
-    })
-  };
 
   const styles = StyleSheet.create({
     button: {
@@ -150,8 +118,32 @@ const SolicitarTrabajo = ({ Contador }) => {
   const [visible, setVisible] = useState(false);
 
   const hideDialog = () => setVisible(false);
+  const handleRegistration = async () => {
+
+   try {
+    const userData = {
+      "title": "busco trabajor",
+      "userId": 22,
+      "description": "string",
+      "categoryId": "3", 
+      "price": 500,
+      "fecha": "2023-12-01"
+     }
+    const registration = await useAxios("user/registrar", "POST", JSON.stringify(userData));
+    Alert.alert(
+      `${registration.data}`,
+    );
+    navigation.navigate('WorkerLoginScreen', {userData})
+    //navigation.navigate('WorkerLoginScreen', { parametro })
+   } catch (error) {
+    Alert.alert(
+      `${error}`,
+    );
+   }
+  };
 
   const aceptado = (trabajo) => {
+    console.log(trabajo)
     Alert.alert(`¿Estás seguro de realizar esta acción?`, 'Aceptar', [
       { text: 'Aceptar', onPress: () => { Contador() } },
       { text: 'Cancelar', onPress: () => {}, style: 'cancel' },
@@ -233,7 +225,7 @@ const SolicitarTrabajo = ({ Contador }) => {
               setSelected={(val) => setValue(val)}
               data={datos}
               save="key"
-              onSelect={() => alert(value)}
+              onSelect={() => console.log(value)}
               label="Selecciona el trabajo"
               labelStyles={{ fontWeight: '900' }}
               placeholder="Selecciona tu trabajo"
@@ -247,7 +239,6 @@ const SolicitarTrabajo = ({ Contador }) => {
 
 
             />
-
 
             <View style={styles.cardContent}>
               <TextInput

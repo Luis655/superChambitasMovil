@@ -26,7 +26,7 @@ const OnBoardingScreen = ({ navigation }) => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={[styles.button, styles.orangeButton]}
-          onPress={() => navigation.navigate('WorkerLoginScreen', { parametro: '2' })}
+          onPress={() => navigation.navigate('WorkerLoginScreen', { role: 2 })}
         >
           <Text style={[styles.buttonText, styles.orangeButtonText]}>USUARIO</Text>
           <FontAwesome name="long-arrow-right" size={18} color="white" />
@@ -34,7 +34,7 @@ const OnBoardingScreen = ({ navigation }) => {
 
         <TouchableOpacity
           style={[styles.button, styles.orangeButton]}
-          onPress={() => navigation.navigate('WorkerLoginScreen', { parametro: '1' })}
+          onPress={() => navigation.navigate('WorkerLoginScreen', { role: 1 })}
         >
           <Text style={[styles.buttonText, styles.orangeButtonText]}>CHAMBEADOR</Text>
           <FontAwesome name="long-arrow-right" size={18} color="white" />

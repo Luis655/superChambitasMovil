@@ -27,13 +27,20 @@ import HelpModal from "../components/helpModal";
 import { SupportModal } from "../components/supportModal";
 const workerLogo = require("../../../assets/logoconosuperchambitas-removebg-preview.png");
 import Ionicons from '@expo/vector-icons/Ionicons';
+import BarraLateral from '../components/BarraLateral';
+import OfertaModal from "../components/OfertaModal";
 const menuWidth = 250;
 const hiddenPosition = -menuWidth - 50;
 const HomeWorker = ({ navigation,route }) => {
   const { colorMode, setDarkColorMode } = useDarkMode();
-  
+  const [state, setState] = useState({type:1})
   const { user, profile } = useContext(AuthContext);
-  const { role, userName} = user
+  const {id, userName,email,phone, role } = user
+
+
+
+
+  console.warn(profile);
   // const [active, setActive] = useState("");
   const [modalVisible1, setModalVisible1] = useState(false);
 
@@ -53,8 +60,17 @@ const HomeWorker = ({ navigation,route }) => {
     setMarkerPosition(newMarkerPosition);
   };
   const [timeLeft, setTimeLeft] = useState(15);
+  const getoferta = async () => {
+    const { data } = await useAxios("categorias", "GET");
+    setData(data.map(item => ({ key: item.categoryId, value: item.titulo })))
+  }
+  useEffect(() => {
+    getCategories();
+  }, [])
+
 
   const iniciarContador = () => {
+    setModalVisible(!isModalVisible);
     setIsFloatingSectionVisible(!isFloatingSectionVisible);
     setContadorActive(true);
 
@@ -67,6 +83,8 @@ const HomeWorker = ({ navigation,route }) => {
         clearInterval(interval); // Detén el intervalo cuando el tiempo llega a cero
         setModalVisible1(true);
         // Muestra un cuadro de diálogo para preguntar al usuario si quiere reiniciar la búsqueda
+      }else{
+        getoferta
       }
     }, 1000);
   };
@@ -896,7 +914,23 @@ const HomeWorker = ({ navigation,route }) => {
     },
   ];
   
+  const [isModalVisible, setModalVisible] = useState(false);
 
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
+  const handleAccept = (precioOferta) => {
+    // Lógica para aceptar la oferta con el nuevo precio
+    console.log(`Oferta aceptada: $${precioOferta}`);
+    toggleModal();
+  };
+
+  const handleContraofertar = (precioOferta) => {
+    // Lógica para contraofertar con el nuevo precio
+    console.log(`Contraoferta realizada: $${precioOferta}`);
+    toggleModal();
+  };
  
   return (
     <View style={styles.container}>
@@ -910,7 +944,7 @@ const HomeWorker = ({ navigation,route }) => {
           onLoad={() => setImageLoaded1(true)}
         />          
         </Marker>
-          {role == "2" &&
+          {role == "1" &&
             jobData2.map((marker, index) => (
               <Marker
                 key={index}
@@ -918,7 +952,7 @@ const HomeWorker = ({ navigation,route }) => {
                 title={marker.jobType}
                 description={marker.address}
                 //image={require('./persona.png')}
-                style={{ width: 3, height: 3 }} // Ajusta el tamaño del marcador según tus necesidades
+                style={{ width: 22, height: 22 }} // Ajusta el tamaño del marcador según tus necesidades
                 image={workerLogo}
               />
             ))}
@@ -972,7 +1006,7 @@ const HomeWorker = ({ navigation,route }) => {
       <TouchableOpacity style={styles.fab} onPress={toggleFloatingSection}>
         <Ionicons name="radio-button-on" size={15} color="#ff9900" />
         <Text style={styles.text}>
-          {state.type == '1' ? "¿ QUE HAREMOS HOY ?" : JSON.stringify(location)}
+          {role == '1' ? "¿ QUE HAREMOS HOY ?" : "¿ CHAMBA ?"}
         </Text>
       </TouchableOpacity>
     </View>
@@ -1020,6 +1054,12 @@ const HomeWorker = ({ navigation,route }) => {
       <BarraLateral
         toggleFloatingSection={toggleFloatingSection}
         navigation={navigation}
+        userName = {userName}
+        id={id}
+        email={email}
+        phone={phone}
+        role={role}
+
       />
 
 
@@ -1034,11 +1074,18 @@ const HomeWorker = ({ navigation,route }) => {
           iniciarRuta(lat, lng);
         }}
         Contador={iniciarContador}
-        Titulo={state.type == '1' ? "Buscar Trabajo" : "Solicitar servicio"}
+        Titulo={role == '2' ? "Buscar Trabajo" : "Solicitar servicio"}
         Tipo={role}
+        toggleModal={toggleModal}
       />
       <HelpModal closeModal={opencloseModal} modalVisible={isOpenModal}></HelpModal>
       <SupportModal closeModal={opencloseSupport} modalVisible={isOpenSupport}></SupportModal>
+      <OfertaModal
+        isVisible={isModalVisible}
+        onAccept={handleAccept}
+        onContraofertar={handleContraofertar}
+        onClose={toggleModal}
+      />
     </View>
   );
 };

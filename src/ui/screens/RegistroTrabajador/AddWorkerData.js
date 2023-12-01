@@ -25,8 +25,8 @@ const AddWorkerDataSchema = Yup.object().shape({
 
 
 const AddWorkerData = ({ navigation, route }) => {
-  const { parametro, nombreCompleto, phoneNumber} = route.params;
-  console.log(parametro)
+  const { role, nombreCompleto, phoneNumber} = route.params;
+  console.log(role)
   console.log(nombreCompleto)
   console.log(phoneNumber)
 
@@ -34,7 +34,7 @@ const AddWorkerData = ({ navigation, route }) => {
   const [selected, setSelected] = useState([]);
   const handleRegistration = async (values) => {
     let {address, ...rest}= values
-    const userData = {...rest, categories: selected, phone:phoneNumber, location:address, name: nombreCompleto, role:parametro}
+    const userData = {...rest, categories: selected, phone:phoneNumber, location:address, name: nombreCompleto, role:role}
     navigation.navigate('Mi perfil', {userData})
  
   //  try {

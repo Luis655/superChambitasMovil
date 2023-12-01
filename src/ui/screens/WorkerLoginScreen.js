@@ -14,7 +14,7 @@ const validationSchema = Yup.object().shape({
 
 
 export default function WorkerLoginScreen({ navigation, route }) {
-  const { parametro } = route.params;
+  const { role } = route.params;
 
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
@@ -24,7 +24,7 @@ export default function WorkerLoginScreen({ navigation, route }) {
   const handleLogin = async (values) => {
     //getLogin();
     setLoading(true);
-    user
+    user 
     try {
       const response = await useAxios("user/Autenticar", "post", JSON.stringify({
         email: values.email,
@@ -107,7 +107,7 @@ export default function WorkerLoginScreen({ navigation, route }) {
               <Button
                 style={styles.registerButton}
                 mode="text"
-                onPress={() => parametro === '1' ? navigation.navigate('UserRegister', { parametro }) : navigation.navigate('UserRegister', { parametro })}
+                onPress={() => role === '1' ? navigation.navigate('UserRegister', { role }) : navigation.navigate('UserRegister', { role })}
               >
                 Registrarse
               </Button>

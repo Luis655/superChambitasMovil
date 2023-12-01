@@ -8,7 +8,7 @@ const menuWidth = 250;
 const hiddenPosition = -menuWidth - 50;
 
 
-const BarraLateral = ({navigation, toggleFloatingSection}) => {
+const BarraLateral = ({navigation, toggleFloatingSection, id, userName,email,phone, role }) => {
 
     const { colorMode, setDarkColorMode } = useDarkMode();
 
@@ -360,7 +360,7 @@ const BarraLateral = ({navigation, toggleFloatingSection}) => {
                     <View style={styles.userRow}>
 
                         <View style={styles.userInfo}>
-                            <Text style={styles.username}>Luis Macias</Text>
+                            <Text style={styles.username}>{userName}</Text>
                             <TouchableOpacity style={styles.editProfileContainer}>
                                 <Text style={styles.editProfileText}>Editar perfil</Text>
                                 <Icon name="chevron-right" size={10} color="#888" style={styles.editProfileIcon} />
@@ -375,20 +375,20 @@ const BarraLateral = ({navigation, toggleFloatingSection}) => {
                 </View>
 
 
-                <TouchableOpacity style={styles.menuItem} onPress={() =>  navigation.navigate('Mis trabajos')}>
+                {role == "2" && <TouchableOpacity style={styles.menuItem} onPress={() =>  navigation.navigate('Mis trabajos')}>
                     <Icon name="briefcase" size={20} style={styles.icon} />
                     <Text style={styles.menuItemText}>Mis Trabajos</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> }
 
-                <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
+                {role == "2" && <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
                     <Icon name="cogs" size={20} style={styles.icon} />
                     <Text style={styles.menuItemText}>Mis Servicios</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> }
 
-                <TouchableOpacity style={styles.menuItem} onPress={toggleFloatingSection}>
+                {role =="2" && <TouchableOpacity style={styles.menuItem} onPress={toggleFloatingSection}>
                     <Icon name="search" size={20} style={styles.icon} />
                     <Text style={styles.menuItemText}>Encuentra Empleo</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> }
 
                 <TouchableOpacity style={styles.menuItem} onPress={() => { console.warn("seleccion"); navigation.navigate('Configuraciones'); }}>
                     <Icon name="cog" size={20} style={styles.icon} />
@@ -405,11 +405,11 @@ const BarraLateral = ({navigation, toggleFloatingSection}) => {
                     <Text style={styles.menuItemText}>Soporte</Text>
                 </TouchableOpacity>
 
-                <View style={styles.workerModeButtonContainer}>
+                {/* <View style={styles.workerModeButtonContainer}>
                     <TouchableOpacity style={styles.workerModeButton} onPress={closeDrawer}>
                         <Text style={styles.workerModeButtonText}>Modo Trabajador</Text>
                     </TouchableOpacity>
-                </View>
+                </View> */}
 
             </Animated.View>
         </>

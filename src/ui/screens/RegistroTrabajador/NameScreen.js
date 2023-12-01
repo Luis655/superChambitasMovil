@@ -2,18 +2,18 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 
 const NameScreen = ({ navigation, route }) => {
-  const { parametro, phoneNumber } = route.params;
-  console.log(parametro);
+  const { role, phoneNumber } = route.params;
+  console.log(role);
   console.log(phoneNumber);
   const [nombre, setNombre] = useState('');
 
   const handleGuardar = () => {
     const nombreCompleto = `${nombre}`;
    
-    if (parametro == '1') {
-      navigation.navigate('Datos del trabajador', { parametro, nombreCompleto, phoneNumber})
+    if (role == 1) {
+      navigation.navigate('Datos del trabajador', { role, nombreCompleto, phoneNumber})
     } else {
-      navigation.navigate('NameScreen', { parametro, nombreCompleto, phoneNumber })
+      navigation.navigate('NameScreen', { role, nombreCompleto, phoneNumber })
     }
 
   };
