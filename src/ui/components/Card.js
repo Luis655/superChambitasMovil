@@ -86,8 +86,8 @@ const Card = ({index, job, aceptarTrabajo, onClose }) => {
     <View style={styles.card}>
       <Image source={{ uri: "https://i.pravatar.cc/150?img"+index }} style={styles.image} />
       <View style={styles.cardContent}>
-        <Text style={styles.name}>{job.name}</Text>
-        <Text style={styles.jobType}>{job.jobType}</Text>
+        <Text style={styles.name}>{job.title}</Text>
+        <Text style={styles.jobType}>{job.categoryName}</Text>
         <Text style={styles.price}>Precio: {job.price}</Text>
         <Text style={styles.address}>Dirección: {job.address}</Text>
         <Text style={styles.description}>{job.description}</Text>

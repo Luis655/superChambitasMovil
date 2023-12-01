@@ -75,6 +75,15 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
     setJobData(filterjob);
 
   }
+  const [data, setData] = useState([])
+
+  const getCategories = async () => {
+    const { data } = await useAxios("Request", "GET");
+    setData(data)
+  }
+  useEffect(() => {
+    getCategories();
+  }, [])
   return (
     <Modal
       animationType="slide"
@@ -145,7 +154,7 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
                               <ScrollView style={{height:'75%'}}>
 
                               {
-                                jobData.map((job, index) => (
+                                data.map((job, index) => (
                                   <Card index={index} job={job} aceptarTrabajo={(lat, lng) => { aceptarTrabajo(lat, lng) }} onClose={onClose} key={index} />
                                 ))
                               }
