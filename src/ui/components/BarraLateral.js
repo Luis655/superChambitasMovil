@@ -273,7 +273,7 @@ const BarraLateral = ({navigation, toggleFloatingSection, id, userName,email,pho
         menuItemText: {
           fontSize: 16,
           color: colorMode ? '#fff' : '#333',
-          fontFamily: 'Arial', // Ajusta la fuente según tu preferencia
+          // fontFamily: 'Arial', // Ajusta la fuente según tu preferencia
         },
         workerModeButtonContainer: {
           marginTop: 'auto',

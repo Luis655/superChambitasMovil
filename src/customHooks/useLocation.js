@@ -16,6 +16,8 @@ export const useLocation = ()=>{
 
           let { status } = await Location.requestForegroundPermissionsAsync();
           if (status !== Location.PermissionStatus.GRANTED) {
+            setErrorMsg(2);
+
             console.error('Permiso para acceder a la ubicación denegado');
             return;
           }
@@ -29,6 +31,7 @@ export const useLocation = ()=>{
           setEstadomsg(false);
           console.error('No se pudo obtener la ubicación. Inténtalo de nuevo.');
         }finally{
+          setErrorMsg(1);
           setEstadomsg(false);
         }
       }

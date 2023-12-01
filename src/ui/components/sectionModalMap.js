@@ -75,15 +75,15 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
     setJobData(filterjob);
 
   }
-  const [data, setData] = useState([])
+  const [data, setData] = useState(jobData2)
 
-  const getCategories = async () => {
-    const { data } = await useAxios("Request", "GET");
-    setData(data)
-  }
-  useEffect(() => {
-    getCategories();
-  }, [])
+  // const getCategories = async () => {
+  //   const { data } = await useAxios("Request", "GET");
+  //   setData(data)
+  // }
+  // useEffect(() => {
+  //   getCategories();
+  // }, [])
   return (
     <Modal
       animationType="slide"
@@ -185,10 +185,7 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
               <TouchableOpacity style={styles.searchButton} onPress={onSearchJobs}>
                 <Text style={styles.searchButtonText}>{isActive ? "Desactivar" : "Activar"}</Text>
               </TouchableOpacity>}
-            {role == '1' ?
-              <Text style={styles.textStyle}>Trabajos disponibles en tu area</Text>
-
-              :
+            {role == '1' &&
               <TouchableOpacity style={styles.search}>
 
 

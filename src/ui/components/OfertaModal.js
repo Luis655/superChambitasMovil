@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import Modal from 'react-native-modal';
 
-const OfertaModal = ({ isVisible, onAccept, onContraofertar, onClose }) => {
+const OfertaModal = ({ isVisible, onAccept, onContraofertar, onClose, nombre }) => {
   const [precioOferta, setPrecioOferta] = useState('800');
 
   const handleAccept = () => {
@@ -14,10 +14,10 @@ const OfertaModal = ({ isVisible, onAccept, onContraofertar, onClose }) => {
   };
 
   return (
-    <Modal isVisible={false} animationIn="slideInUp" animationOut="slideOutDown">
+    <Modal isVisible={isVisible} animationIn="slideInUp" animationOut="slideOutDown">
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
-          <Text style={{ fontSize: 18, marginBottom: 10 }}>¡Juan acaba de contraofertar tu solicitud!</Text>
+          <Text style={{ fontSize: 18, marginBottom: 10 }}>¡{nombre} acaba de aceptar tu solicitud!</Text>
           <Text style={{ marginBottom: 10}}>Ofrece</Text>
         
           <View style={{flexDirection:'row', alignSelf:'center', padding:10}}>

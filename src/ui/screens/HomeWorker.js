@@ -30,13 +30,15 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import BarraLateral from '../components/BarraLateral';
 import OfertaModal from "../components/OfertaModal";
 import useAxios from "../../customHooks/hookAxios";
+import { SignalRContext } from "../../signal/signalRConext";
+import { scheduleNotificationAsync } from "expo-notifications";
 const menuWidth = 250;
 const hiddenPosition = -menuWidth - 50;
-const HomeWorker = ({ navigation,route }) => {
+const HomeWorker = ({ navigation, route }) => {
   const { colorMode, setDarkColorMode } = useDarkMode();
-  const [state, setState] = useState({type:1})
+  const [state, setState] = useState({ type: 1 })
   const { user, profile } = useContext(AuthContext);
-  const {id, userName,email,phone, role } = user
+  const { id, userName, email, phone, role } = user
 
 
 
@@ -59,19 +61,31 @@ const HomeWorker = ({ navigation,route }) => {
     };
 
     setMarkerPosition(newMarkerPosition);
-  }; 
+  };
   const [timeLeft, setTimeLeft] = useState(15);
   const [datos, setDatos] = useState();
+
+
   const getoferta = async () => {
-    const { data } = await useAxios(`Service/${1080}`, "GET");
-    if(data.status ==1){
+    const { data } = await useAxios(`Request/ByServiceId${id}`, "GET");
+    if (data) {
       setModalVisible(!isModalVisible);
+      setDatos(data)
+
     }
-    setDatos(data)
   }
-  useEffect(() => {
-    getoferta();
-  }, [])
+  SignalRContext.useSignalREffect("NewRequests", async (event) => {
+    await scheduleNotificationAsync({
+      identifier: Math.random().toString(),
+      content: {
+        title: "Nuevo servicio " + event.title,
+      },
+      trigger: null,
+    });
+  })
+  // useEffect(() => {
+  //   getoferta();
+  // }, [])
 
 
   const iniciarContador = (id) => {
@@ -91,8 +105,8 @@ const HomeWorker = ({ navigation,route }) => {
         clearInterval(interval); // Detén el intervalo cuando el tiempo llega a cero
         setModalVisible1(true);
         // Muestra un cuadro de diálogo para preguntar al usuario si quiere reiniciar la búsqueda
-      }else{
-        //getoferta
+      } else {
+        getoferta(id)
       }
     }, 1000);
   };
@@ -123,10 +137,9 @@ const HomeWorker = ({ navigation,route }) => {
   };
   const activarTrabajo = (trabajo) => {
     Alert.alert(
-      `${
-        !isActive
-          ? "Te mostraras como activo hacia los usuarios"
-          : "Ya no seras visible para los usuarios"
+      `${!isActive
+        ? "Te mostraras como activo hacia los usuarios"
+        : "Ya no seras visible para los usuarios"
       }`,
       "¿Aceptar?",
       [
@@ -139,7 +152,7 @@ const HomeWorker = ({ navigation,route }) => {
         },
         {
           text: "Cancelar",
-          onPress: () => {},
+          onPress: () => { },
           style: "cancel",
         },
       ]
@@ -192,13 +205,13 @@ const HomeWorker = ({ navigation,route }) => {
     }
   };
   const opencloseModal = () => {
-    isOpenModal ? 
-      setIsOpenModal(false):
+    isOpenModal ?
+      setIsOpenModal(false) :
       setIsOpenModal(true)
   };
   const opencloseSupport = () => {
-    isOpenSupport ? 
-      setIsOpenSupport(false):
+    isOpenSupport ?
+      setIsOpenSupport(false) :
       setIsOpenSupport(true)
   };
   const openDrawer = () => {
@@ -410,7 +423,7 @@ const HomeWorker = ({ navigation,route }) => {
     menuItemText: {
       fontSize: 16,
       color: colorMode ? '#fff' : '#333',
-      fontFamily: 'Arial', // Ajusta la fuente según tu preferencia
+      // fontFamily: 'Arial', // Ajusta la fuente según tu preferencia
     },
     workerModeButtonContainer: {
       marginTop: "auto",
@@ -921,7 +934,7 @@ const HomeWorker = ({ navigation,route }) => {
       ],
     },
   ];
-  
+
   const [isModalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {
@@ -939,19 +952,19 @@ const HomeWorker = ({ navigation,route }) => {
     console.log(`Contraoferta realizada: $${precioOferta}`);
     toggleModal();
   };
- 
+
   return (
     <View style={styles.container}>
 
       {location ? (
         <MapView style={styles.map} initialRegion={{ ...location, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }} customMapStyle={colorMode ? customMapStyleAuberige : customMapStyRetro} >
           <Marker key={location} coordinate={location} title='Tu ubicación' description='Aquí estas' >
-          <Image
-          source={workerLogo}
-          style={{ width: 60, height: 60, marginTop: imageLoaded1 ? 9 : 0 }} 
-          onLoad={() => setImageLoaded1(true)}
-        />          
-        </Marker>
+            <Image
+              source={workerLogo}
+              style={{ width: 60, height: 60, marginTop: imageLoaded1 ? 9 : 0 }}
+              onLoad={() => setImageLoaded1(true)}
+            />
+          </Marker>
           {role == "1" &&
             jobData2.map((marker, index) => (
               <Marker
@@ -993,41 +1006,42 @@ const HomeWorker = ({ navigation,route }) => {
       )
       }
 
-{contadorActive ? (
-  <View style={styles.containers}>
-    <View style={styles.waitingContainer}>
-      <Text style={styles.waitingText}>
-        Esperando respuesta...
-      </Text>
-      <Text style={styles.timerText}>
-        {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
-      </Text>
-    </View>
-  </View>
-) : (
-  errorMsg === 1 ? (
-    // Render this block if errorMsg is 1
-    <View style={styles.containere}>
-      {/* Other interface elements here */}
+      {contadorActive ? (
+        <View style={styles.containers}>
+          <View style={styles.waitingContainer}>
+            <Text style={styles.waitingText}>
+              Esperando respuesta...
+            </Text>
+            <Text style={styles.timerText}>
+              {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+            </Text>
+          </View>
+        </View>
+      ) : (
+        //  (
+        // Render this block if errorMsg is 1
+        <View style={styles.containere}>
+          {/* Other interface elements here */}
 
-      {/* Floating button */}
-      <TouchableOpacity style={styles.fab} onPress={toggleFloatingSection}>
-        <Ionicons name="radio-button-on" size={15} color="#ff9900" />
-        <Text style={styles.text}>
-          {role == '1' ? "¿ QUE HAREMOS HOY ?" : "¿ CHAMBA ?"}
-        </Text>
-      </TouchableOpacity>
-    </View>
-  ) : (
-    // Render this block if errorMsg is not 1
-    <FAB
-      text="Cargando"
-      icon="reload"
-      style={styles.fab}
-      onPress={() => { requestLocationPermission() }}
-    />
-  )
-)}
+          {/* Floating button */}
+          <TouchableOpacity style={styles.fab} onPress={toggleFloatingSection}>
+            <Ionicons name="radio-button-on" size={15} color="#ff9900" />
+            <Text style={styles.text}>
+              {role == '1' ? "¿ QUE HAREMOS HOY ?" : "¿ CHAMBA ?"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        // ) : (
+        //   <></>
+        //   // Render this block if errorMsg is not 1
+        //   // <FAB
+        //   //   text="Cargando"
+        //   //   icon="reload"
+        //   //   style={styles.fab}
+        //   //   onPress={() => { requestLocationPermission() }}
+        //   // />
+        // )
+      )}
 
 
       <View>
@@ -1062,7 +1076,7 @@ const HomeWorker = ({ navigation,route }) => {
       <BarraLateral
         toggleFloatingSection={toggleFloatingSection}
         navigation={navigation}
-        userName = {userName}
+        userName={userName}
         id={id}
         email={email}
         phone={phone}
@@ -1081,7 +1095,7 @@ const HomeWorker = ({ navigation,route }) => {
         aceptarTrabajo={(lat, lng) => {
           iniciarRuta(lat, lng);
         }}
-        Contador={(id) =>{
+        Contador={(id) => {
           iniciarContador(id)
         }}
         Titulo={role == '1' ? "Buscar Trabajo" : "Solicitar servicio"}
@@ -1095,7 +1109,8 @@ const HomeWorker = ({ navigation,route }) => {
         onAccept={handleAccept}
         onContraofertar={handleContraofertar}
         onClose={toggleModal}
-        
+        nombre={"juan"}
+
       />
     </View>
   );
