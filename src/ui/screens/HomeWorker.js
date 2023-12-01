@@ -1074,7 +1074,7 @@ const HomeWorker = ({ navigation,route }) => {
           iniciarRuta(lat, lng);
         }}
         Contador={iniciarContador}
-        Titulo={role == '2' ? "Buscar Trabajo" : "Solicitar servicio"}
+        Titulo={role == '1' ? "Buscar Trabajo" : "Solicitar servicio"}
         Tipo={role}
         toggleModal={toggleModal}
       />

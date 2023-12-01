@@ -75,6 +75,15 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
     setJobData(filterjob);
 
   }
+  const [data, setData] = useState([])
+
+  const getCategories = async () => {
+    const { data } = await useAxios("Request", "GET");
+    setData(data)
+  }
+  useEffect(() => {
+    getCategories();
+  }, [])
   return (
     <Modal
       animationType="slide"
@@ -124,11 +133,11 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
           {value == 'trabajador' &&
             <View>
 
-              {role == '2' &&
+              {role == '1' &&
                 <TouchableOpacity style={styles.searchButton} onPress={onSearchJobs}>
                   <Text style={styles.searchButtonText}>{isActive ? "Desactivar" : "Activar"}</Text>
                 </TouchableOpacity>}
-              {role == '2' ?
+              {role == '1' ?
               <View>
                 <Text style={styles.textStyle}>Trabajos disponibles en tu area</Text>
                 <TouchableOpacity style={styles.search}>
@@ -145,7 +154,7 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
                               <ScrollView style={{height:'75%'}}>
 
                               {
-                                jobData.map((job, index) => (
+                                data.map((job, index) => (
                                   <Card index={index} job={job} aceptarTrabajo={(lat, lng) => { aceptarTrabajo(lat, lng) }} onClose={onClose} key={index} />
                                 ))
                               }
@@ -161,7 +170,7 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
             </View>}
 
           {value == 'pedir' && <View>
-            {role == '2' &&
+            {role == '1' &&
               <TouchableOpacity style={styles.searchButton} onPress={onSearchJobs}>
                 <Text style={styles.searchButtonText}>{isActive ? "Desactivar" : "Activar"}</Text>
               </TouchableOpacity>}
@@ -172,11 +181,11 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
 
 
           {value == 'pendientes' && <View>
-            {role == '2' &&
+            {role == '1' &&
               <TouchableOpacity style={styles.searchButton} onPress={onSearchJobs}>
                 <Text style={styles.searchButtonText}>{isActive ? "Desactivar" : "Activar"}</Text>
               </TouchableOpacity>}
-            {role == '2' ?
+            {role == '1' ?
               <Text style={styles.textStyle}>Trabajos disponibles en tu area</Text>
 
               :
