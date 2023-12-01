@@ -137,9 +137,8 @@ const SolicitarTrabajo = ({ Contador,toggleModal }) => {
      }
     const registration = await useAxios("user/registrar", "POST", JSON.stringify(userData));
     Alert.alert(
-      `${registration.data}`,
+      `${JSON.stringify(registration.data)}`,
     );
-    navigation.navigate('WorkerLoginScreen', {userData})
     //navigation.navigate('WorkerLoginScreen', { parametro })
    } catch (error) {
     Alert.alert(
@@ -164,10 +163,10 @@ var milisegundos = fechaActual.getMilliseconds().toString().padStart(3, '0');
 // Construir la cadena con el formato "YYYY-MM-DDTHH:mm:ss.sssZ"
 var fechaFormateada = `${año}-${mes}-${dia}T${horas}:${minutos}:${segundos}.${milisegundos}Z`;
 const userData = {
-  "title": trabajo.address,
+  "title": trabajo.title,
   "userId": id,
   "description": trabajo.description,
-  "categoryId": value, 
+  "categoryId": value.toString(), 
   "price": trabajo.payment,
   "fecha": "2023-12-01"
  }

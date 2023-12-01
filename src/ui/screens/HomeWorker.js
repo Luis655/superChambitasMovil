@@ -60,9 +60,10 @@ const HomeWorker = ({ navigation,route }) => {
     setMarkerPosition(newMarkerPosition);
   };
   const [timeLeft, setTimeLeft] = useState(15);
+  const [data,setData] = useEffect();
   const getoferta = async () => {
-    const { data } = await useAxios("categorias", "GET");
-    setData(data.map(item => ({ key: item.categoryId, value: item.titulo })))
+    const { data } = await useAxios("Service", "GET");
+    setData(data)
   }
   useEffect(() => {
     getoferta();

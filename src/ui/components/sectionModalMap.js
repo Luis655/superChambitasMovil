@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { View, Modal, ScrollView, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import Card from './Card'; // Asegúrate de importar el componente Card desde la ubicación correcta
 import { Searchbar, SegmentedButtons } from 'react-native-paper';
