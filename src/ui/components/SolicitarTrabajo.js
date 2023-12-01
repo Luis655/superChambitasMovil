@@ -8,7 +8,8 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import { SelectList } from "react-native-dropdown-select-list";
 import { Camera } from 'expo-camera';
-import useAxiosGet from '../../customHooks/hookAxiosGet';
+import useAxios from "../../customHooks/hookAxios";
+
 import { AuthContext, useAuth } from "../../auth/contextAuth";
 
 const MORE_ICON = Platform.OS === 'ios' ? 'dots-horizontal' : 'dots-vertical';
@@ -33,7 +34,7 @@ const SolicitarTrabajo = ({ Contador,toggleModal }) => {
 
   const getCategories = async () => {
     const { data } = await useAxios("categorias", "GET");
-    console.log(data)
+    //console.log(data)
     setDatos(data.map(item => ({ key: item.categoryId, value: item.titulo })))
   }
   useEffect(() => {
@@ -148,7 +149,6 @@ const SolicitarTrabajo = ({ Contador,toggleModal }) => {
   };
 
   const aceptado =  async (trabajo) => {
-    console.log(value)
 // Obtener la fecha y hora actuales
 var fechaActual = new Date();
 
@@ -163,18 +163,19 @@ var milisegundos = fechaActual.getMilliseconds().toString().padStart(3, '0');
 
 // Construir la cadena con el formato "YYYY-MM-DDTHH:mm:ss.sssZ"
 var fechaFormateada = `${año}-${mes}-${dia}T${horas}:${minutos}:${segundos}.${milisegundos}Z`;
-
+const userData = {
+  "title": trabajo.address,
+  "userId": id,
+  "description": trabajo.description,
+  "categoryId": value, 
+  "price": trabajo.payment,
+  "fecha": "2023-12-01"
+ }
+ console.log(userData);
 
     try {
-      const userData = {
-        "title": trabajo.address,
-        "userId": id,
-        "description": trabajo.description,
-        "categoryId": "3", 
-        "price": trabajo.payment,
-        "fecha": fechaFormateada
-       }
-      //const registration = await useAxios("user/registrar", "POST", JSON.stringify(userData));
+
+      const registration = await useAxios("Service/CrearServicio", "POST", JSON.stringify(userData));
       Alert.alert(
         `${registration.data}`,
       );
@@ -185,7 +186,7 @@ var fechaFormateada = `${año}-${mes}-${dia}T${horas}:${minutos}:${segundos}.${m
         `${error}`,
       );
      }
-    console.log(trabajo)
+    //console.log(trabajo)
     Alert.alert(`¿Estás seguro de realizar esta acción?`, 'Aceptar', [
       { text: 'Aceptar', onPress: () => { Contador() } },
       { text: 'Cancelar', onPress: () => {}, style: 'cancel' },
@@ -254,7 +255,7 @@ var fechaFormateada = `${año}-${mes}-${dia}T${horas}:${minutos}:${segundos}.${m
         onSubmit={(values) => {
           aceptado(values);
           // Handle form submission here
-          console.log(values);
+          //console.log(values);
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
