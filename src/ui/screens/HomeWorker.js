@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   View,
   Alert,
@@ -65,7 +65,7 @@ const HomeWorker = ({ navigation,route }) => {
     setData(data.map(item => ({ key: item.categoryId, value: item.titulo })))
   }
   useEffect(() => {
-    getCategories();
+    getoferta();
   }, [])
 
 

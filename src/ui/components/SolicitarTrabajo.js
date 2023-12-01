@@ -29,17 +29,18 @@ const SolicitarTrabajo = ({ Contador,toggleModal }) => {
       setHasPermission(status === 'granted');
     })();
   }, []);
-  const url = 'https://4e14-2806-10be-9-32a8-d088-7513-d5ee-a114.ngrok-free.app/api/categorias';
-  const { data, error, loading } =  useAxiosGet(url);
-  useEffect(() => {
-    if (!loading) {
-      console.log(data);
-      if(data!==null){
-        setDatos(data.map(item => ({ key: item.categoryId, value: item.titulo })));
 
-      }
-    }
-  }, [data, loading]);
+
+  const getCategories = async () => {
+    const { data } = await useAxios("categorias", "GET");
+    console.log(data)
+    setDatos(data.map(item => ({ key: item.categoryId, value: item.titulo })))
+  }
+  useEffect(() => {
+    getCategories();
+  }, [])
+
+
   const { colorMode, setDarkColorMode } = useDarkMode();
 
   const [value, setValue] = useState(null);
@@ -173,7 +174,7 @@ var fechaFormateada = `${año}-${mes}-${dia}T${horas}:${minutos}:${segundos}.${m
         "price": trabajo.payment,
         "fecha": fechaFormateada
        }
-      const registration = await useAxios("user/registrar", "POST", JSON.stringify(userData));
+      //const registration = await useAxios("user/registrar", "POST", JSON.stringify(userData));
       Alert.alert(
         `${registration.data}`,
       );
