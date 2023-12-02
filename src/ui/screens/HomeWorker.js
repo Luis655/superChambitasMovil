@@ -53,7 +53,7 @@ const HomeWorker = ({ navigation, route }) => {
   const [imageLoaded2, setImageLoaded2] = useState(false);
   const { location, status, errorMsg, estadomsg, requestLocationPermission } = useLocation();
   const [contadorActive, setContadorActive] = useState(false);
-
+  const [serviceRequest, setServiceRequest] = useState(null);
   const iniciarRuta = (lat, lng) => {
     const newMarkerPosition = {
       latitude: lat,
@@ -67,21 +67,33 @@ const HomeWorker = ({ navigation, route }) => {
 
 
   const getoferta = async () => {
-    const { data } = await useAxios(`Request/ByServiceId${id}`, "GET");
+    const { data } = await useAxios(`Request/ByServiceId/${id}`, "GET");
     if (data) {
       setModalVisible(!isModalVisible);
       setDatos(data)
 
     }
   }
+  const getRequest = async (id) => {
+    const { data } = await useAxios(`service/${id}`, "GET");
+    if (data) {
+      setServiceRequest(data)
+    }
+  }
   SignalRContext.useSignalREffect("NewRequests", async (event) => {
+    console.log({user})
+    if (user.role == 2) {
+      return;
+    }
     await scheduleNotificationAsync({
       identifier: Math.random().toString(),
       content: {
-        title: "Nuevo servicio " + event.title,
+        title: "Nuevo servicio: " + event.title,
       },
       trigger: null,
     });
+    await getRequest(event.serviceId)
+    iniciarContador(event.serviceId)
   })
   // useEffect(() => {
   //   getoferta();
@@ -89,14 +101,14 @@ const HomeWorker = ({ navigation, route }) => {
 
 
   const iniciarContador = (id) => {
-    Alert.alert(
-      id,
-    );
-    setModalVisible(!isModalVisible);
-    setIsFloatingSectionVisible(!isFloatingSectionVisible);
+    // Alert.alert(
+    //   id,
+    // );
+    toggleModal()
+    // setIsFloatingSectionVisible(!isFloatingSectionVisible);
     setContadorActive(true);
 
-    let tiempoRestante = 15; // Establece el tiempo inicial en segundos (ajusta según tus necesidades)
+    let tiempoRestante = 30; // Establece el tiempo inicial en segundos (ajusta según tus necesidades)
     const interval = setInterval(() => {
       setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
       tiempoRestante--;
@@ -106,7 +118,7 @@ const HomeWorker = ({ navigation, route }) => {
         setModalVisible1(true);
         // Muestra un cuadro de diálogo para preguntar al usuario si quiere reiniciar la búsqueda
       } else {
-        getoferta(id)
+        // getoferta(id)
       }
     }, 1000);
   };
@@ -1109,8 +1121,8 @@ const HomeWorker = ({ navigation, route }) => {
         onAccept={handleAccept}
         onContraofertar={handleContraofertar}
         onClose={toggleModal}
-        nombre={"juan"}
-
+        nombre={serviceRequest?.name}
+        data={serviceRequest}
       />
     </View>
   );

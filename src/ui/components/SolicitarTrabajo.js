@@ -175,7 +175,7 @@ const userData = {
       Alert.alert(
         `¡¡Servicio creado con exito!!`,
       );
-      Contador(registration.data.serviceId.toString())
+      // Contador(registration.data.serviceId.toString())
       // navigation.navigate('WorkerLoginScreen', {userData})
       //navigation.navigate('WorkerLoginScreen', { parametro })
      } catch (error) {

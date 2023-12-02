@@ -139,7 +139,7 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
                 </TouchableOpacity>}
               {role == '1' ?
               <View>
-                <Text style={styles.textStyle}>Trabajos disponibles en tu area</Text>
+                {/* <Text style={styles.textStyle}>Trabajos disponibles en tu area</Text> */}
                 <TouchableOpacity style={styles.search}>
 
 
