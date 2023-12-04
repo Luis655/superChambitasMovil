@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-na
 import ModalChat from './ModalChat';
 import { useDarkMode } from '../../auth/contextAuth';
 
-const Card = ({index, job, aceptarTrabajo, onClose }) => {
+const Card = ({index, job, aceptarTrabajo, onClose, handleOffert }) => {
   const { colorMode, setDarkColorMode } = useDarkMode();
   const styles = StyleSheet.create({
     button: {
@@ -68,8 +68,8 @@ const Card = ({index, job, aceptarTrabajo, onClose }) => {
   });
   
   const aceptado = (trabajo) => {
-    Alert.alert(`Aceptar el trabajo ${trabajo}`, '¿Aceptar?', [
-      { text: 'Aceptar', onPress: () => {aceptarTrabajo(job.latlng.latitude, job.latlng.longitude), onClose()} },
+    Alert.alert(`Aceptar el trabajo: ${trabajo.title}`, '¿Aceptar?', [
+      { text: 'Aceptar', onPress: () => {aceptarTrabajo(trabajo), onClose()} },
       { text: 'Cancelar', onPress: () => {}, style: 'cancel' },
     ]);
   };
@@ -84,7 +84,7 @@ const Card = ({index, job, aceptarTrabajo, onClose }) => {
 
   return (
     <View style={styles.card}>
-      <Image source={{ uri: "https://i.pravatar.cc/150?img"+index }} style={styles.image} />
+      {/* <Image source={{ uri: job.image }} style={styles.image} /> */}
       <View style={styles.cardContent}>
         <Text style={styles.name}>{job.title}</Text>
         <Text style={styles.jobType}>{job.categoryName}</Text>
@@ -92,18 +92,18 @@ const Card = ({index, job, aceptarTrabajo, onClose }) => {
         <Text style={styles.address}>Dirección: {job.address}</Text>
         <Text style={styles.description}>{job.description}</Text>
         <View style={[styles.bottonsCard]}>
-          <ModalChat visible={isChatModalVisible} onClose={toggleChatModal} name={job.name} price={job.price} />
+          {/* <ModalChat visible={isChatModalVisible} onClose={toggleChatModal} name={job.name} price={job.price} id={job.id} /> */}
 
           <TouchableOpacity
             style={[styles.button]}
-            onPress={() => aceptado(job.jobType)}
+            onPress={() => aceptado(job)}
           >
             <Text style={styles.buttonText}>Aceptar</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={[styles.button]}
-            onPress={toggleChatModal}
+            onPress={()=>{handleOffert(job.serviceId) }}
           >
             <Text style={styles.buttonText}>Contra-oferta</Text>
           </TouchableOpacity>

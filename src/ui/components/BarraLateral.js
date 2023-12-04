@@ -8,7 +8,7 @@ const menuWidth = 250;
 const hiddenPosition = -menuWidth - 50;
 
 
-const BarraLateral = ({navigation, toggleFloatingSection, id, userName,email,phone, role }) => {
+const BarraLateral = ({navigation, toggleFloatingSection, id, userName,email,phone, role, HelpModal, SupportModal }) => {
 
     const { colorMode, setDarkColorMode } = useDarkMode();
 
@@ -375,17 +375,17 @@ const BarraLateral = ({navigation, toggleFloatingSection, id, userName,email,pho
                 </View>
 
 
-                {role == "2" && <TouchableOpacity style={styles.menuItem} onPress={() =>  navigation.navigate('Mis trabajos')}>
+                {role == "1" && <TouchableOpacity style={styles.menuItem} onPress={() =>  navigation.navigate('Mis trabajos')}>
                     <Icon name="briefcase" size={20} style={styles.icon} />
                     <Text style={styles.menuItemText}>Mis Trabajos</Text>
                 </TouchableOpacity> }
 
-                {role == "2" && <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
+                {role == "1" && <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
                     <Icon name="cogs" size={20} style={styles.icon} />
                     <Text style={styles.menuItemText}>Mis Servicios</Text>
                 </TouchableOpacity> }
 
-                {role =="2" && <TouchableOpacity style={styles.menuItem} onPress={toggleFloatingSection}>
+                {role =="1" && <TouchableOpacity style={styles.menuItem} onPress={toggleFloatingSection}>
                     <Icon name="search" size={20} style={styles.icon} />
                     <Text style={styles.menuItemText}>Encuentra Empleo</Text>
                 </TouchableOpacity> }
@@ -395,12 +395,12 @@ const BarraLateral = ({navigation, toggleFloatingSection, id, userName,email,pho
                     <Text style={styles.menuItemText}>Configuraciones</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
+                <TouchableOpacity style={styles.menuItem} onPress={HelpModal}>
                     <Icon name="question" size={20} style={styles.icon} />
                     <Text style={styles.menuItemText}>Ayuda</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
+                <TouchableOpacity style={styles.menuItem} onPress={SupportModal}>
                     <Icon name="life-ring" size={20} style={styles.icon} />
                     <Text style={styles.menuItemText}>Soporte</Text>
                 </TouchableOpacity>

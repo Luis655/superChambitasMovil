@@ -1,38 +1,55 @@
 import React, { useState } from 'react';
 import { View, Modal, TextInput, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import { SignalRContext } from '../../signal/signalRConext';
+import { randomUUID } from 'expo-crypto';
 
-const ChatModal = ({ visible, onClose, name, price }) => {
+const ChatModal = ({ visible, onClose, name, price, id, userId, worker }) => {
   const [messages, setMessages] = useState([
 
-    {
-      _id: 1,
-      text: '¿Te doy los 600 pero tienes que venir ya?',
-      createdAt: new Date(),
-      user: {
-        _id: 2,
-        name: 'Usuario 2',
-      },
-    },
-    {
-      _id: 2,
-      text: 'Por 600 podria aceptar ahora.',
-      createdAt: new Date(),
-      user: {
-        _id: 1,
-        name: 'Usuario 1',
-      },
-    },
-    {
-      _id: 3,
-      text: 'Hola me interesa pero es muy poco',
-      createdAt: new Date(),
-      user: {
-        _id: 1,
-        name: 'Usuario 1',
-      },
-    },
+    // {
+    //   _id: 1,
+    //   text: '¿Te doy los 600 pero tienes que venir ya?',
+    //   createdAt: new Date(),
+    //   user: {
+    //     _id: 2,
+    //     name: 'Usuario 2',
+    //   },
+    // },
+    // {
+    //   _id: 2,
+    //   text: 'Por 600 podria aceptar ahora.',
+    //   createdAt: new Date(),
+    //   user: {
+    //     _id: 1,
+    //     name: 'Usuario 1',
+    //   },
+    // },
+    // {
+    //   _id: 3,
+    //   text: 'Hola me interesa pero es muy poco',
+    //   createdAt: new Date(),
+    //   user: {
+    //     _id: 1,
+    //     name: 'Usuario 1',
+    //   },
+    // },
   ]);
+  // SignalRContext.useSignalREffect("chatService$"+id+"userid$"+userId+"worker$"+worker,(message)=>{
+  //   const newMessage = {
+  //     _id: randomUUID(),
+  //     text: message,
+  //     createdAt: new Date(),
+  //     user: role == 1 ?{
+  //       _id: worker,
+  //       name: "Chambeador",
+  //     }:{
+  //       _id: userId,
+  //       name: "Cliente",
+  //     },
+  //   }
+  //   onSend([newMessage])
+  // })
 
   const onSend = (newMessages = []) => {
     setMessages((prevMessages) => GiftedChat.append(prevMessages, newMessages));
@@ -72,7 +89,7 @@ const ChatModal = ({ visible, onClose, name, price }) => {
           </TouchableOpacity>
         </View>
 
-     
+
         <GiftedChat
           messages={messages}
           onSend={onSend}
@@ -81,7 +98,7 @@ const ChatModal = ({ visible, onClose, name, price }) => {
           }}
           renderBubble={renderBubble}
         />
-       
+
       </View>
     </Modal>
   );

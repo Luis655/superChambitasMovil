@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 async function useAxios(url2, method, body) {
-  const url = `https://99c1-2806-10be-9-32a8-e1d3-b171-717b-2253.ngrok-free.app/api/${url2}`;
+  const url = `${process.env.EXPO_PUBLIC_API_URL}/api/${url2}`;
   // const [data, setData] = useState(null);
   // const [error, setError] = useState(null);
   // const [loading, setLoading] = useState(true);

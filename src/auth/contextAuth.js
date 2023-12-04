@@ -1,6 +1,6 @@
-import React, { createContext, useReducer, useContext, useState } from "react";
-import { useMemo } from "react";
+import React, { createContext, useReducer, useContext, useState, useMemo } from "react";
 import { useColorScheme } from "react-native";
+import storage from 'expo-storage';
 import { jwtDecode } from "./jwtDecode";
 import { scheduleNotificationAsync } from 'expo-notifications';
 import * as Crypto from 'expo-crypto';
@@ -11,18 +11,34 @@ const authReducer = (state, action) => {
     case "SET_USER":
       return { ...state, ...action.payload, logged: true };
     case "LOG_OUT":
-      return { logged: false };
-    default:
-      return state;
+      return { ...state,logged: false };
+    
   }
 };
-
-export const AuthProvider = ({ children }) => {
-  const initialState = {
-    logged: false,
+const init = () => {
+  let data
+  storage.getItem("userData").then((userData)=>{
+    data = userData
+    ? JSON.parse(userData)
+    : "";
+  })
+  return {
+    ...data
   };
+  
 
-  const [state, dispatch] = useReducer(authReducer, initialState);
+    
+};
+const initialState = {
+  logged: false,
+  profile: "",
+  user: null,
+  token: "",
+  refreshToken: "",
+};
+export const AuthProvider = ({ children }) => {
+
+  const [state, dispatch] = useReducer(authReducer, initialState,init);
   const [colorMode, setDarkColorMode] = useState(useColorScheme() === "dark");
   const setUser = async ({ token, refreshToken }) => {
     const user = jwtDecode(token);
@@ -38,6 +54,13 @@ export const AuthProvider = ({ children }) => {
         logged: true,
       },
     };
+   try {
+    const dataSave= JSON.stringify(action.payload)
+    await storage.setItem('userData', dataSave)
+   } catch (error) {
+    console.warn(error);
+   }
+
     dispatch(action);
     await scheduleNotificationAsync({
       identifier: Math.random().toString(),
@@ -51,13 +74,15 @@ export const AuthProvider = ({ children }) => {
     const action = {
       type: "LOG_OUT",
     };
-
+    AsyncStorage.removeItem('userData')
     dispatch(action);
   };
+  
   const contextValue = useMemo(
     () => ({ ...state, dispatch, setUser, logout }),
     [state]
   );
+
   return (
     <AuthContext.Provider value={contextValue}>
       <DarkModeContext.Provider value={{ colorMode, setDarkColorMode }}>
@@ -69,9 +94,9 @@ export const AuthProvider = ({ children }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  // if (!context) {
-  //   throw new Error("useAuth debe ser usado dentro de un AuthProvider");
-  // }
+  if (!context) {
+    throw new Error("useAuth debe ser usado dentro de un AuthProvider");
+  }
   return context;
 };
 

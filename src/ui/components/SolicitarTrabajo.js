@@ -14,9 +14,9 @@ import { AuthContext, useAuth } from "../../auth/contextAuth";
 
 const MORE_ICON = Platform.OS === 'ios' ? 'dots-horizontal' : 'dots-vertical';
 
-const SolicitarTrabajo = ({ Contador,toggleModal }) => {
+const SolicitarTrabajo = ({ Contador, toggleModal, location }) => {
   const { user, profile } = useContext(AuthContext);
-  const {id, userName,email,phone, role } = user
+  const { id, userName, email, phone, role } = user
 
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
@@ -35,7 +35,6 @@ const SolicitarTrabajo = ({ Contador,toggleModal }) => {
 
   const getCategories = async () => {
     const { data } = await useAxios("categorias", "GET");
-    //console.log(data)
     setDatos(data.map(item => ({ key: item.categoryId, value: item.titulo })))
   }
   useEffect(() => {
@@ -125,70 +124,68 @@ const SolicitarTrabajo = ({ Contador,toggleModal }) => {
   const [visible, setVisible] = useState(false);
 
   const hideDialog = () => setVisible(false);
-  const handleRegistration = async () => {
+  // const handleRegistration = async () => {
 
-   try {
-    const userData = {
-      "title": "busco trabajor",
-      "userId": 22,
-      "description": "string",
-      "categoryId": "3", 
-      "price": 500,
-      "fecha": "2023-12-01"
-     }
-    const registration = await useAxios("user/registrar", "POST", JSON.stringify(userData));
+  //  try {
+  //   const userData = {
+  //     "title": "busco trabajor",
+  //     "userId": 22,
+  //     "description": "string",
+  //     "categoryId": "3", 
+  //     "price": 500,
+  //     "fecha": "2023-12-01"
+  //    }
+  //   const registration = await useAxios("user/registrar", "POST", JSON.stringify(userData));
 
 
-    Alert.alert(
-      `${JSON.stringify(registration.data)}`,
-    );
-    //navigation.navigate('WorkerLoginScreen', { parametro })
-   } catch (error) {
-    Alert.alert(
-      `${error}`,
-    );
-   }
-  };
-const chambaAcept = (values) => {
-  Alert.alert(`¿Estás seguro de realizar esta acción?`, 'Aceptar', [
-    { text: 'Aceptar', onPress: () => {aceptado(values)  } },
-    { text: 'Cancelar', onPress: () => {}, style: 'cancel' },
-  ]);
-}
-  const aceptado =  async (trabajo) => {
+  //   Alert.alert(
+  //     `${JSON.stringify(registration.data)}`,
+  //   );
+  //   //navigation.navigate('WorkerLoginScreen', { parametro })
+  //  } catch (error) {
+  //   Alert.alert(
+  //     `${error}`,
+  //   );
+  //  }
+  // };
+  const chambaAcept = (values) => {
+    Alert.alert(`¿Estás seguro de realizar esta acción?`, 'Aceptar', [
+      { text: 'Aceptar', onPress: () => { aceptado(values) } },
+      { text: 'Cancelar', onPress: () => { }, style: 'cancel' },
+    ]);
+  }
+  const aceptado = async (trabajo) => {
     setEstadomsg(true)
-const userData = {
-  "title": trabajo.title,
-  "userId": id,
-  "description": trabajo.description,
-  "categoryId": value.toString(), 
-  "price": trabajo.payment,
-  "fecha": "2023-12-01"
- }
- console.log(userData);
-
+    const userData = {
+      "title": trabajo.title,
+      "userId": id,
+      "address":trabajo.address,
+      "location":JSON.stringify(location),
+      "description": trabajo.description,
+      "categoryId": value.toString(),
+      "price": trabajo.payment,
+      "fecha": new Date(),
+      "image": foto
+    }
     try {
 
       const registration = await useAxios("Service/CrearServicio", "POST", JSON.stringify(userData));
-      console.log(registration.data);
-      console.log("service id " + JSON.stringify(registration.data.serviceId));
       Alert.alert(
         `¡¡Servicio creado con exito!!`,
       );
       // Contador(registration.data.serviceId.toString())
       // navigation.navigate('WorkerLoginScreen', {userData})
       //navigation.navigate('WorkerLoginScreen', { parametro })
-     } catch (error) {
+    } catch (error) {
       Alert.alert(
         `!Upps, ha ocurrido un error¡¡`,
       );
-     }finally{
+    } finally {
       setEstadomsg(false);
-     }
-    //console.log(trabajo)
+    }
 
   };
-  const hideModal = () => setVisible(false);
+  // const hideModal = () => setVisible(false);
 
   const [isChatModalVisible, setIsChatModalVisible] = useState(false);
 
@@ -200,14 +197,6 @@ const userData = {
     toggleChatModal();
   };
 
-  const theme = {
-    colors: {
-      primary: '#fff',
-      text: '#fff',
-      label: '#fff',
-
-    },
-  };
 
   const validationSchema = yup.object().shape({
     title: yup.string().required('Campo requerido'),
@@ -215,7 +204,6 @@ const userData = {
     description: yup.string().required('Campo requerido'),
     payment: yup.number().typeError('Debe ser un número').required('Campo requerido'),
   });
-  const containerStyle = { backgroundColor: 'white', padding: 20 };
 
   const [openCamera, setOpenCamera] = useState(false);
   const _handleMore = async () => {
@@ -234,7 +222,6 @@ const userData = {
 
     }
   };
-  const tituloRef = useRef(null);
   const direccionRef = useRef(null);
   const descripcionRef = useRef(null);
   const pagoRef = useRef(null);
@@ -262,7 +249,7 @@ const userData = {
           <View style={styles.card}>
             <Appbar.Header color='#FF5A5F' style={{ backgroundColor: 'transparent', borderRadius: 10 }}>
               <Appbar.Content color={colorMode ? '#fff' : '#000'} title="Crear una solicitud" />
-              <Appbar.Action icon="camera" onPress={_handleMore} />
+              {/* <Appbar.Action icon="camera" onPress={_handleMore} /> */}
             </Appbar.Header>
             <SelectList
               setSelected={(val) => setValue(val)}
@@ -366,7 +353,7 @@ const userData = {
                 <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                   <Text style={styles.buttonText}>Solicitar Trabajador</Text>
                 </TouchableOpacity>
-                {foto != '' ?
+                {/* {foto != '' ?
                   <TouchableOpacity onPress={_handleMore}>
                     <Avatar.Image size={80} style={{ backgroundColor: 'transparent' }} source={{ uri: foto }} />
                   </TouchableOpacity>
@@ -376,7 +363,7 @@ const userData = {
                   <TouchableOpacity onPress={_handleMore}>
                     <Avatar.Icon size={80} style={{ backgroundColor: 'transparent' }} icon="camera" />
                   </TouchableOpacity>
-                }
+                } */}
 
               </View>
 

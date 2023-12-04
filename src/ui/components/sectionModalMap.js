@@ -5,15 +5,18 @@ import { Searchbar, SegmentedButtons } from 'react-native-paper';
 import { useDarkMode, AuthContext } from '../../auth/contextAuth';
 import SolicitarTrabajo from './SolicitarTrabajo';
 import { MaterialIcons } from '@expo/vector-icons';
+import useAxios from '../../customHooks/hookAxios';
+import { useLocation } from '../../customHooks/useLocation';
 
-const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrabajo, Contador, Tipo, Titulo, toggleModal }) => {
+const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrabajo, Contador, Tipo, Titulo, toggleModal, handleOffert, goRoute}) => {
   const { colorMode } = useDarkMode();
   const { user } = useContext(AuthContext);
   const {role} = user
-
+  const {location} =  useLocation()
   const [searchQuery, setSearchQuery] = useState('');
-  const [jobData, setJobData] = useState(jobData2);
   const [value, setValue] = useState('trabajador');
+  const [data, setData] = useState([])
+
   const styles = StyleSheet.create({
     modalContainer: {
       flex: 1,
@@ -66,24 +69,25 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
       fontWeight: 'bold',
     },
   });
+
+
   const onChangeSearch = query => {
     setSearchQuery(query);
-    const filterjob = jobData2.filter((job) => {
+    const filterjob = data.filter((job) => {
       const jobType = job.jobType.toLowerCase();
       return jobType.includes(query.toLowerCase());
     });
-    setJobData(filterjob);
+    setData(filterjob);
 
   }
-  const [data, setData] = useState(jobData2)
 
-  // const getCategories = async () => {
-  //   const { data } = await useAxios("Request", "GET");
-  //   setData(data)
-  // }
-  // useEffect(() => {
-  //   getCategories();
-  // }, [])
+  const getServices = async () => {
+    const { data } = await useAxios("service", "GET");
+    setData(data)
+  }
+  useEffect(() => {
+    getServices();
+  }, [visible])
   return (
     <Modal
       animationType="slide"
@@ -112,7 +116,7 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
               buttons={[
                 {
                   value: 'trabajador',
-                  label: 'Chambas',
+                  label: role ==1 ? 'Buscar chamba': "Solicitar una chamba",
                   checkedColor: '#000',
                   uncheckedColor: colorMode ? '#fff' : '#000'
                 },
@@ -133,10 +137,10 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
           {value == 'trabajador' &&
             <View>
 
-              {role == '1' &&
+              {/* {role == '1' &&
                 <TouchableOpacity style={styles.searchButton} onPress={onSearchJobs}>
                   <Text style={styles.searchButtonText}>{isActive ? "Desactivar" : "Activar"}</Text>
-                </TouchableOpacity>}
+                </TouchableOpacity>} */}
               {role == '1' ?
               <View>
                 {/* <Text style={styles.textStyle}>Trabajos disponibles en tu area</Text> */}
@@ -155,14 +159,14 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
 
                               {
                                 data.map((job, index) => (
-                                  <Card index={index} job={job} aceptarTrabajo={(lat, lng) => { aceptarTrabajo(lat, lng) }} onClose={onClose} key={index} />
+                                  <Card index={index} job={job} aceptarTrabajo={aceptarTrabajo} onClose={onClose} key={index} handleOffert={handleOffert} goRoute={goRoute}/>
                                 ))
                               }
                             </ScrollView>
                             </View>
                 :
                 <View style={{ height: '100%', maxHeight: '100%', justifyContent:'center' }}>
-                <SolicitarTrabajo Contador={(id) => {Contador(id)}} toggleModal={toggleModal} />
+                <SolicitarTrabajo Contador={(id) => {Contador(id)}} toggleModal={toggleModal} location={location} />
               </View>
 
               }

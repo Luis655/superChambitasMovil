@@ -1,12 +1,11 @@
-import React, { useState, useRef, useEffect, useId } from "react";
-import { StyleSheet, Text, View, Alert, ActivityIndicator } from "react-native";
+import React, { useState,useContext} from "react";
+import { StyleSheet, Text, View, Alert } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { AuthContext, useAuth } from "../../auth/contextAuth";
+import { AuthContext } from "../../auth/contextAuth";
 import { Avatar } from "react-native-paper";
 import useAxios from "../../customHooks/hookAxios";
-import { Button, TextInput, IconButton, Icon } from "react-native-paper";
-import { useContext } from "react";
+import { Button, TextInput, Icon } from "react-native-paper";
 const validationSchema = Yup.object().shape({
   email: Yup.string().required("El nombre de usuario es obligatorio"),
   password: Yup.string().required("La contraseña es obligatoria"),

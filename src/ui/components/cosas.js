@@ -48,8 +48,8 @@ buttons={[
           <Card
             index={index}
             job={job}
-            aceptarTrabajo={(lat, lng) => {
-              aceptarTrabajo(lat, lng);
+            aceptarTrabajo={() => {
+              aceptarTrabajo();
             }}
             onClose={onClose}
             key={index}
