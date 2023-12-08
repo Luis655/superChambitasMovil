@@ -26,11 +26,6 @@ const AddWorkerDataSchema = Yup.object().shape({
 
 const AddWorkerData = ({ navigation, route }) => {
   const { role, nombreCompleto, phoneNumber} = route.params;
-  console.log(role)
-  console.log(nombreCompleto)
-  console.log(phoneNumber)
-
-
   const [selected, setSelected] = useState([]);
   const handleRegistration = async (values) => {
     let {address, ...rest}= values
@@ -47,7 +42,6 @@ const AddWorkerData = ({ navigation, route }) => {
   //     `${registration.data}`,
   //   );
   //   navigation.navigate('Toma tu foto', { parametro })
-  //   console.log("Formulario enviado con éxito:", values, selected);
   //   //navigation.navigate('WorkerLoginScreen', { parametro })
   //  } catch (error) {
   //   Alert.alert(

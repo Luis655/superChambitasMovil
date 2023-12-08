@@ -380,7 +380,7 @@ const BarraLateral = ({navigation, toggleFloatingSection, id, userName,email,pho
                     <Text style={styles.menuItemText}>Mis Trabajos</Text>
                 </TouchableOpacity> }
 
-                {role == "1" && <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
+                {role == "2" && <TouchableOpacity style={styles.menuItem} onPress={closeDrawer}>
                     <Icon name="cogs" size={20} style={styles.icon} />
                     <Text style={styles.menuItemText}>Mis Servicios</Text>
                 </TouchableOpacity> }

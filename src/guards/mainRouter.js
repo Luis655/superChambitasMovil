@@ -10,7 +10,6 @@ import AddWorkerData from "../ui/screens/RegistroTrabajador/AddWorkerData";
 import CodeScreen from "../ui/screens/RegistroTrabajador/CodeScreen";
 import WorkerRegisterScreen from "../ui/screens/RegistroTrabajador/WorkerRegisterScreen";
 import MisTrabajos from "../ui/screens/MisTrabajos";
-import { HomeUser } from "../ui/screens/HomeUser";
 import PhotoUser from "../ui/screens/PhotoUser";
 import { NavigationContainer } from "@react-navigation/native";
 import {
@@ -68,13 +67,7 @@ export default function MainRouter() {
                 name="HomeWorker"
                 component={HomeWorker}
             />
-            <Navigator.Screen
-                options={{
-                    headerShown: false,
-                }}
-                name="HomeUser"
-                component={HomeUser}
-            />
+            
             <Navigator.Screen
                 options={{
                     headerShown: false,

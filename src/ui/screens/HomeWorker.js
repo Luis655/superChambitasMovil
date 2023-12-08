@@ -28,6 +28,7 @@ import { SignalRContext } from "../../signal/signalRConext";
 import { scheduleNotificationAsync } from "expo-notifications";
 import { customMapStyRetro, customMapStyleAuberige, styles } from "./styles";
 import { useEffect } from "react";
+import ContraOffertModal from "../components/ContraOffertModal";
 const workerLogo = require("../../../assets/logoconosuperchambitas-removebg-preview.png");
 const menuWidth = 250;
 const HomeWorker = ({ navigation, route }) => {
@@ -36,6 +37,7 @@ const HomeWorker = ({ navigation, route }) => {
   const { id, userName, email, phone, role } = user
   const [modalVisible1, setModalVisible1] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [offertModal, setOffertModal] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const [markerPosition, setMarkerPosition] = useState(null);
   const [imageLoaded1, setImageLoaded1] = useState(false);
@@ -43,6 +45,7 @@ const HomeWorker = ({ navigation, route }) => {
   const { location, estadomsg } = useLocation();
   const [contadorActive, setContadorActive] = useState(false);
   const [serviceRequest, setServiceRequest] = useState(null);
+  const [contraOfferta, setContraOfferta] = useState(null);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenSupport, setIsOpenSupport] = useState(false);
   const [timer, setTimer] = useState(null);
@@ -90,6 +93,25 @@ const HomeWorker = ({ navigation, route }) => {
       },
       trigger: null,
     });
+  })
+  SignalRContext.useSignalREffect(`contraOffert`, async (service, worker, oldPrice) => {
+    if (user.role == 1) {
+      return;
+    }
+    if (user.id != service.userId) {
+      return
+
+    }
+    await scheduleNotificationAsync({
+      identifier: Math.random().toString(),
+      content: {
+        title: `${worker.name} te ha hecho una contraoferta`,
+        body: `El precio del servicio ha cambiado`
+      },
+      trigger: null,
+    });
+    setContraOfferta({service, worker})
+    setOffertModal(true)
   })
 
   const handleOffert = async (id) => {
@@ -168,27 +190,64 @@ const HomeWorker = ({ navigation, route }) => {
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+  const toggleContraOffertModal = () => {
+    setOffertModal(!offertModal);
+  };
 
   const handleAccept = () => {
     clearInterval(timer); // Detén el intervalo cuando el tiempo llega a cero
     setModalVisible(false);
     setContadorActive(false);
     acceptJob(serviceRequest)
-    console.log({ serviceRequest })
     iniciarRuta(JSON.parse(serviceRequest.location))
 
   };
+  const handleContraOffertAccept = () => {
+    acceptContraOffertJob(contraOfferta.service, contraOfferta.worker)
+    toggleContraOffertModal()
+  };
 
-  const handleContraofertar = (precioOferta) => {
+  
+  const handleContraofertar = async (precioOferta) => {
     clearInterval(timer); // Detén el intervalo cuando el tiempo llega a cero
     setModalVisible(false);
     setContadorActive(false);
-
-  };
+    try {
+      await useAxios(`service/${serviceRequest.serviceId}`, "PATCH", JSON.stringify({price:precioOferta, worker:user.id}));
+      Alert.alert(
+        `Contraoferta enviada correctamente`,
+      );
+    } catch (error) {
+      Alert.alert(
+        `¡Ha ocurrido un error!`,
+      );
+      console.log(`job accept error: ${error}`);
+    }
+  }
+  
   const acceptJob = async (job) => {
     const dataRequest = {
       "clientId": job.userId,
       "workerId": id,
+      "serviceId": job.serviceId,
+      "date": new Date()
+    }
+    try {
+      await useAxios(`request/crearrequest`, "post", dataRequest);
+      Alert.alert(
+        `Chamba aceptada correctamente`,
+      );
+    } catch (error) {
+      Alert.alert(
+        `¡Ha ocurrido un error!`,
+      );
+      console.log(`job accept error: ${error}`);
+    }
+  }
+  const acceptContraOffertJob = async (job, worker) => {
+    const dataRequest = {
+      "clientId": job.userId,
+      "workerId": worker.userId,
       "serviceId": job.serviceId,
       "date": new Date()
     }
@@ -345,7 +404,6 @@ const HomeWorker = ({ navigation, route }) => {
         }}
         aceptarTrabajo={(job) => {
           acceptJob(job), acceptJob(job)
-          console.log({ job })
           iniciarRuta(JSON.parse(job.location))
         }}
         Contador={(id) => {
@@ -368,12 +426,22 @@ const HomeWorker = ({ navigation, route }) => {
           clearInterval(timer); // Detén el intervalo cuando el tiempo llega a cero
           setContadorActive(false);
         }}
-        nombre={serviceRequest?.name}
+        nombre={serviceRequest?.user.name}
         data={serviceRequest}
+      />
+      <ContraOffertModal
+        isVisible={offertModal}
+        onAccept={handleContraOffertAccept}
+        onClose={() => {
+          toggleContraOffertModal()
+        }}
+        nombre={contraOfferta?.worker.name}
+        data={contraOfferta?.service}
       />
     </View>
   );
-};
+}
+ 
 
 export default HomeWorker;
 

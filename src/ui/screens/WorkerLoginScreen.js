@@ -6,6 +6,7 @@ import { AuthContext } from "../../auth/contextAuth";
 import { Avatar } from "react-native-paper";
 import useAxios from "../../customHooks/hookAxios";
 import { Button, TextInput, Icon } from "react-native-paper";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 const validationSchema = Yup.object().shape({
   email: Yup.string().required("El nombre de usuario es obligatorio"),
   password: Yup.string().required("La contraseña es obligatoria"),
@@ -86,7 +87,7 @@ export default function WorkerLoginScreen({ navigation, route }) {
                 <TextInput.Icon
                   name={passwordVisible ? 'eye-off' : 'eye'}
                   onPress={() => setPasswordVisible(!passwordVisible)}
-                  icon={() => <Icon name={passwordVisible ? 'eye-slash' : 'eye'} size={20} color="#000" />} // Change the color and size as needed
+                  icon={() => <MaterialCommunityIcons name={passwordVisible ? 'eye' : 'eye-off'} size={20} color="#000" />} // Change the color and size as needed
                 />
               }
             />

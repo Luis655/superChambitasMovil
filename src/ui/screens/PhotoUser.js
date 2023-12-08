@@ -10,11 +10,7 @@ import * as FileSystem from 'expo-file-system';
 const MORE_ICON = Platform.OS === 'ios' ? 'dots-horizontal' : 'dots-vertical';
 
 const PhotoUser = ({navigation, route }) => {
-  console.log(route.params)
   const {userData} = route.params
-
-
-  console.log(userData.role)
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [foto, setFoto] = useState('');
@@ -108,7 +104,6 @@ const PhotoUser = ({navigation, route }) => {
 
   const toggleChatModal = () => {
     setIsChatModalVisible(!isChatModalVisible);
-    console.log({ isChatModalVisible })
   };
 
 
@@ -137,7 +132,6 @@ const PhotoUser = ({navigation, route }) => {
   };
 
   const _handleMore = async () => {
-    console.log("perra madre")
     const { status } = await Camera.requestCameraPermissionsAsync();
     setHasPermission(status === 'granted');
     if (status === 'granted') {
@@ -149,9 +143,6 @@ const PhotoUser = ({navigation, route }) => {
     if (cameraRef) {
       const options = { quality: 0.5, base64: true };
       const { uri, base64 } = await cameraRef.takePictureAsync(options);
-      
-      console.log('URI de la imagen:', uri);
-      console.log('Base64 de la imagen:', base64);
 
       setFoto(uri);
       setOpenCamera(!openCamera);

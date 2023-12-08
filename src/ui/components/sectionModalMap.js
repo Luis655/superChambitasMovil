@@ -8,14 +8,15 @@ import { MaterialIcons } from '@expo/vector-icons';
 import useAxios from '../../customHooks/hookAxios';
 import { useLocation } from '../../customHooks/useLocation';
 
-const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrabajo, Contador, Tipo, Titulo, toggleModal, handleOffert, goRoute}) => {
+const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrabajo, Contador, Tipo, Titulo, toggleModal, handleOffert, goRoute }) => {
   const { colorMode } = useDarkMode();
   const { user } = useContext(AuthContext);
-  const {role} = user
-  const {location} =  useLocation()
+  const { role } = user
+  const { location } = useLocation()
   const [searchQuery, setSearchQuery] = useState('');
   const [value, setValue] = useState('trabajador');
   const [data, setData] = useState([])
+  const [pendingJob, setPendingJob] = useState([])
 
   const styles = StyleSheet.create({
     modalContainer: {
@@ -28,7 +29,7 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
       height: '100%'
-      
+
     },
     container: {
       flexDirection: 'row',
@@ -85,8 +86,17 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
     const { data } = await useAxios("service", "GET");
     setData(data)
   }
+  const getPendingServices = async () => {
+    const { data: pending } = await useAxios(`service/byclient/${user.id}`, "GET");
+    setPendingJob(pending)
+  }
   useEffect(() => {
-    getServices();
+    if (role == 1) {
+      getServices();
+      return
+    }
+    getPendingServices();
+    return
   }, [visible])
   return (
     <Modal
@@ -109,14 +119,14 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
 
 
 
-        <View style={{backgroundColor:'transparent', margin:10}}>
+          <View style={{ backgroundColor: 'transparent', margin: 10 }}>
             <SegmentedButtons
               value={value}
               onValueChange={setValue}
               buttons={[
                 {
                   value: 'trabajador',
-                  label: role ==1 ? 'Buscar chamba': "Solicitar una chamba",
+                  label: role == 1 ? 'Buscar chamba' : "Solicitar una chamba",
                   checkedColor: '#000',
                   uncheckedColor: colorMode ? '#fff' : '#000'
                 },
@@ -126,7 +136,7 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
                   checkedColor: '#000',
                   uncheckedColor: colorMode ? '#fff' : '#000'
                 },
-                
+
               ]}
             />
           </View>
@@ -142,32 +152,32 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
                   <Text style={styles.searchButtonText}>{isActive ? "Desactivar" : "Activar"}</Text>
                 </TouchableOpacity>} */}
               {role == '1' ?
-              <View>
-                {/* <Text style={styles.textStyle}>Trabajos disponibles en tu area</Text> */}
-                <TouchableOpacity style={styles.search}>
+                <View>
+                  {/* <Text style={styles.textStyle}>Trabajos disponibles en tu area</Text> */}
+                  <TouchableOpacity style={styles.search}>
 
 
-                  <Searchbar
-                    placeholder="Buscar trabajos"
-                    onChangeText={onChangeSearch}
-                    value={searchQuery}
+                    <Searchbar
+                      placeholder="Buscar trabajos"
+                      onChangeText={onChangeSearch}
+                      value={searchQuery}
 
 
-                  />
-                </TouchableOpacity>
-                              <ScrollView style={{height:'75%'}}>
+                    />
+                  </TouchableOpacity>
+                  <ScrollView style={{ height: '75%' }}>
 
-                              {
-                                data.map((job, index) => (
-                                  <Card index={index} job={job} aceptarTrabajo={aceptarTrabajo} onClose={onClose} key={index} handleOffert={handleOffert} goRoute={goRoute}/>
-                                ))
-                              }
-                            </ScrollView>
-                            </View>
+                    {
+                      data.map((job, index) => (
+                        <Card index={index} job={job} aceptarTrabajo={aceptarTrabajo} onClose={onClose} key={index} handleOffert={handleOffert} goRoute={goRoute} />
+                      ))
+                    }
+                  </ScrollView>
+                </View>
                 :
-                <View style={{ height: '100%', maxHeight: '100%', justifyContent:'center' }}>
-                <SolicitarTrabajo Contador={(id) => {Contador(id)}} toggleModal={toggleModal} location={location} />
-              </View>
+                <View style={{ height: '100%', maxHeight: '100%', justifyContent: 'center' }}>
+                  <SolicitarTrabajo Contador={(id) => { Contador(id) }} toggleModal={toggleModal} location={location} />
+                </View>
 
               }
 
@@ -197,16 +207,21 @@ const FloatingSection = ({ visible, onClose, onSearchJobs, isActive, aceptarTrab
                   placeholder="Buscar trabajos"
                   onChangeText={onChangeSearch}
                   value={searchQuery}
-
-
                 />
               </TouchableOpacity>
             }
             <ScrollView style={styles.scrollView}>
 
-              <View>
-                <Text>Vista para ver los trabajos pendientes</Text>
-              </View>
+              {role == 1 && <View>
+                <Text></Text>
+              </View>}
+              {role == 2 && <View>
+                {
+                  pendingJob.map((job, index) => (
+                    <Card index={index} job={job} aceptarTrabajo={aceptarTrabajo} onClose={onClose} key={index} handleOffert={handleOffert} goRoute={goRoute} />
+                  ))
+                }
+              </View>}
             </ScrollView>
           </View>}
         </View>

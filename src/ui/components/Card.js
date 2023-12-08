@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import ModalChat from './ModalChat';
 import { useDarkMode } from '../../auth/contextAuth';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const Card = ({index, job, aceptarTrabajo, onClose, handleOffert }) => {
   const { colorMode, setDarkColorMode } = useDarkMode();
@@ -86,13 +87,14 @@ const Card = ({index, job, aceptarTrabajo, onClose, handleOffert }) => {
     <View style={styles.card}>
       {/* <Image source={{ uri: job.image }} style={styles.image} /> */}
       <View style={styles.cardContent}>
+        <Text style={{textAlign:'right' }}><TouchableOpacity onPress={toggleChatModal}><MaterialCommunityIcons name='chat' size={28}/></TouchableOpacity> </Text>
         <Text style={styles.name}>{job.title}</Text>
         <Text style={styles.jobType}>{job.categoryName}</Text>
         <Text style={styles.price}>Precio: {job.price}</Text>
         <Text style={styles.address}>Dirección: {job.address}</Text>
-        <Text style={styles.description}>{job.description}</Text>
+        <Text style={styles.description}>Descripción: {job.description}</Text>
         <View style={[styles.bottonsCard]}>
-          {/* <ModalChat visible={isChatModalVisible} onClose={toggleChatModal} name={job.name} price={job.price} id={job.id} /> */}
+          <ModalChat visible={isChatModalVisible} onClose={toggleChatModal} name={job.name} price={job.price} id={job.serviceId} />
 
           <TouchableOpacity
             style={[styles.button]}

@@ -3,61 +3,58 @@ import { View, Modal, TextInput, StyleSheet, TouchableOpacity, Text } from 'reac
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import { SignalRContext } from '../../signal/signalRConext';
 import { randomUUID } from 'expo-crypto';
+import { useAuth } from '../../auth/contextAuth';
+import useAxios from '../../customHooks/hookAxios';
 
-const ChatModal = ({ visible, onClose, name, price, id, userId, worker }) => {
-  const [messages, setMessages] = useState([
-
-    // {
-    //   _id: 1,
-    //   text: '¿Te doy los 600 pero tienes que venir ya?',
-    //   createdAt: new Date(),
-    //   user: {
-    //     _id: 2,
-    //     name: 'Usuario 2',
-    //   },
-    // },
-    // {
-    //   _id: 2,
-    //   text: 'Por 600 podria aceptar ahora.',
-    //   createdAt: new Date(),
-    //   user: {
-    //     _id: 1,
-    //     name: 'Usuario 1',
-    //   },
-    // },
-    // {
-    //   _id: 3,
-    //   text: 'Hola me interesa pero es muy poco',
-    //   createdAt: new Date(),
-    //   user: {
-    //     _id: 1,
-    //     name: 'Usuario 1',
-    //   },
-    // },
-  ]);
-  // SignalRContext.useSignalREffect("chatService$"+id+"userid$"+userId+"worker$"+worker,(message)=>{
+const ChatModal = ({ visible, onClose, name, price, id, userId }) => {
+  const [messages, setMessages] = useState([]);
+  const { user } = useAuth();
+  SignalRContext.useSignalREffect(`catServiceWorker`, (message) => {
+    if (message.serviceId == id && (user.role == 1 ? user.id != message.worker : user.id != message.client)) {
+      const newMessage = {
+        _id: randomUUID(),
+        text: message.message,
+        createdAt: new Date(),
+        user: {
+          _id: user.role == 1 ? message.worker : message.client,
+          name: user.role == 1 ? "Chambeador" : "Cliente",
+        }
+      }
+      setMessages((prevMessages) => GiftedChat.append(prevMessages, [{ ...newMessage }]));
+    }
+  })
+  //   SignalRContext.useSignalREffect(`catServiceClient`, (message)=> {
+  //  if (message.serviceId == id && user.role == 2) {
   //   const newMessage = {
   //     _id: randomUUID(),
-  //     text: message,
+  //     text: message.message,
   //     createdAt: new Date(),
-  //     user: role == 1 ?{
-  //       _id: worker,
-  //       name: "Chambeador",
-  //     }:{
-  //       _id: userId,
+  //     user: {
+  //       _id: message.client,
   //       name: "Cliente",
-  //     },
+  //     }
   //   }
-  //   onSend([newMessage])
+  //   setMessages((prevMessages) => GiftedChat.append(prevMessages, [{...newMessage}]));
+  //  }
   // })
 
-  const onSend = (newMessages = []) => {
+  const onSend = async (newMessages = []) => {
+   if (user.id == newMessages[0].user._id) {
     setMessages((prevMessages) => GiftedChat.append(prevMessages, newMessages));
+   }
+    const data = {
+      message: `${newMessages[0].text}`,
+      client: user.role == 2 ? user.id : userId,
+      serviceId: id,
+      worker: user.role == 1 ? user.id : 0,
+      role: user.role
+    }
+    await useAxios('message', 'POST', JSON.stringify(data))
   };
 
   const renderBubble = (props) => {
     return (
-      <Bubble
+      <Bubble key={randomUUID()}
         {...props}
         wrapperStyle={{
           right: {
@@ -67,7 +64,8 @@ const ChatModal = ({ visible, onClose, name, price, id, userId, worker }) => {
             backgroundColor: '#E5E5EA',
           },
         }}
-      />
+
+        />
     );
   };
 
@@ -94,7 +92,8 @@ const ChatModal = ({ visible, onClose, name, price, id, userId, worker }) => {
           messages={messages}
           onSend={onSend}
           user={{
-            _id: 1,
+            _id: user.id,
+            name: user.role == 1 ? "Chambeador" : "Cliente"
           }}
           renderBubble={renderBubble}
         />
@@ -115,7 +114,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   modalContainer: {
-    flex: 1,
+    flex: 3,
     justifyContent: 'flex-start',
     backgroundColor: '#FFFFFF', // Color de fondo del modal
   },

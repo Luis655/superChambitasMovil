@@ -3,8 +3,6 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView 
 
 const NameScreen = ({ navigation, route }) => {
   const { role, phoneNumber } = route.params;
-  console.log(role);
-  console.log(phoneNumber);
   const [nombre, setNombre] = useState('');
 
   const handleGuardar = () => {

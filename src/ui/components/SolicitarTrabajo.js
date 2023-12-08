@@ -241,8 +241,6 @@ const SolicitarTrabajo = ({ Contador, toggleModal, location }) => {
         validationSchema={validationSchema}
         onSubmit={(values) => {
           chambaAcept(values);
-          // Handle form submission here
-          //console.log(values);
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
@@ -255,7 +253,7 @@ const SolicitarTrabajo = ({ Contador, toggleModal, location }) => {
               setSelected={(val) => setValue(val)}
               data={datos}
               save="key"
-              onSelect={() => console.log(value)}
+              onSelect={()=>{}}
               label="Selecciona el trabajo"
               labelStyles={{ fontWeight: '900' }}
               placeholder="Selecciona tu trabajo"
